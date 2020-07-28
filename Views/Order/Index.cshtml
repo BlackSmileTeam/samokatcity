@@ -1,0 +1,133 @@
+﻿
+@model  IEnumerable<SCS.Models.Order>
+@{
+    ViewBag.Title = "Заказы";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+<div class="filterOrder">
+
+    <select class="form-control" id="exampleFormControlSelect1">
+        <option value="value1">Забронированые</option>
+        <option value="value1">Оплаченые</option>
+        <option value="value1">Закрытые</option>
+    </select>
+</div>
+<div class="container">
+    <div class="divTable">
+        <div class="divTableBody">
+            <div class="divTableRow">
+                <div class="poaddingButton"></div>
+                <div class="divTableCell">№ заказа</div>
+                <div class="divTableCell">ФИО</div>
+                <div class="divTableCell">Дата заказа</div>
+                <div class="divTableCell">Статус заказа</div>
+            </div>
+            @foreach (var Orders in Model)
+            {
+                <div class="divTableRow">
+                    <div class="poaddingButton">
+                        <button type="button" class="btn btn-outline-secondary btn-sm">-</button>
+                    </div>
+                    <div class="divTableCell">@Orders.Id</div>
+                    <div class="divTableCell">@Orders.User ----</div>
+                    <div class="divTableCell">@Orders.DateStart;</div>
+                    <div class="divTableCell">&nbsp;</div>
+                </div>
+                <div class="orderTableMore">
+                    <div class="moreInformationOrder">
+                        <nobr>
+                            О клиенте
+                        </nobr>
+                        <div class="orderTableMore">
+                            <p>Пупкинский район</p>
+                        </div>
+                    </div>
+                    <div class="moreInformationOrder">
+                        <nobr>
+                            Тарифы
+                        </nobr>
+                        <div class="orderTableMore">
+                            <div class=" moreInformationRates">
+                                <p>
+                                    Одна зарядка
+                                </p>
+                                <p>
+                                    M365
+                                </p>
+                                <div class="orderTableMore">
+                                    <p> Шлем детский</p>
+                                    <p> Держатель для телефона</p>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class=" moreInformationRates">
+                                <p>
+                                    Одна зарядка
+                                </p>
+                                <p>
+                                    Pro
+                                </p>
+                                <div class="orderTableMore">
+                                    <p> Держатель для телефона</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="moreInformationOrder">
+                        <nobr>
+                            Оплата
+                        </nobr>
+                        <div class="orderTableMore">
+                            <div class=" moreInformationRates">
+                                <p>
+                                    300 руб - оплата наличными
+                                    666 руб - оплата натурой
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="moreInformationOrder">
+                        <nobr>
+                            Скидка
+                        </nobr>
+                        <div class="orderTableMore">
+                            <div class=" moreInformationRates">
+                                <p>
+                                    50% - за кружевные трусы
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="moreInformationOrder">
+                        <nobr>
+                            Начисленные бонусы
+                        </nobr>
+                        <div class="orderTableMore">
+                            <div class=" moreInformationRates">
+                                <p>
+                                    777 - за драку с бомжом
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="moreInformationOrder">
+                        <nobr>
+                            <b> Итого:</b>
+                        </nobr>
+                        <div class="orderTableMore">
+                            <div class=" moreInformationRates">
+                                <p>
+                                    <b>
+                                        Почка семилетнего ребенка из Африки от родителей азиатов
+                                    </b>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>

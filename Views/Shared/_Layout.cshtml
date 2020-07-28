@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/Scripts/jquery-3.5.1.js")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+
+
+</head>
+<body>
+    <main>
+        <div class="sidenav">
+            <a href='@Url.Action("Index", "Home")'>
+                <img class="logo" src="~/Content/Images/logo.png" alt="Samokat.city" />
+            </a>
+
+            @Html.ActionLink("Главная", "Index", "Home")
+            @Html.ActionLink("Заказы", "Index", "Orders")
+            @Html.ActionLink("Транспорт", "Index", "Transport")
+            @Html.ActionLink("Аксессуары", "Index", "Accessories")
+            @Html.ActionLink("Тарифы", "Index", "Rates")
+            @Html.ActionLink("Клиенты", "Index", "Client")
+        </div>
+        <div class="content">
+            <div class="avatarPosition">
+                <img src="~/Content/Images/avatarSekisov.png" alt="Avatar" />
+                <label>Администратор</label>
+            </div>
+
+            @RenderBody()
+
+            <footer>
+                <p>&copy; @DateTime.Now.Year - BlackSmile Team</p>
+            </footer>
+        </div>
+
+    </main>
+
+
+
+    @*<div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Имя приложения", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Информация", "About", "Home")</li>
+                        <li>@Html.ActionLink("Связаться", "Contact", "Home")</li>
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - BlackSmile Team</p>
+            </footer>
+        </div>*@
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+</body>
+
+</html>

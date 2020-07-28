@@ -1,0 +1,258 @@
+﻿body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+hr {
+    width: 100%;
+}
+
+.logo {
+    margin-right: auto;
+    margin-left: -6px;
+    margin-bottom: 1em;
+    display: flex;
+    width: 98%;
+}
+
+p {
+    text-align: center;
+}
+
+.header {
+    width: 100%;
+    height: 150px;
+    background: #90dcff;
+}
+
+.sidenav {
+    /*    z-index: 1;*/
+    top: 0;
+    left: 0;
+    /*    position: fixed;*/
+    z-index: 999;
+    background-color: #111;
+    /*    overflow-x: hidden;*/
+    padding-top: 20px;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+}
+
+.sidenav a {
+    padding: 6px 6px 6px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
+
+    .sidenav a:hover {
+        color: #f1f1f1;
+    }
+
+main {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+footer {
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1em;
+}
+
+.avatarPosition {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2em;
+    flex-direction: row;
+    align-items: center;
+}
+
+    .avatarPosition label {
+        margin-left: 1em;
+        margin-right: 2em;
+    }
+
+    .avatarPosition img {
+        vertical-align: middle;
+        width: 4em;
+        height: 4em;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+.circular--portrait {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+    .circular--portrait img {
+        width: 100%;
+        height: auto;
+    }
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+        .sidenav a {
+            font-size: 18px;
+        }
+}
+
+.divTable {
+    display: table;
+    margin: auto;
+    width: 95%;
+    margin-top: 3em;
+}
+
+.divTableRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.poaddingButton {
+    width: 10em;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+
+.orderTableMore {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 2em 2em 0;
+}
+
+.orderTable {
+    margin: 0 0 0 7em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.moreInformationOrder {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+    .moreInformationOrder nobr {
+        width: 5em;
+        margin: 0 12em 0 0;
+    }
+
+.moreInformationRates {
+    display: flex;
+    flex-direction: row;
+}
+
+    .moreInformationRates p {
+        width: 15em;
+        margin: 0 4em 0 0;
+        text-align: left;
+    }
+
+.form-group {
+    width: 100%;
+}
+
+.filterOrder {
+    width: 95%;
+    margin: 0 0 1em 2.5em;
+}
+
+.divTableCell, .divTableHead {
+    border-bottom: 1px solid #999999;
+    display: table-cell;
+    width: 100%;
+    padding: 3px 10px;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.divTableBody {
+    display: table-row-group;
+}
+
+.btn-circle {
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0.5em 0px;
+    border-radius: 50px;
+    border-color: black;
+    text-align: center;
+    font-size: 1em;
+    line-height: 1.42857;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    /*    position: absolute;*/
+    justify-content: flex-end;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+.hrPunct {
+    border: none;
+    border-top: 1px dotted #808080;
+    color: #fff;
+    background-color: #fff;
+    height: 1px;
+    width: 100%;
+}
+.show {
+}
+.hide{
+   display:none;
+}
