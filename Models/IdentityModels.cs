@@ -32,7 +32,7 @@ namespace SCS.Models
 
 		public System.Data.Entity.DbSet<SCS.Models.Order> Orders { get; set; }
 
-		public System.Data.Entity.DbSet<SCS.Models.User> Users1 { get; set; }
+		public System.Data.Entity.DbSet<SCS.Models.User> Users { get; set; }
 
 		public System.Data.Entity.DbSet<SCS.Models.OrderAccessories> OrderAccessories { get; set; }
 

@@ -4,9 +4,6 @@
     ViewBag.Title = "Заказы";
 }
 <div class="container">
-
-
-
     <div class="divTable">
         @using (Ajax.BeginForm("Filter", new AjaxOptions { UpdateTargetId = "result" }))
         {
@@ -14,15 +11,15 @@
             <div class="moreInformationOrder">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="orderTableMore">
-                    <p>Статус заказа</p>
+                    @Html.Label("Статус заказа")
                     @Html.DropDownList("statusOrder", null, htmlAttributes: new { @class = "form-control" })
                 </div>
                 <div class="orderTableMore">
-                    <p>Дата заказа с:</p>
+                    @Html.Label("Дата заказа с:")
                     <input type="date" id="dateStart" name="dateStart" value="@String.Format("{0:yyyy-MM-dd}", DateTime.Now)" data-date-format="m/d/yyyy" class="form-control" title="Дата начала действия заказа">
                 </div>
                 <div class="orderTableMore">
-                    <p>Дата заказа по:</p>
+                    @Html.Label("Дата заказа по:")
                     <input type="date" id="dateEnd" name="dateEnd" class="form-control" value="@String.Format("{0:yyyy-MM-dd}", DateTime.Now)" data-date-format="m/d/yyyy" title="Дата окончания действия заказа" />
                 </div>
                 <div class="orderTableMore">

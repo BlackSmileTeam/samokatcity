@@ -22,7 +22,7 @@ namespace SCS.Controllers
 
 			foreach (string tmpStatus in statusOrder)
 			{
-				StatusOrder.Add(new SelectListItem { Text = tmpStatus, Value = "0" });
+				StatusOrder.Add(new SelectListItem { Text = tmpStatus});
 			}
 		}
 
@@ -47,8 +47,7 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string statusOrder, DateTime dateStart, DateTime dateEnd)
 		{
-			string str = this.statusOrder[int.Parse(statusOrder)];
-			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o => o.DateStart >= dateStart && o.DateEnd <= dateEnd && o.StatusOrder == str).ToList();
+			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o => o.DateStart >= dateStart && o.DateEnd <= dateEnd && o.StatusOrder == statusOrder).ToList();
 
 			ViewBag.StatusOrder = StatusOrder;
 
