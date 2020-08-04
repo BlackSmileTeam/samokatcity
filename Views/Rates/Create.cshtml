@@ -1,0 +1,138 @@
+﻿@model SCS.Models.Rates
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="orderTable">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h2>Тарифы</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="moreInformationOrder">
+                <nobr>
+                    Наименование тарифа
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="moreInformationOrder">
+                <nobr>
+                    Время начала действия тарифа
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.EditorFor(model => model.TimeStart, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TimeStart, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="moreInformationOrder">
+                <nobr>
+                    @Html.LabelFor(model => model.TimeEnd)
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.EditorFor(model => model.TimeEnd, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TimeEnd, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="moreInformationOrder">
+                <nobr>
+                    Продолжительность, ч
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.EditorFor(model => model.Duration, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="moreInformationOrder">
+                <nobr>
+                    Цена, руб
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div>
+                @Html.Label("Добавить/убрать транспорт")
+                @Html.CheckBox("showTransport", false, new { onchange = "showTransportOnChange(this)" })
+            </div>
+            <div id="transportBlock" name="transportBlock" class="moreInformationOrder hide">
+                <nobr>
+                    Наименование транспорта
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.DropDownList("TransportId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TransportId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                @Html.Label("Добавить/убрать аксессуар")
+                @Html.CheckBox("showAccessories", false, new { onchange = "showAccessoriesOnChange(this)" })
+            </div>
+            <div id="accessoriestBlock" name="accessoriestBlock" class="moreInformationOrder hide">
+                <nobr>
+                    Наименование аксуссуара
+                </nobr>
+                <div class="orderTableMore">
+                    <div class=" moreInformationRates">
+                        @Html.DropDownList("AccessoriesId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AccessoriesId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-offset-2 mb-5">
+                <input type="submit" value="Добавить" class="btn btn btn-danger float-md-left" />
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+
+        function showAccessoriesOnChange(element) {
+            if (element.checked) {
+                document.getElementById("accessoriestBlock").classList.remove("hide");
+            }
+            else {
+                document.getElementById("accessoriestBlock").classList.add("hide");
+            }
+        }
+
+        function showTransportOnChange(element) {
+            if (element.checked) {
+                document.getElementById("transportBlock").classList.remove("hide");
+            }
+            else {
+                document.getElementById("transportBlock").classList.add("hide");
+            }
+        }
+    </script>
+}

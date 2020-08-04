@@ -11,22 +11,30 @@ using SCS.Models;
 
 namespace SCS.Controllers
 {
-	public class TransportsController : Controller
+	public class AccessoriesController : Controller
 	{
 
-		private List<string> statusTransport = new List<string>
+		private List<string> statusAccessories = new List<string>
 		{
 			"В наличии", "Отсутствует"
 		};
-		public List<SelectListItem> StatusTransport { get; set; }
-		public TransportsController()
+		public List<SelectListItem> StatusAccessories { get; set; }
+		public AccessoriesController()
 		{
-			StatusTransport = new List<SelectListItem>();
+			StatusAccessories = new List<SelectListItem>();
 
-			foreach (string tmpStatus in statusTransport)
+			foreach (string tmpStatus in statusAccessories)
 			{
-				StatusTransport.Add(new SelectListItem { Text = tmpStatus});
+				StatusAccessories.Add(new SelectListItem { Text = tmpStatus });
 			}
+		}
+		private SCSContext db = new SCSContext();
+
+		// GET: Accessories
+		public async Task<ActionResult> Index()
+		{
+			ViewBag.StatusAccessories = StatusAccessories;
+			return View(await db.Accessories.Include(tr => tr.OrderAccessories).ToListAsync());
 		}
 
 		/// <summary>
@@ -36,10 +44,10 @@ namespace SCS.Controllers
 		/// <param name="dateStart"></param>
 		/// <param name="dateEnd"></param>
 		/// <returns></returns>
-		public ActionResult Filter(string StatusTransport)
+		public ActionResult Filter(string StatusAccessories)
 		{
 			bool str = false;
-			switch (StatusTransport)
+			switch (StatusAccessories)
 			{
 				case "В наличии":
 					{
@@ -52,101 +60,90 @@ namespace SCS.Controllers
 						break;
 					}
 			}
-			var transports = db.Transport.Include(tr => tr.OrderTransports).Where(tr=>tr.Status == str).ToList();
+			var accessories = db.Accessories.Include(tr => tr.OrderAccessories).Where(tr => tr.Status == str).ToList();
 
-			ViewBag.StatusOrder = StatusTransport;
+			ViewBag.StatusOrder = StatusAccessories;
 
-			return PartialView(transports);
+			return PartialView(accessories);
 		}
 
-
-		private SCSContext db = new SCSContext();
-
-		// GET: Transports
-		public async Task<ActionResult> Index()
-		{
-			ViewBag.StatusTransport = StatusTransport;
-			return View(await db.Transport.Include(tr=>tr.OrderTransports).ToListAsync());
-		}
-
-		
-		// GET: Transports/Create
+		// GET: Accessories/Create
 		public ActionResult Create()
 		{
 			return View();
 		}
 
-		// POST: Transports/Create
+		// POST: Accessories/Create
 		// Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. 
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Status")] Transport transport)
+		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Status")] Accessories accessories)
 		{
 			if (ModelState.IsValid)
 			{
-				transport.Status = true;
-				db.Transport.Add(transport);
+				accessories.Status = true;
+				db.Accessories.Add(accessories);
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
 			}
 
-			return View(transport);
+			return View(accessories);
 		}
 
-		// GET: Transports/Edit/5
+		// GET: Accessories/Edit/5
 		public async Task<ActionResult> Edit(int? id)
 		{
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Transport transport = await db.Transport.FindAsync(id);
-			if (transport == null)
+			Accessories accessories = await db.Accessories.FindAsync(id);
+			if (accessories == null)
 			{
 				return HttpNotFound();
 			}
-			return View(transport);
+			return View(accessories);
 		}
 
-		// POST: Transports/Edit/5
+		// POST: Accessories/Edit/5
 		// Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. 
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status")] Transport transport)
+		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status")] Accessories accessories)
 		{
 			if (ModelState.IsValid)
 			{
-				db.Entry(transport).State = EntityState.Modified;
+				db.Entry(accessories).State = EntityState.Modified;
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
 			}
-			return View(transport);
+			return View(accessories);
 		}
 
-		// GET: Transports/Delete/5
+		// GET: Accessories/Delete/5
 		public async Task<ActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Transport transport = await db.Transport.FindAsync(id);
-			if (transport == null)
+			Accessories accessories = await db.Accessories.FindAsync(id);
+			if (accessories == null)
 			{
 				return HttpNotFound();
 			}
-			return View(transport);
+			return View(accessories);
 		}
 
-		// POST: Transports/Delete/5
+		// POST: Accessories/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> DeleteConfirmed(int id)
 		{
-			Transport transport = await db.Transport.FindAsync(id);
-			db.Transport.Remove(transport);
+			Accessories accessories = await db.Accessories.FindAsync(id);
+			db.Accessories.Remove(accessories);
 			await db.SaveChangesAsync();
 			return RedirectToAction("Index");
 		}

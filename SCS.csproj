@@ -287,12 +287,14 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\AccessoriesController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\OrderAccessoriesController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\RatesController.cs" />
     <Compile Include="Controllers\TransportsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -574,20 +576,29 @@
     <Content Include="Views\Orders\Details.cshtml" />
     <Content Include="Views\Orders\Edit.cshtml" />
     <Content Include="Views\Orders\Index.cshtml" />
-    <Content Include="Views\OrderAccessories\Create.cshtml" />
-    <Content Include="Views\OrderAccessories\Delete.cshtml" />
-    <Content Include="Views\OrderAccessories\Details.cshtml" />
-    <Content Include="Views\OrderAccessories\Edit.cshtml" />
-    <Content Include="Views\OrderAccessories\Index.cshtml" />
     <Content Include="Views\Orders\AddDropListTransport.cshtml" />
     <Content Include="Views\Orders\AddDropListAccessories.cshtml" />
     <Content Include="Views\Orders\Filter.cshtml" />
     <Content Include="Views\Transports\Create.cshtml" />
     <Content Include="Views\Transports\Delete.cshtml" />
-    <Content Include="Views\Transports\Details.cshtml" />
     <Content Include="Views\Transports\Edit.cshtml" />
     <Content Include="Views\Transports\Index.cshtml" />
     <Content Include="Views\Transports\Filter.cshtml" />
+    <Content Include="Views\Accessories\Create.cshtml" />
+    <Content Include="Views\Accessories\Delete.cshtml" />
+    <Content Include="Views\Accessories\Edit.cshtml" />
+    <Content Include="Views\Accessories\Index.cshtml" />
+    <Content Include="Views\Accessories\Filter.cshtml" />
+    <Content Include="Views\Rates\Create.cshtml" />
+    <Content Include="Views\Rates\Delete.cshtml" />
+    <Content Include="Views\Rates\Details.cshtml" />
+    <Content Include="Views\Rates\Edit.cshtml" />
+    <Content Include="Views\Rates\Index.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Details.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

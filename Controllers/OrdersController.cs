@@ -31,7 +31,7 @@ namespace SCS.Controllers
 		// GET: Orders
 		public ActionResult Index()
 		{
-			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser);
+			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o=>o.StatusOrder == "Забронирован");
 			ViewBag.StatusOrder = StatusOrder;
 
 			return View(orders.ToList());
@@ -99,13 +99,15 @@ namespace SCS.Controllers
 
 		public ActionResult AddDropListTransport()
 		{
-			ViewBag.RatesId = new SelectList(db.Rates, "Id", "Name");
+			var rates = db.Rates.Include(tr => tr.Transport).Where(tr => tr.Transport != null);
+			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 			ViewBag.TransportId = new SelectList(db.Transport, "Id", "Name");
 			return View();
 		}
 		public ActionResult AddDropListAccessories()
 		{
-			ViewBag.RatesId = new SelectList(db.Rates, "Id", "Name");
+			var rates = db.Rates.Include(ac => ac.Accessories).Where(ac => ac.Accessories != null);
+			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 			ViewBag.AccessoriesId = new SelectList(db.Accessories, "Id", "Name");
 			return View();
 		}

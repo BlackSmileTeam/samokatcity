@@ -43,5 +43,7 @@ namespace SCS.Models
 		public System.Data.Entity.DbSet<SCS.Models.Transport> Transports { get; set; }
 
 		public System.Data.Entity.DbSet<SCS.Models.Payment> Payments { get; set; }
+
+		public System.Data.Entity.DbSet<SCS.Models.СontactUser> СontactUser { get; set; }
 	}
 }

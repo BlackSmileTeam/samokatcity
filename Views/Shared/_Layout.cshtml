@@ -14,7 +14,7 @@
 </head>
 <body>
     <main>
-        <div class="sidenav">
+        <div class="sidenav" id="main-menu">
             <a href='@Url.Action("Index", "Home")'>
                 <img class="logo" src="~/Content/Images/logo.png" alt="Samokat.city" />
             </a>
@@ -24,7 +24,7 @@
             @Html.ActionLink("Транспорт", "Index", "Transports")
             @Html.ActionLink("Аксессуары", "Index", "Accessories")
             @Html.ActionLink("Тарифы", "Index", "Rates")
-            @Html.ActionLink("Клиенты", "Index", "Client")
+            @Html.ActionLink("Клиенты", "Index", "Users")
         </div>
         <div class="content">
             <div class="avatarPosition">
@@ -41,10 +41,11 @@
 
     </main>
 
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+
 
 </body>
 

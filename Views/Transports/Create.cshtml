@@ -1,4 +1,4 @@
-﻿@model SCS.Models.Transport
+﻿@model SCS.Models.Accessories
 
 @{
     ViewBag.Title = "Добавить транспорт";
@@ -22,8 +22,6 @@
             @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
         </div>
     </div>
-
-
 
     <div class="col-md-offset-2 col-md-10">
         <input type="submit" value="Добавить" class="btn btn btn-danger float-md-left" />
