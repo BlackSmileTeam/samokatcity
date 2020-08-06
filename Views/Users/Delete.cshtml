@@ -1,72 +1,25 @@
 ﻿@model SCS.Models.User
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Удалить";
 }
-
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ContactUser.ShortName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ContactUser.ShortName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Discount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Discount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Bonus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Bonus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ExtraCharge)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ExtraCharge)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+<div class="orderTable">
+    <h3>Вы уверены что хотите удалить данного пользователя?</h3>
+    <div>
+        <hr />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <b>
+                <label>Логин пользователя:</label>
+                @Html.DisplayFor(model => model.Username)
+            </b>
+            <div class="form-actions no-color">
+                <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
+                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Users")">
+                    Отмена
+                </a>
+            </div>
+        }
+    </div>
 </div>

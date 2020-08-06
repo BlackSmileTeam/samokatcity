@@ -104,7 +104,6 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
-			ViewBag.ContactUserId = new SelectList(db.ContactUser, "Id", "ShortName", user.ContactUserId);
 			return View(user);
 		}
 
@@ -113,15 +112,32 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit([Bind(Include = "Id,Username,Password,Discount,Bonus,ExtraCharge,ContactUserId")] User user)
+		public async Task<ActionResult> Edit(int Id, string Username, string Password, string Passport, string City,
+											   string Home, string Apartament, string Surname, string Name,
+											   string Patronymic, string Phone)
 		{
+			User user = db.Users.Find(Id);
+			user.Username = Username;
+			user.Password = Password;
+			СontactUser сontactUser = db.ContactUser.Find(user.ContactUserId);
+			сontactUser.Passport = Passport;
+			сontactUser.City = City;
+			сontactUser.Home = Home;
+			сontactUser.Apartment = Apartament;
+			сontactUser.Surname = Surname;
+			сontactUser.Name = Name;
+			сontactUser.Patronymic = Patronymic;
+			сontactUser.Phone = Phone;
+			сontactUser.ShortName = $"{Surname} {Name[0]}. {Patronymic}.";
+
 			if (ModelState.IsValid)
 			{
+				
 				db.Entry(user).State = EntityState.Modified;
+				db.Entry(сontactUser).State = EntityState.Modified;
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
 			}
-			ViewBag.ContactUserId = new SelectList(db.ContactUser, "Id", "ShortName", user.ContactUserId);
 			return View(user);
 		}
 
@@ -146,7 +162,9 @@ namespace SCS.Controllers
 		public async Task<ActionResult> DeleteConfirmed(int id)
 		{
 			User user = await db.Users.FindAsync(id);
+			СontactUser сontactUser = await db.ContactUser.FindAsync(user.ContactUserId);
 			db.Users.Remove(user);
+			db.ContactUser.Remove(сontactUser);
 			await db.SaveChangesAsync();
 			return RedirectToAction("Index");
 		}
