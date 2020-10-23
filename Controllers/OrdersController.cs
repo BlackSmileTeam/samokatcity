@@ -10,6 +10,8 @@ namespace SCS.Controllers
 {
 	public class OrdersController : Controller
 	{
+		//Количество добавленного транспорта
+		static private int countTransport = 0;
 		private List<string> statusOrder = new List<string>
 		{
 			"Забронирован","Оплачен","Отменен","В поездке"
@@ -99,6 +101,10 @@ namespace SCS.Controllers
 
 		public ActionResult AddDropListTransport()
 		{
+			//Добавляем Id для добавленного транспорта
+			ViewBag.countTransport = countTransport;
+			//Увеличиваем id на единицу, что бы следующий блок был с новым id
+			++countTransport;
 			var rates = db.Rates.Include(tr => tr.Transport).Where(tr => tr.Transport != null);
 			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 			ViewBag.TransportId = new SelectList(db.Transport.Where(tr => tr.Status == 1), "Id", "Name");
@@ -113,22 +119,7 @@ namespace SCS.Controllers
 		public int MaxCountransport(string nameTransport)
 		{
 			return db.Transport.Where(tr => tr.Name == nameTransport && tr.Status == 1).ToList().Count;
-		}
-
-		/// <summary>
-		/// Получаем значение наценки для выбранного ТС
-		/// </summary>
-		/// <param name="nameTransport"></param>
-		/// <returns></returns>
-		public decimal ValueMarkupTransport(string nameTransport)
-		{
-			decimal markup = 0;
-			if (DateTime.Now.DayOfWeek.ToString() == "Суббота" || DateTime.Now.DayOfWeek.ToString() == "Воскресенье")
-			{
-				markup = db.Transport.Where(tr => tr.Name == nameTransport).ToList()[0].Markup;
-			}
-			return markup;
-		}
+		}	
 
 		public ActionResult AddDropListAccessories()
 		{

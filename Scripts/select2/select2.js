@@ -14,6 +14,7 @@ $("#ajaxSelect2").select2({
     ajax: {
         url: "/api/web/GetAsync",
         contentType: "application/json; charset=utf-8",
+        //Отправляем запрос на поиск пользователя по введенным символам в поле
         data: function (params) {
             var query =
             {
@@ -42,10 +43,12 @@ $('#ajaxSelect2').on('select2:select', function (e) {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/api/web/searchUserBonus",
+        url: "/api/web/SearchUserBonus",
         data: "id="+id,
         success: function (msg) {
+            //Устанавливаем максимально допустимое количество бонусов для выбранного пользователя, т.к. нельзя вводить больше бонусов чем имеется у пользователя
             document.getElementById("bonusPayment").max = msg;
+            //Выводим количество доступных бонусов в наименование поля, для удобствав и понимания максимально допустимого количества
             document.getElementById("labelBonusPayment").textContent = "Оплата бонусами (доступно " + msg + " бонусов)"; 
         }
     });

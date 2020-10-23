@@ -12,6 +12,7 @@ namespace SCS.Controllers.API
 {
 	public class WebController : ApiController
 	{
+		private SCSContext db = new SCSContext();
 		// GET: api/Web
 		public IEnumerable<string> Get()
 		{
@@ -41,12 +42,12 @@ namespace SCS.Controllers.API
 			}
 		}
 		/// <summary>
-		/// _Запрос на получение количества бонусов у пользователя
+		/// Запрос на получение количества бонусов у пользователя
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
 		[HttpGet]
-		public decimal searchUserBonus(string id)
+		public decimal SearchUserBonus(string id)
 		{
 			decimal idUser = Convert.ToDecimal(id);
 			decimal bonus = 0;
@@ -56,7 +57,23 @@ namespace SCS.Controllers.API
 			}
 			return bonus;
 		}
-
+		/// <summary>
+		/// Получаем значение наценки для выбранного ТС
+		/// </summary>
+		/// <param name="nameTransport"></param>
+		/// <returns></returns>
+		[HttpGet]
+		public decimal ValueMarkupTransport(string id)
+		{
+			decimal markup = 0;
+			int idTransport = Convert.ToInt32(id);
+			if (DateTime.Now.DayOfWeek.ToString().ToLower() == "суббота" || DateTime.Now.DayOfWeek.ToString().ToLower() == "воскресенье" ||
+				DateTime.Now.DayOfWeek.ToString().ToLower() == "saturday" || DateTime.Now.DayOfWeek.ToString().ToLower() == "sunday")
+			{
+				markup = db.Transport.Where(tr => tr.Id == idTransport).ToList()[0].Markup;
+			}
+			return markup;
+		}
 
 		//public decimal Post([System.Web.Http.FromBody] string idUser)
 		//{
@@ -74,15 +91,15 @@ namespace SCS.Controllers.API
 		//}
 
 		// PUT: api/Web/5
-		public void Put(int id, [System.Web.Http.FromBody] string value)
-		{
-		}
+		//public void Put(int id, [System.Web.Http.FromBody] string value)
+		//{
+		//}
 
-		// DELETE: api/Web/5
-		public void Delete(int id)
-		{
-		}
-		private SCSContext db = new SCSContext();
+		//// DELETE: api/Web/5
+		//public void Delete(int id)
+		//{
+		//}
+
 
 	}
 }
