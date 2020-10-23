@@ -34,8 +34,6 @@ namespace SCS.Models
 
 		public System.Data.Entity.DbSet<SCS.Models.User> Users { get; set; }
 
-		public System.Data.Entity.DbSet<SCS.Models.OrderAccessories> OrderAccessories { get; set; }
-
 		public System.Data.Entity.DbSet<SCS.Models.Accessories> Accessories { get; set; }
 
 		public System.Data.Entity.DbSet<SCS.Models.Rates> Rates { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using FluentAssertions.Common;
+using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(SCS.Startup))]

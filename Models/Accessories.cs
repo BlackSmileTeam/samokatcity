@@ -9,14 +9,13 @@ namespace SCS.Models
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public bool Status { get; set; }
+		public int Status { get; set; }
+		public decimal Price { get; set; } = 0;
 
 
-		public ICollection<OrderAccessories> OrderAccessories { get; set; }
 		public ICollection<Rates> Rates { get; set; }
 		public Accessories()
 		{
-			OrderAccessories = new List<OrderAccessories>();
 			Rates = new List<Rates>();
 		}
 	}

@@ -1,26 +1,54 @@
-﻿@{
+﻿@model IEnumerable<SCS.Models.Transport>
+@{
     Layout = null;
 }
-    <div class="moreInformationOrder" id="transport">
+<div class="moreInformationOrder" id="transport">
 
-        <div class="form-group">
-            <div class="col-md-10">
-                <label>Наименование тарифа</label>
-                @Html.DropDownList("RatesId", null, htmlAttributes: new { @class = "form-control" })
-            </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <label>Наименование тарифа</label>
+            @Html.DropDownList("RatesId", null, htmlAttributes: new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                <label>Наименование транспорта</label>
-                @Html.DropDownList("TransportId", null, htmlAttributes: new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                <label>Количество, шт.</label>
-                <input type="number" id="countTransport" name="countTransport" class="form-control"
-                       min="1" max="100" />
-            </div>
-        </div>
-
     </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <label>Наименование транспорта</label>
+            @Html.DropDownList("TransportId", null, htmlAttributes: new { @onchange = "test(this.value)", @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <label>Количество, шт.</label>
+            <input type="number" id="countTransport" name="countTransport" class="form-control" value="0"
+                   min="1" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <label>Наценка, руб</label>
+            <input class="form-control" name="duration" id="duration" value="0" min="1" />
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function test (string )
+        $(document).ready(function () {
+            $("#addAccessories").click(function () {
+
+                $.ajax({
+                    url: 'AddDropListAccessories',
+                    datatype: 'html',
+                    success: function (data) {
+                        $("#accessories").append(data);
+                    }
+                })
+            });
+        });
+    </script>
+}
+
+
+

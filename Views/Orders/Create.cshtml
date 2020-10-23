@@ -25,14 +25,17 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <label>ФИО клиента</label>
-                    @Html.DropDownList("UserId", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+                    <select name="ajaxSelect2" class="form-control" id="ajaxSelect2" lang="ru">
+                    </select>
                 </div>
+
                 <div class="col-md-10">
                     @Html.LabelFor(model => model.DateStart)
-                    @Html.EditorFor(model => model.DateStart, new { htmlAttributes = new { @class = "form-control" } })
+
+                    <input type="date" id="dateStart" name="dateStart" value="@String.Format("{0:yyyy-MM-dd}", DateTime.Now)" data-date-format="m/d/yyyy" class="form-control" title="Дата начала действия заказа">
                     @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
                 </div>
+
             </div>
 
             <div class="form-group">
@@ -43,62 +46,16 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    <label>Количество замков</label>
-                    @Html.EditorFor(model => model.CountLock, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
+
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-10">
-                    <label>Количество бонусов за заказ</label>
-                    @Html.EditorFor(model => model.AddBonuses, new { htmlAttributes = new { @class = "form-control" } })
 
-                    @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-10">
-                    <label>Скидка за заказ, %</label>
-                    @Html.EditorFor(model => model.Discount, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
 
-        <h4>Оплата</h4>
-        <hr />
-        <div class="moreInformationOrder">
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Оплата наличными</label>
-                    <input class="form-control" name="CashPayment" id="CashPayment" />
-                </div>
-                <div class="col-md-10">
-                    <label>Оплата картой</label>
-                    <input class="form-control" name="CardPayment" id="CardPayment" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Залог наличными</label>
-                    <input class="form-control" name="CashDeposit" id="CashDeposit" />
-                </div>
-                <div class="col-md-10">
-                    <label>Залог картой</label>
-                    <input class="form-control" name="CardDeposit" id="CardDeposit" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Оплата бонусами</label>
-                    <input class="form-control" name="bonusPayment" id="bonusPayment" />
-                </div>
-                <div class="col-md-10">
-                    <label>Документ</label>
-                    @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
 
         <h4>Транспорт</h4>
         <hr />
@@ -114,19 +71,96 @@
         <div id="accessories">
 
         </div>
+
+
         <div class="col-md-offset-2 col-md-10">
             <input type="button" value="+" id="addAccessories" class="btn btn-outline-dark" />
         </div>
         <br />
 
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Создать заказ" class="btn btn btn-danger float-md-right" />
+        <h4>Оплата</h4>
+        <hr />
+        <div class="moreInformationOrder">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <label>Оплата наличными</label>
+                    <input class="form-control" name="CashPayment" id="CashPayment" value="0" min="1" />
+                </div>
+                <div class="col-md-10">
+                    <label>Оплата картой</label>
+                    <input class="form-control" name="CardPayment" id="CardPayment" value="0" min="1" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <label>Залог наличными</label>
+                    <input class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="1" />
+                </div>
+                <div class="col-md-10">
+                    <label>Залог картой</label>
+                    <input class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="1" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <label id="labelBonusPayment">Оплата бонусами  </label>
+                    <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="1" max="10" />
+                </div>
+                <div class="col-md-10">
+                    <label>Документ</label>
+                    @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <br />
+
+
+        <h4>Дополнительные параметры</h4>
+        <hr />
+        <div class="moreInformationOrder">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <label>Количество бонусов за заказ</label>
+                    <input class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="1" />
+
+                    @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-10">
+                    <label>Количество замков</label>
+                    <input class="form-control" name="CountLock" id="AddBonuses" value="0" min="1" />
+                    @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <label>Скидка, руб</label>
+                    <input class="form-control" name="CountLock" id="Discount" value="0" min="1" />
+                    @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-10">
+                    <label>Наценка, руб</label>
+                    <input class="form-control" name="duration" id="duration" value="0" min="1" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+
+                </div>
+                <div class="col-md-10">
+
+
+                </div>
+            </div>
         </div>
         <br />
 
     </div>
+    <div class="col-md-offset-2 col-md-10 ml-5">
+        <input type="submit" value="Создать заказ" class="btn btn btn-danger float-md-left" />
+    </div>
 }
-
 
 @section Scripts {
     <script>
@@ -140,10 +174,7 @@
                     }
                 })
             });
-        });
-        $(document).ready(function () {
             $("#addAccessories").click(function () {
-
                 $.ajax({
                     url: 'AddDropListAccessories',
                     datatype: 'html',
@@ -152,7 +183,37 @@
                     }
                 })
             });
+            $("#UserId").change(function () {
+                $.ajax({
+                    url: 'AddDropListAccessories',
+                    datatype: 'html',
+                    success: function (data) {
+                        $("#accessories").append(data);
+                    }
+                })
+            });
+            $("#bonusPayment").change(function () {
+                let bonusValue = document.getElementById("bonusPayment").value;
+                let bonusMax = document.getElementById("bonusPayment").max;
+                if (bonusValue > bonusMax) {
+                    document.getElementById("bonusPayment").value = document.getElementById("bonusPayment").max;
+                }
+                if (bonusValue < 0) {
+                    document.getElementById("bonusPayment").value = 0;
+                }
+            });
         });
+
+        function test(val) {
+            alert(val);
+        }
+
+
     </script>
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Scripts/select2/i18n/ru.js"></script>
+    <script src="~/Scripts/select2/select2.full.min.js"></script>
+    <script src="~/Scripts/select2/select2.js"></script>
+
 }

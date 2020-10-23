@@ -38,17 +38,17 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string StatusTransport)
 		{
-			bool str = false;
+			int str = 0;
 			switch (StatusTransport)
 			{
 				case "В наличии":
 					{
-						str = true;
+						str = 1;
 						break;
 					}
 				case "Отсутствует":
 					{
-						str = false;
+						str = 0;
 						break;
 					}
 			}
@@ -81,11 +81,11 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Status")] Transport transport)
+		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Status, Markup")] Transport transport)
 		{
 			if (ModelState.IsValid)
 			{
-				transport.Status = true;
+				transport.Status = 1;
 				db.Transport.Add(transport);
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
@@ -114,7 +114,7 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status")] Transport transport)
+		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status,Markup")] Transport transport)
 		{
 			if (ModelState.IsValid)
 			{

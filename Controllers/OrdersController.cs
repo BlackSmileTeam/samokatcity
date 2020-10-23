@@ -5,7 +5,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using System.Web.UI.HtmlControls;
 
 namespace SCS.Controllers
 {
@@ -13,7 +12,7 @@ namespace SCS.Controllers
 	{
 		private List<string> statusOrder = new List<string>
 		{
-			"Забронирован","Оплачен","Просрочен","Отменен"
+			"Забронирован","Оплачен","Отменен","В поездке"
 		};
 		public List<SelectListItem> StatusOrder { get; set; }
 		public OrdersController()
@@ -22,7 +21,7 @@ namespace SCS.Controllers
 
 			foreach (string tmpStatus in statusOrder)
 			{
-				StatusOrder.Add(new SelectListItem { Text = tmpStatus});
+				StatusOrder.Add(new SelectListItem { Text = tmpStatus });
 			}
 		}
 
@@ -31,12 +30,12 @@ namespace SCS.Controllers
 		// GET: Orders
 		public ActionResult Index()
 		{
-			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o=>o.StatusOrder == "Забронирован");
+			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o => o.StatusOrder == "Забронирован");
 			ViewBag.StatusOrder = StatusOrder;
-
+			SelectList users = new SelectList(db.Users.Include(u => u.ContactUser), "Id", "Id");
+			ViewBag.User = users;
 			return View(orders.ToList());
 		}
-
 
 		/// <summary>
 		/// Фильтрация задач
@@ -74,10 +73,11 @@ namespace SCS.Controllers
 				order.User.ContactUser = db.ContactUser.Find(order.User.ContactUserId);
 			}
 			//Получаем связанные данные
-			order.OrderAccessories = db.OrderAccessories.Include(oa => oa.Rates).Include(oa => oa.Accessories).Where(oa => oa.OrderId == id).ToList();
 			order.OrderTransports = db.OrderTransport.Include(ot => ot.Rates).Include(ot => ot.Transport).Where(ot => ot.OrderId == id).ToList();
 
 			order.Payment = db.Payment.Include(p => p.TypeDocument).FirstOrDefault(s => s.Id == order.PaymentId);
+
+			ViewBag.Accessories = db.Accessories.Where(a => a.Status == 1);
 
 			return PartialView(order);
 		}
@@ -101,14 +101,38 @@ namespace SCS.Controllers
 		{
 			var rates = db.Rates.Include(tr => tr.Transport).Where(tr => tr.Transport != null);
 			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
-			ViewBag.TransportId = new SelectList(db.Transport, "Id", "Name");
-			return View();
+			ViewBag.TransportId = new SelectList(db.Transport.Where(tr => tr.Status == 1), "Id", "Name");
+
+			return View(db.Transport.Where(tr => tr.Status == 1));
 		}
+		/// <summary>
+		/// Получаем количество транспорта возможного для заказа с выбранным названием
+		/// </summary>
+		/// <param name="nameTransport"></param>
+		/// <returns></returns>
+		public int MaxCountransport(string nameTransport)
+		{
+			return db.Transport.Where(tr => tr.Name == nameTransport && tr.Status == 1).ToList().Count;
+		}
+
+		/// <summary>
+		/// Получаем значение наценки для выбранного ТС
+		/// </summary>
+		/// <param name="nameTransport"></param>
+		/// <returns></returns>
+		public decimal ValueMarkupTransport(string nameTransport)
+		{
+			decimal markup = 0;
+			if (DateTime.Now.DayOfWeek.ToString() == "Суббота" || DateTime.Now.DayOfWeek.ToString() == "Воскресенье")
+			{
+				markup = db.Transport.Where(tr => tr.Name == nameTransport).ToList()[0].Markup;
+			}
+			return markup;
+		}
+
 		public ActionResult AddDropListAccessories()
 		{
-			var rates = db.Rates.Include(ac => ac.Accessories).Where(ac => ac.Accessories != null);
-			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
-			ViewBag.AccessoriesId = new SelectList(db.Accessories, "Id", "Name");
+			ViewBag.AccessoriesId = new SelectList(db.Accessories.Where(a => a.Status == 1), "Id", "Name");
 			return View();
 		}
 
@@ -130,7 +154,7 @@ namespace SCS.Controllers
 				order.StatusOrder = statusOrder[StatusOrder];
 				order.UserId = UserId;
 				order.User = db.Users.Find(UserId);
-				order.Discount = discount;
+				order.Discount =/* discount;*/ 0;
 				order.AddBonuses = addBonuses;
 
 				db.Users.Find(UserId).Bonus += addBonuses;
@@ -152,14 +176,6 @@ namespace SCS.Controllers
 					{
 						//Увеличиваем сумму заказа
 						totalSum += db.Rates.Find(RatesId[i]).Price;
-						db.OrderAccessories.Add(new OrderAccessories()
-						{
-							Accessories = db.Accessories.Find(AccessoriesId[i]),
-							AccessoriesId = AccessoriesId[i],
-							OrderId = order.Id,
-							RatesId = RatesId[i],
-							Rates = db.Rates.Find(RatesId[i])
-						});
 					}
 				}
 
@@ -186,7 +202,7 @@ namespace SCS.Controllers
 					}
 				}
 				//Счиатем скидку пользователя
-				totalSum = totalSum - totalSum / 100 * discount;
+				totalSum = totalSum - totalSum - discount;
 
 				Payment payment = new Payment()
 				{

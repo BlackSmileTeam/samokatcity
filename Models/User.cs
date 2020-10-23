@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -18,9 +19,7 @@ namespace SCS.Models
 
 		public СontactUser ContactUser { get; set; }
 		public int? ContactUserId { get; set; }
-
-
-
+		[JsonIgnore]
 		public ICollection<Order> Orders { get; set; }
 		public User()
 		{

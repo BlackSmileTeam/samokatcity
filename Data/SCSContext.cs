@@ -14,7 +14,6 @@ namespace SCS.Models
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<Accessories> Accessories { get; set; }
 		public DbSet<СontactUser> ContactUser { get; set; }
-		public DbSet<OrderAccessories> OrderAccessories { get; set; }
 		public DbSet<OrderTransport> OrderTransport { get; set; }
 		public DbSet<Payment> Payment { get; set; }
 		public DbSet<Rates> Rates { get; set; }

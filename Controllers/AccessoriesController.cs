@@ -34,7 +34,7 @@ namespace SCS.Controllers
 		public async Task<ActionResult> Index()
 		{
 			ViewBag.StatusAccessories = StatusAccessories;
-			return View(await db.Accessories.Include(tr => tr.OrderAccessories).ToListAsync());
+			return View(await db.Accessories.ToListAsync());
 		}
 
 		/// <summary>
@@ -46,21 +46,21 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string StatusAccessories)
 		{
-			bool str = false;
+			int str = 0;
 			switch (StatusAccessories)
 			{
 				case "В наличии":
 					{
-						str = true;
+						str = 1;
 						break;
 					}
 				case "Отсутствует":
 					{
-						str = false;
+						str = 0;
 						break;
 					}
 			}
-			var accessories = db.Accessories.Include(tr => tr.OrderAccessories).Where(tr => tr.Status == str).ToList();
+			var accessories = db.Accessories.Where(tr => tr.Status == str).ToList();
 
 			ViewBag.StatusOrder = StatusAccessories;
 
@@ -82,7 +82,7 @@ namespace SCS.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				accessories.Status = true;
+				accessories.Status = 1;
 				db.Accessories.Add(accessories);
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");

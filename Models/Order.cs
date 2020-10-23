@@ -31,11 +31,9 @@ namespace SCS.Models
 		public int? UserId { get; set; }
 		public User User { get; set; }
 
-		public ICollection<OrderAccessories> OrderAccessories { get; set; }
 		public ICollection<OrderTransport> OrderTransports { get; set; }
 		public Order()
 		{
-			OrderAccessories = new List<OrderAccessories>();
 			OrderTransports = new List<OrderTransport>();
 		}
 	}

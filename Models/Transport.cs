@@ -10,8 +10,9 @@ namespace SCS.Models
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public uint Charge { get; set; }
-		public bool Status { get; set; }
+		//public int Charge { get; set; }
+		public int Status { get; set; }
+		public decimal Markup { get; set; } = 0;
 		//public Image Icon { get; set; }
 
 		public ICollection<OrderTransport> OrderTransports { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,7 +19,7 @@ namespace SCS.Models
 		public string Home { get; set; }
 		public string Apartment { get; set; }
 		public string Phone { get; set; }
-
+		[JsonIgnore]
 		public ICollection<User> Users { get; set; }
 		public СontactUser()
 		{

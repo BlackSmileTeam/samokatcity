@@ -28,16 +28,9 @@
         <div class="orderTableMore">
             <div class=" moreInformationRates">
                 <div class="orderTableMore">
-                    @foreach (var oa in Model.OrderAccessories)
+                    @foreach (var oa in ViewBag.Accessories)
                     {
-                        <p>@oa.Rates.Name</p>
-                    }
-                </div>
-                <br />
-                <div class="orderTableMore">
-                    @foreach (var oa in Model.OrderAccessories)
-                    {
-                        <p> @oa.Accessories.Name</p>
+                        <p>@oa.Name</p>
                     }
                 </div>
             </div>
