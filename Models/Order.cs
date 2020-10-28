@@ -14,11 +14,11 @@ namespace SCS.Models
 	{
 		public int Id { get; set; }
 		[Display(Name = "Дата и время начала")]
-		[DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:HH:mm dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+		[DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}", ApplyFormatInEditMode = true)]
 		public DateTime DateStart { get; set; }
 
 		[Display(Name = "Дата и время конца")]
-		[DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:HH:mm dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+		[DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}", ApplyFormatInEditMode = true)]
 		public DateTime DateEnd { get; set; }
 		public int CountLock { get; set; }
 		public int Discount { get; set; }
@@ -38,3 +38,6 @@ namespace SCS.Models
 		}
 	}
 }
+
+
+

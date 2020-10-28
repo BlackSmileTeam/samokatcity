@@ -74,6 +74,32 @@ namespace SCS.Controllers.API
 			}
 			return markup;
 		}
+		/// <summary>
+		/// Вычисление цены за указанный тариф и транспорт
+		/// </summary>
+		/// <param name="transportId"></param>
+		/// <param name="nameRates"></param>
+		/// <returns></returns>
+		[HttpGet]
+		public decimal changeOrderPriceTransport(string transportId, string nameRates)
+		{
+			decimal ratesPrice = 0;
+			return ratesPrice;
+		}
+
+
+		[HttpGet]
+		public int ValueCountTransport(string id)
+		{
+			int valueCountTransport = 0;
+			int idTransport = Convert.ToInt32(id);
+			//Ищем id выбранного самоката
+			var searchTransp = db.Transport.FirstOrDefault(t => t.Id == idTransport);
+			//Ищем все самокаты с выбранным именем и статусом "доступен"
+			valueCountTransport = db.Transport.Where(t=>t.Name == searchTransp.Name && t.Status == 1).Count();
+			
+			return valueCountTransport;
+		}
 
 		//public decimal Post([System.Web.Http.FromBody] string idUser)
 		//{

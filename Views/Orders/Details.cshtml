@@ -12,7 +12,9 @@
         <div class="orderTableMore">
             @if (Model.User != null && Model.User.ContactUser != null && Model.User.ContactUser.Passport != null)
             {
-                <p> @Html.DisplayFor(model => model.User.ContactUser.Passport)</p>
+                <p>Паспорт: @Html.DisplayFor(model => model.User.ContactUser.Passport)</p>
+                <p>Адрес: @Html.DisplayFor(model => model.User.ContactUser.City), ул. @Html.DisplayFor(model => model.User.ContactUser.Street), д. @Html.DisplayFor(model => model.User.ContactUser.Home)</p>
+                <p>Телефон: @Html.DisplayFor(model => model.User.ContactUser.Phone)</p>
             }
             else
             {
@@ -104,7 +106,7 @@
         <div class="orderTableMore">
             <div class=" moreInformationRates">
                 <p>
-                    @Model.Discount
+                    @Model.Discount%
                 </p>
             </div>
         </div>

@@ -25,14 +25,15 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <label>ФИО клиента</label>
-                    <select name="ajaxSelect2" class="form-control" id="ajaxSelect2" lang="ru">
+                    <select name="UserId" class="form-control" id="UserId" lang="ru" required="true">
+                        @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
                     </select>
                 </div>
 
                 <div class="col-md-10">
                     @Html.LabelFor(model => model.DateStart)
 
-                    <input type="date" id="dateStart" name="dateStart" value="@String.Format("{0:yyyy-MM-dd}", DateTime.Now)" data-date-format="m/d/yyyy" class="form-control" title="Дата начала действия заказа">
+                    <input type="datetime-local" id="dateStart" name="dateStart" value="@String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now.ToLocalTime())" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required="true">
                     @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
                 </div>
 
@@ -84,29 +85,29 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <label>Оплата наличными</label>
-                    <input class="form-control" name="CashPayment" id="CashPayment" value="0" min="1" />
+                    <input type="number" class="form-control" name="CashPayment" id="CashPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
                 </div>
                 <div class="col-md-10">
                     <label>Оплата картой</label>
-                    <input class="form-control" name="CardPayment" id="CardPayment" value="0" min="1" />
+                    <input type="number" class="form-control" name="CardPayment" id="CardPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-md-10">
                     <label>Залог наличными</label>
-                    <input class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="1" />
+                    <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
                 </div>
                 <div class="col-md-10">
                     <label>Залог картой</label>
-                    <input class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="1" />
+                    <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-md-10">
                     <label id="labelBonusPayment">Оплата бонусами  </label>
-                    <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" />
+                    <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" onchange="changeInputValue(this)" />
                 </div>
                 <div class="col-md-10">
                     <label>Документ</label>
@@ -123,25 +124,25 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <label>Количество бонусов за заказ</label>
-                    <input class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="1" />
+                    <input type="number" class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
 
                     @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
                 </div>
                 <div class="col-md-10">
                     <label>Количество замков</label>
-                    <input class="form-control" name="CountLock" id="AddBonuses" value="0" min="1" />
+                    <input type="number" class="form-control" name="CountLock" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
                     @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-10">
                     <label>Скидка, руб</label>
-                    <input class="form-control" name="CountLock" id="Discount" value="0" min="1" />
+                    <input type="number" class="form-control" name="Discount" id="Discount" value="0" min="0" onchange="changeInputValue(this)" />
                     @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                 </div>
                 <div class="col-md-10">
                     <label>Наценка, руб</label>
-                    <input class="form-control" name="duration" id="duration" value="0" min="1" />
+                    <input type="number" class="form-control" name="duration" id="duration" value="0" min="0" onchange="changeInputValue(this)" />
                 </div>
             </div>
             <div class="form-group">
@@ -183,15 +184,7 @@
                     }
                 })
             });
-            $("#UserId").change(function () {
-                $.ajax({
-                    url: 'AddDropListAccessories',
-                    datatype: 'html',
-                    success: function (data) {
-                        $("#accessories").append(data);
-                    }
-                })
-            });
+
             $("#bonusPayment").change(function () {
                 let bonusValue = document.getElementById("bonusPayment").value;
                 let bonusMax = document.getElementById("bonusPayment").max;
@@ -204,17 +197,60 @@
             });
         });
 
-        function countMarkup(val) {
+
+        function changeOrderPrice() {
+
+            for(var transport in transports)
+            {
+                $.ajax({
+                    url: "/api/web/changeOrderPriceTransport",
+                    dataType: "json",
+                    type: "POST",
+                    data:
+                    {
+                        "transportId": transport,
+                        "nameRates": rates
+
+                    },
+                    success: function (price) {
+                        sum += price;
+                    }
+                });
+            }
+        }
+
+        function countMarkup(val, id) {
             $.ajax({
                 type: "GET",
                 dataType: "json",
                 url: "/api/web/ValueMarkupTransport",
                 data: "id=" + val,
                 success: function (msg) {
-                    alert(msg);
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: "/api/web/ValueCountTransport",
+                        data: "id=" + val,
+                        success: function (msgCount) {
+                            document.getElementById("countTransport-" + id.split("-")[1]).max = msgCount;
+                        }
+                    });
+                    document.getElementById("Markup-" + id.split("-")[1]).max = msg;
                 }
             });
         }
+
+        function verifyChangeMarkup(id) {
+
+            let markupValue = document.getElementById(id).value;
+            let markupMax = document.getElementById(id).max;
+            if (markupValue > markupMax) {
+                document.getElementById(id).value = document.getElementById(id).max;
+            }
+            if (bonusValue < 0) {
+                document.getElementById(id).value = 0;
+            }
+        };
 
     </script>
     @Scripts.Render("~/bundles/jqueryval")

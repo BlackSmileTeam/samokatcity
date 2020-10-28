@@ -7,7 +7,7 @@
  */
 ;
 
-$("#ajaxSelect2").select2({
+$("#UserId").select2({
     placeholder: "Выберете ФИО клиента",
     theme: "bootstrap4",
     allowClear: true,
@@ -35,9 +35,9 @@ $("#ajaxSelect2").select2({
             }
     }
 });
-$('#ajaxSelect2').on('select2:select', function (e) {
+$('#UserId').on('select2:select', function (e) {
     let result;
-    result = $("#ajaxSelect2").select2("data")[0];
+    result = $("#UserId").select2("data")[0];
     var id = result.id;
     
     $.ajax({
