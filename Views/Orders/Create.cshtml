@@ -33,7 +33,7 @@
                 <div class="col-md-10">
                     @Html.LabelFor(model => model.DateStart)
 
-                    <input type="datetime-local" id="dateStart" name="dateStart" value="@String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now.ToLocalTime())" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required="true">
+                    <input type="datetime-local" id="dateStart" name="dateStart" value="@String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now.ToLocalTime())" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required="true" onchange="changeDate()">
                     @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
                 </div>
 
@@ -197,7 +197,10 @@
             });
         });
 
-
+        function changeDate() {
+            document.getElementById("transport").innerHTML = '';
+            document.getElementById("accessories").innerHTML = '';
+        }
         function changeOrderPrice() {
 
             for(var transport in transports)

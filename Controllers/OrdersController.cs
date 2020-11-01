@@ -221,7 +221,13 @@ namespace SCS.Controllers
 				db.Payment.Add(payment);
 				db.SaveChanges();
 
-
+				foreach (var transport in TransportId)
+				{
+					var trans = db.Transport.FirstOrDefault(tr => tr.Id == transport);
+					trans.Status = 0;
+					db.Entry(trans).State = EntityState.Modified;
+					db.SaveChanges();
+				}
 				//Устанавливаем конец заказа на самый последний день использования транспорта или аксессуара
 				db.Orders.Find(order.Id).DateEnd = DateStart.AddDays(duration);
 				db.Orders.Find(order.Id).Payment = payment;
