@@ -4,164 +4,158 @@
 @{
     ViewBag.Title = "Create";
 }
+<div class="container">
+    <div class="divTable">
+        <h2>Создание заказа</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <hr />
+            <div class="moreInformationOrder">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>ФИО клиента</label>
+                        <select name="UserId" class="form-control" id="UserId" lang="ru" required="true">
+                            @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+                        </select>
+                    </div>
 
+                    <div class="col-md-10">
+                        @Html.LabelFor(model => model.DateStart)
 
-<div class="orderTable">
+                        <input type="datetime-local" id="dateStart" name="dateStart" value="@String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now.ToLocalTime())" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required="true" onchange="changeDate()">
+                        @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
+                    </div>
 
-    <h2>Создание заказа</h2>
-</div>
-
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="orderTable">
-        <hr />
-        <div class="moreInformationOrder">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>ФИО клиента</label>
-                    <select name="UserId" class="form-control" id="UserId" lang="ru" required="true">
-                        @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
-                    </select>
                 </div>
 
-                <div class="col-md-10">
-                    @Html.LabelFor(model => model.DateStart)
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Статус заказа</label>
+                        <div class="checkbox">
+                            @Html.DropDownList("StatusOrder", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-10">
 
-                    <input type="datetime-local" id="dateStart" name="dateStart" value="@String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now.ToLocalTime())" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required="true" onchange="changeDate()">
-                    @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
-                </div>
-
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Статус заказа</label>
-                    <div class="checkbox">
-                        @Html.DropDownList("StatusOrder", null, htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
-                <div class="col-md-10">
+                <div class="form-group">
+                    <div class="col-md-10">
 
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-10">
-
-                </div>
-            </div>
-        </div>
-
-
-        <h4>Транспорт</h4>
-        <hr />
-        <div id="transport">
-        </div>
-        <div class="col-md-offset-2 col-md-10">
-            <input type="button" value="+" id="addTransport" class="btn btn-outline-dark" />
-        </div>
-        <br />
-
-        <h4>Аксессуары</h4>
-        <hr />
-        <div id="accessories">
-
-        </div>
-
-
-        <div class="col-md-offset-2 col-md-10">
-            <input type="button" value="+" id="addAccessories" class="btn btn-outline-dark" />
-        </div>
-        <br />
-
-        <h4>Оплата</h4>
-        <hr />
-        <div class="moreInformationOrder">
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Оплата наличными</label>
-                    <input type="number" class="form-control" name="CashPayment" id="CashPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
-                </div>
-                <div class="col-md-10">
-                    <label>Оплата картой</label>
-                    <input type="number" class="form-control" name="CardPayment" id="CardPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Залог наличными</label>
-                    <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
-                </div>
-                <div class="col-md-10">
-                    <label>Залог картой</label>
-                    <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
-                </div>
+
+            <h4>Транспорт</h4>
+            <hr />
+            <div id="transport">
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="+" id="addTransport" class="btn btn-outline-dark" />
+            </div>
+            <br />
+
+            <h4>Аксессуары</h4>
+            <hr />
+            <div id="accessories">
+
             </div>
 
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label id="labelBonusPayment">Оплата бонусами  </label>
-                    <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" onchange="changeInputValue(this)" />
+
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="+" id="addAccessories" class="btn btn-outline-dark" />
+            </div>
+            <br />
+
+            <h4>Оплата</h4>
+            <hr />
+            <div class="moreInformationOrder">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Оплата наличными</label>
+                        <input type="number" class="form-control" name="CashPayment" id="CashPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                    </div>
+                    <div class="col-md-10">
+                        <label>Оплата картой</label>
+                        <input type="number" class="form-control" name="CardPayment" id="CardPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <label>Документ</label>
-                    @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
+
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Залог наличными</label>
+                        <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                    </div>
+                    <div class="col-md-10">
+                        <label>Залог картой</label>
+                        <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label id="labelBonusPayment">Оплата бонусами  </label>
+                        <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" onchange="changeInputValue(this)" />
+                    </div>
+                    <div class="col-md-10">
+                        <label>Документ</label>
+                        @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
                 </div>
             </div>
-        </div>
-        <br />
+            <br />
 
 
-        <h4>Дополнительные параметры</h4>
-        <hr />
-        <div class="moreInformationOrder">
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Количество бонусов за заказ</label>
-                    <input type="number" class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+            <h4>Дополнительные параметры</h4>
+            <hr />
+            <div class="moreInformationOrder">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Количество бонусов за заказ</label>
+                        <input type="number" class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
 
-                    @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-10">
+                        <label>Количество замков</label>
+                        <input type="number" class="form-control" name="CountLock" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                        @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <label>Количество замков</label>
-                    <input type="number" class="form-control" name="CountLock" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
-                    @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Скидка, руб</label>
+                        <input type="number" class="form-control" name="Discount" id="Discount" value="0" min="0" onchange="changeInputValue(this)" />
+                        @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-10">
+                        <label>Наценка, руб</label>
+                        <input type="number" class="form-control" name="duration" id="duration" value="0" min="0" onchange="changeInputValue(this)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+
+                    </div>
+                    <div class="col-md-10">
+
+
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-10">
-                    <label>Скидка, руб</label>
-                    <input type="number" class="form-control" name="Discount" id="Discount" value="0" min="0" onchange="changeInputValue(this)" />
-                    @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-10">
-                    <label>Наценка, руб</label>
-                    <input type="number" class="form-control" name="duration" id="duration" value="0" min="0" onchange="changeInputValue(this)" />
-                </div>
+            <br />
+
+
+            <div class="col-md-offset-2 col-md-10 ml-5">
+                <input type="submit" value="Создать заказ" class="btn btn btn-danger float-md-left" />
             </div>
-            <div class="form-group">
-                <div class="col-md-10">
-
-                </div>
-                <div class="col-md-10">
-
-
-                </div>
-            </div>
-        </div>
-        <br />
-
+        }
     </div>
-    <div class="col-md-offset-2 col-md-10 ml-5">
-        <input type="submit" value="Создать заказ" class="btn btn btn-danger float-md-left" />
-    </div>
-}
+</div>
 
 @section Scripts {
     <script>
@@ -203,8 +197,7 @@
         }
         function changeOrderPrice() {
 
-            for(var transport in transports)
-            {
+            for (var transport in transports) {
                 $.ajax({
                     url: "/api/web/changeOrderPriceTransport",
                     dataType: "json",

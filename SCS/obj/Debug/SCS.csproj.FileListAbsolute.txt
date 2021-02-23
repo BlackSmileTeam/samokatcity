@@ -98,3 +98,5 @@ D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.pdb
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.IntialDb.resources
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.GenerateResource.cache
+D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.WebHost.dll
+D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.WebHost.xml

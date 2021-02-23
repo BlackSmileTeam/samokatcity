@@ -12,7 +12,36 @@ namespace SCS.Controllers
 	public class OrdersController : Controller
 	{
 		//Количество добавленного транспорта
-		static private int countTransport = 0;
+		private int countTransport
+		{
+			get
+			{
+				if (Session["countTransport"] != null)
+				{
+					return Convert.ToInt32(Session["countTransport"]);
+				}
+				return 0;
+			}
+			set
+			{
+				Session["countTransport"] = value;
+			}
+		}
+		private int countAccessories
+		{
+			get
+			{
+				if (Session["countAccessories"] != null)
+				{
+					return Convert.ToInt32(Session["countAccessories"]);
+				}
+				return 0;
+			}
+			set
+			{
+				Session["countAccessories"] = value;
+			}
+		}
 		private List<string> statusOrder = new List<string>
 		{
 			"Забронирован","Оплачен","Отменен","В поездке"
@@ -106,7 +135,7 @@ namespace SCS.Controllers
 			ViewBag.countTransport = countTransport;
 			//Увеличиваем id на единицу, что бы следующий блок был с новым id
 			++countTransport;
-			var rates = db.Rates;
+			var rates = db.Rates.Where(x => x.IsTransport == true);
 			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 
 			SelectList selectListItems = new SelectList(db.Transport.DistinctBy(x => x.Name).Where(tr => tr.Status == 1), "Id", "Name");
@@ -126,8 +155,14 @@ namespace SCS.Controllers
 
 		public ActionResult AddDropListAccessories()
 		{
+			//Добавляем Id для добавленного транспорта
+			ViewBag.countAccessories = countAccessories;
+			//Увеличиваем id на единицу, что бы следующий блок был с новым id
+			++countAccessories;
+			var rates = db.Rates.Where(x => x.IsTransport == false);
+			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 			ViewBag.AccessoriesId = new SelectList(db.Accessories.Where(a => a.Status == 1), "Id", "Name");
-			return View();
+			return View(db.Accessories.Where(tr => tr.Status == 1));
 		}
 
 		[HttpPost]

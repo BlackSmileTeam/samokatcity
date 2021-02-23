@@ -13,9 +13,13 @@ namespace SCS.Controllers.API
 	{
 		private SCSContext db = new SCSContext();
 		// GET: api/Web
-		public IEnumerable<string> Get()
+		//public IEnumerable<string> Get()
+		//{
+		//	return new string[] { "valsue1", "value2" };
+		//}
+		public string Get()
 		{
-			return new string[] { "valsue1", "value2" };
+			return "Welcome To Web API";
 		}
 
 		[HttpGet]
@@ -99,32 +103,5 @@ namespace SCS.Controllers.API
 
 			return valueCountTransport;
 		}
-
-		//public decimal Post([System.Web.Http.FromBody] string idUser)
-		//{
-		//	decimal bonus = 0;
-		//	if (idUser > 0)
-		//	{
-		//		bonus = db.Users.FirstOrDefault(u => u.Id == idUser).Bonus;
-		//	}
-		//	return bonus;
-		//}
-
-		// POST: api/Web
-		//public void Post([System.Web.Http.FromBody] string value)
-		//{
-		//}
-
-		// PUT: api/Web/5
-		//public void Put(int id, [System.Web.Http.FromBody] string value)
-		//{
-		//}
-
-		//// DELETE: api/Web/5
-		//public void Delete(int id)
-		//{
-		//}
-
-
 	}
 }
