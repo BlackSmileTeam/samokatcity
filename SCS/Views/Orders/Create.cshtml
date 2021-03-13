@@ -1,5 +1,4 @@
-﻿
-@model SCS.Models.Order
+﻿@model SCS.Models.Order
 
 @{
     ViewBag.Title = "Create";
@@ -30,7 +29,6 @@
                     </div>
 
                 </div>
-
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>Статус заказа</label>
@@ -49,7 +47,6 @@
                 </div>
             </div>
 
-
             <h4>Транспорт</h4>
             <hr />
             <div id="transport">
@@ -65,15 +62,57 @@
 
             </div>
 
-
             <div class="col-md-offset-2 col-md-10">
                 <input type="button" value="+" id="addAccessories" class="btn btn-outline-dark" />
             </div>
             <br />
 
-            <h4>Оплата</h4>
+            <h4>Дополнительные параметры</h4>
             <hr />
             <div class="moreInformationOrder">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Количество бонусов за заказ</label>
+                        <input type="number" class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+
+                        @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-10">
+                        <label>Количество замков</label>
+                        <input type="number" class="form-control" name="CountLock" id="CountLock" value="0" min="0" max="999999" onchange="calculatePrice()" />
+                        @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <label>Скидка, руб</label>
+                        <input type="number" class="form-control" name="Discount" id="Discount" value="0" min="0" onchange="calculatePrice()" />
+                        @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-10">
+                        <label>Наценка, руб</label>
+                        <input type="number" class="form-control" name="duration" id="duration" value="0" min="0" onchange="calculatePrice()" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+
+                    </div>
+                    <div class="col-md-10">
+
+                    </div>
+                </div>
+            </div>
+            <br />
+            <h4>Оплата </h4>
+            <hr />
+            <div class="form-group" id="totalDiv">
+                <label>Итого к оплате: </label>
+                <label id="totalSum">0</label>
+                <label > руб</label>
+            </div>
+            <div class="moreInformationOrder">
+
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>Оплата наличными</label>
@@ -98,7 +137,7 @@
 
                 <div class="form-group">
                     <div class="col-md-10">
-                        <label id="labelBonusPayment">Оплата бонусами  </label>
+                        <label id="labelBonusPayment">Оплата бонусами </label>
                         <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" onchange="changeInputValue(this)" />
                     </div>
                     <div class="col-md-10">
@@ -109,47 +148,6 @@
             </div>
             <br />
 
-
-            <h4>Дополнительные параметры</h4>
-            <hr />
-            <div class="moreInformationOrder">
-                <div class="form-group">
-                    <div class="col-md-10">
-                        <label>Количество бонусов за заказ</label>
-                        <input type="number" class="form-control" name="AddBonuses" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
-
-                        @Html.ValidationMessageFor(model => model.AddBonuses, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-10">
-                        <label>Количество замков</label>
-                        <input type="number" class="form-control" name="CountLock" id="AddBonuses" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
-                        @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-10">
-                        <label>Скидка, руб</label>
-                        <input type="number" class="form-control" name="Discount" id="Discount" value="0" min="0" onchange="changeInputValue(this)" />
-                        @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-10">
-                        <label>Наценка, руб</label>
-                        <input type="number" class="form-control" name="duration" id="duration" value="0" min="0" onchange="changeInputValue(this)" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-10">
-
-                    </div>
-                    <div class="col-md-10">
-
-
-                    </div>
-                </div>
-            </div>
-            <br />
-
-
             <div class="col-md-offset-2 col-md-10 ml-5">
                 <input type="submit" value="Создать заказ" class="btn btn btn-danger float-md-left" />
             </div>
@@ -157,7 +155,6 @@
     </div>
 </div>
 
-@section Scripts {
     <script>
         $(document).ready(function () {
             $("#addTransport").click(function () {
@@ -178,7 +175,6 @@
                     }
                 })
             });
-
             $("#bonusPayment").change(function () {
                 let bonusValue = document.getElementById("bonusPayment").value;
                 let bonusMax = document.getElementById("bonusPayment").max;
@@ -190,54 +186,24 @@
                 }
             });
         });
-
-        function changeDate() {
-            document.getElementById("transport").innerHTML = '';
-            document.getElementById("accessories").innerHTML = '';
-        }
-        function changeOrderPrice() {
-
-            for (var transport in transports) {
-                $.ajax({
-                    url: "/api/web/changeOrderPriceTransport",
-                    dataType: "json",
-                    type: "POST",
-                    data:
-                    {
-                        "transportId": transport,
-                        "nameRates": rates
-
-                    },
-                    success: function (price) {
-                        sum += price;
-                    }
-                });
-            }
-        }
-
-        function countMarkup(val, id) {
+        function changeTransport(id) {
+            document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) - Number(document.getElementById("Markup-" + (id.split("-"))[1]).value);
             $.ajax({
                 type: "GET",
                 dataType: "json",
                 url: "/api/web/ValueMarkupTransport",
-                data: "id=" + val,
+                data: "id=" + document.getElementById(id).value,
                 success: function (msg) {
-                    $.ajax({
-                        type: "GET",
-                        dataType: "json",
-                        url: "/api/web/ValueCountTransport",
-                        data: "id=" + val,
-                        success: function (msgCount) {
-                            document.getElementById("countTransport-" + id.split("-")[1]).max = msgCount;
-                        }
-                    });
-                    document.getElementById("Markup-" + id.split("-")[1]).max = msg;
+                    document.getElementById("Markup-" + (id.split("-"))[1]).value = msg;
+                    document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
                 }
             });
-        }
-
+        };
+        function changeDate() {
+            document.getElementById("transport").innerHTML = '';
+            document.getElementById("accessories").innerHTML = '';
+        };
         function verifyChangeMarkup(id) {
-
             let markupValue = document.getElementById(id).value;
             let markupMax = document.getElementById(id).max;
             if (markupValue > markupMax) {
@@ -247,6 +213,53 @@
                 document.getElementById(id).value = 0;
             }
         };
+        function calculatePrice() {
+            var summ = document.getElementById("totalSum");
+            var arr = document.getElementsByClassName("Rate");
+            var lock = document.getElementById("CountLock");            
+            var duration = document.getElementById("duration");
+            var discount = document.getElementById("Discount");
+            var arrMarkup = document.getElementsByClassName("Transport");
+
+            if (lock.value == null || lock.value == "") {
+                lock.value = 0;
+            }
+            if (duration.value == null || duration.value == "") {
+                duration.value = 0;
+            }
+            if (discount.value == null || discount.value == "") {
+                discount.value = 0;
+            }
+
+
+            let numberTransport = 0;
+            let numberMarkup = 0;
+            summ.innerHTML = "0";
+
+            while (numberTransport < arr.length) {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "/api/web/TarifPrice",
+                    data: "id=" + arr[numberTransport].value,
+                    success: function (msg) {
+                        summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
+                    }
+                });
+                ++numberTransport;
+            }
+
+            while (numberMarkup < arrMarkup.length) {
+
+                summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(document.getElementById("Markup-" + numberMarkup).value);
+                ++numberMarkup;
+            }
+
+            summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(lock.value * 100);
+            summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(duration.value);
+            summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(discount.value);
+
+        }
 
     </script>
     @Scripts.Render("~/bundles/jqueryval")

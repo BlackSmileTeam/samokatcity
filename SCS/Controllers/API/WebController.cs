@@ -21,7 +21,11 @@ namespace SCS.Controllers.API
 		{
 			return "Welcome To Web API";
 		}
-
+		/// <summary>
+		/// Поиск клиента по части строки
+		/// </summary>
+		/// <param name="term"></param>
+		/// <returns></returns>
 		[HttpGet]
 		public async Task<List<User>> GetAsync(string term)
 		{
@@ -37,13 +41,13 @@ namespace SCS.Controllers.API
 				json = JsonConvert.SerializeObject(data, Formatting.Indented);
 
 				return data;
-
 			}
 			else
 			{
 				return null;
 			}
 		}
+
 		/// <summary>
 		/// Запрос на получение количества бонусов у пользователя
 		/// </summary>
@@ -60,6 +64,7 @@ namespace SCS.Controllers.API
 			}
 			return bonus;
 		}
+
 		/// <summary>
 		/// Получаем значение наценки для выбранного ТС
 		/// </summary>
@@ -69,39 +74,28 @@ namespace SCS.Controllers.API
 		public decimal ValueMarkupTransport(string id)
 		{
 			decimal markup = 0;
-			int idTransport = Convert.ToInt32(id);
-			if (DateTime.Now.DayOfWeek.ToString().ToLower() == "суббота" || DateTime.Now.DayOfWeek.ToString().ToLower() == "воскресенье" ||
-				DateTime.Now.DayOfWeek.ToString().ToLower() == "saturday" || DateTime.Now.DayOfWeek.ToString().ToLower() == "sunday")
+			if (id != null && id.Length > 0 && id != "0")
 			{
-				markup = db.Transport.Where(tr => tr.Id == idTransport).ToList()[0].Markup;
+				int idTransport = Convert.ToInt32(id);
+				if (DateTime.Now.DayOfWeek.ToString().ToLower() == "суббота" || DateTime.Now.DayOfWeek.ToString().ToLower() == "воскресенье" ||
+					DateTime.Now.DayOfWeek.ToString().ToLower() == "saturday" || DateTime.Now.DayOfWeek.ToString().ToLower() == "sunday")
+				{
+					markup = db.Transport.Where(tr => tr.Id == idTransport).ToList()[0].Markup;
+				}
 			}
+
 			return markup;
 		}
-		/// <summary>
-		/// Вычисление цены за указанный тариф и транспорт
-		/// </summary>
-		/// <param name="transportId"></param>
-		/// <param name="nameRates"></param>
-		/// <returns></returns>
 		[HttpGet]
-		public decimal changeOrderPriceTransport(string transportId, string nameRates)
+		public decimal TarifPrice(string id)
 		{
-			decimal ratesPrice = 0;
-			return ratesPrice;
-		}
-
-
-		[HttpGet]
-		public int ValueCountTransport(string id)
-		{
-			int valueCountTransport = 0;
-			int idTransport = Convert.ToInt32(id);
-			//Ищем id выбранного самоката
-			var searchTransp = db.Transport.FirstOrDefault(t => t.Id == idTransport);
-			//Ищем все самокаты с выбранным именем и статусом "доступен"
-			valueCountTransport = db.Transport.Where(t => t.Name == searchTransp.Name && t.Status == 1).Count();
-
-			return valueCountTransport;
-		}
+			decimal price = 0;
+			if (id != null && id.Length != 0)
+			{
+				int idRates = Convert.ToInt32(id);
+				price = db.Rates.Where(tr => tr.Id == idRates).ToList()[0].Price;
+			}
+			return price;
+		}		
 	}
 }

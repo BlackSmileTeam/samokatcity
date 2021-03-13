@@ -6,24 +6,16 @@
     <div class="form-group">
         <div class="col-md-10">
             <label>Тариф</label>
-            @Html.DropDownList("RatesId", ((IEnumerable<SelectListItem>)ViewData["Menu"]), "Выберете значение", htmlAttributes: new { @class = "form-control" })
+            @Html.DropDownList("RatesId", ((IEnumerable<SelectListItem>)ViewData["Menu"]), "Выберете значение", htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()" })
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-10 accessories">
             <label>Наименование</label>
-
             @Html.DropDownList("AccessoriesId", null, htmlAttributes: new { @class = "form-control" })
-
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-md-10">
-            <label>Количество, шт.</label>
-            <input type="number" id="countAccessories" name="countAccessories" class="form-control"
-                   min="1" max="100" value="0" />
-        </div>
-    </div>
+    
     <div class="form-group">
         <div class="col-md-10">
         </div>

@@ -49,7 +49,7 @@ $('#UserId').on('select2:select', function (e) {
             //Устанавливаем максимально допустимое количество бонусов для выбранного пользователя, т.к. нельзя вводить больше бонусов чем имеется у пользователя
             document.getElementById("bonusPayment").max = msg;
             //Выводим количество доступных бонусов в наименование поля, для удобствав и понимания максимально допустимого количества
-            document.getElementById("labelBonusPayment").textContent = "Оплата бонусами (доступно " + msg + " бонусов)"; 
+            document.getElementById("labelBonusPayment").textContent = "Оплата бонусами (Доступно: " + msg+")"; 
         }
     });
 });
@@ -4888,7 +4888,7 @@ $('#UserId').on('select2:select', function (e) {
             // English
             return {
                 errorLoading: function () {
-                    return 'The results could not be loaded.';
+                    return 'Результаты поиска не найдены';
                 },
                 inputTooLong: function (args) {
                     var overChars = args.input.length - args.maximum;
@@ -4921,7 +4921,7 @@ $('#UserId').on('select2:select', function (e) {
                     return message;
                 },
                 noResults: function () {
-                    return 'No results found';
+                    return 'Результаты поиска не найдены';
                 },
                 searching: function () {
                     return 'Поиск…';

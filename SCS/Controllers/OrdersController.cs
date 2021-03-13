@@ -66,6 +66,7 @@ namespace SCS.Controllers
 			ViewBag.StatusOrder = StatusOrder;
 			SelectList users = new SelectList(db.Users.Include(u => u.ContactUser), "Id", "Id");
 			ViewBag.User = users;
+			countTransport = 0;
 			return View(orders.ToList());
 		}
 
@@ -125,7 +126,8 @@ namespace SCS.Controllers
 			ViewBag.OrderId = new SelectList(db.Orders, "Id", "StatusOrder");
 			ViewBag.RatesId = new SelectList(db.Rates, "Id", "Name");
 			ViewBag.TypeDocumentId = new SelectList(db.TypeDocument, "Id", "Name");
-
+			
+			countTransport = 0;
 			return View();
 		}
 
@@ -135,6 +137,7 @@ namespace SCS.Controllers
 			ViewBag.countTransport = countTransport;
 			//Увеличиваем id на единицу, что бы следующий блок был с новым id
 			++countTransport;
+			Session["countTransport"] = countTransport;
 			var rates = db.Rates.Where(x => x.IsTransport == true);
 			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 
@@ -143,6 +146,7 @@ namespace SCS.Controllers
 
 			return View(db.Transport.Where(tr => tr.Status == 1));
 		}
+
 		/// <summary>
 		/// Получаем количество транспорта возможного для заказа с выбранным названием
 		/// </summary>

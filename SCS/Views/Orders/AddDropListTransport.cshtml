@@ -7,26 +7,29 @@
     <div class="form-group">
         <div class="col-md-10">
             <label>Тариф</label>
-            @Html.DropDownList("RatesId", ((IEnumerable<SelectListItem>)ViewData["Menu"]), "Выберете значение", htmlAttributes: new { @class = "form-control" })
+            @Html.DropDownList(
+                               "RatesId",
+                               ((IEnumerable<SelectListItem>)ViewData["Menu"]),
+                               "Выберете значение", 
+                               htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = @String.Format("Rates-{0}", ViewBag.countTransport) })
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-10">
             <label>Наименование </label>
-            @Html.DropDownList("TransportId", ((IEnumerable<SelectListItem>)ViewData["Menu"]), "Выберете значение", htmlAttributes: new { @onchange = "countMarkup(this.value,this.id)", @class = "form-control", id = string.Format("Transport-{0}", ViewBag.countTransport) })
+            @Html.DropDownList(
+                               "TransportId",
+                               ((IEnumerable<SelectListItem>)ViewData["Menu"]),
+                               "Выберете значение",
+                               htmlAttributes: new { @class = "Transport form-control", id = string.Format("Transport-{0}", ViewBag.countTransport), @onchange = "changeTransport(this.id)" }
+                               )
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-md-10">
-            <label>Количество, шт.</label>
-            <input type="number" id=@String.Format("countTransport-{0}", ViewBag.countTransport) name="countTransport" class="form-control" value="1" 
-                   min="1"  />
-        </div>
-    </div>
+
     <div class="form-group">
         <div class="col-md-10">
             <label>Наценка, руб</label>
-            <input type="number" class="form-control" name="markup" value="0" min="0" onchange="verifyChangeMarkup(this.id)" id=@String.Format("Markup-{0}", ViewBag.countTransport) />
+            <input type="number" class="form-control" name="markup" value="0" min="0" max="9999" disabled="disabled" onchange="verifyChangeMarkup(this.id)" id=@String.Format("Markup-{0}", ViewBag.countTransport) />
         </div>
     </div>
 

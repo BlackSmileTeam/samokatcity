@@ -4839,7 +4839,7 @@ S2.define('select2/i18n/en',[],function () {
   // English
   return {
     errorLoading: function () {
-      return 'The results could not be loaded.';
+      return 'Результаты поиска не найдены';
     },
     inputTooLong: function (args) {
       var overChars = args.input.length - args.maximum;
