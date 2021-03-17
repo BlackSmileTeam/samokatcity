@@ -14,16 +14,25 @@ namespace SCS.Controllers
 	public class AccessoriesController : Controller
 	{
 
-		private List<string> statusAccessories = new List<string>
+
+		private Dictionary<int, string> statusAccessories = new Dictionary<int, string>
 		{
-			"В наличии", "Отсутствует"
+			{
+				0,"Отсутствует"
+			},
+			{
+				1,"В наличии"
+			}
 		};
+
 		public List<SelectListItem> StatusAccessories { get; set; }
 		public AccessoriesController()
 		{
 			StatusAccessories = new List<SelectListItem>();
 
-			foreach (string tmpStatus in statusAccessories)
+			StatusAccessories.Add(new SelectListItem { Text = "Все" });
+
+			foreach (string tmpStatus in statusAccessories.Values)
 			{
 				StatusAccessories.Add(new SelectListItem { Text = tmpStatus });
 			}
@@ -46,6 +55,7 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string StatusAccessories)
 		{
+			List<Accessories> accessories = new List<Accessories>();
 			int str = 0;
 			switch (StatusAccessories)
 			{
@@ -59,9 +69,20 @@ namespace SCS.Controllers
 						str = 0;
 						break;
 					}
+				default:
+					{
+						str = -1;
+						break;
+					}
 			}
-			var accessories = db.Accessories.Where(tr => tr.Status == str).ToList();
-
+			if (str == -1)
+			{
+				accessories = db.Accessories.ToList();
+			}
+			else
+			{
+				accessories = db.Accessories.Where(tr => tr.Status == str).ToList();
+			}
 			ViewBag.StatusOrder = StatusAccessories;
 
 			return PartialView(accessories);
@@ -103,6 +124,10 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
+
+			SelectList status = new SelectList(statusAccessories, "Key", "Value", accessories.Status);
+			ViewBag.StatusAccessories = status;
+
 			return View(accessories);
 		}
 

@@ -16,11 +16,20 @@
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
+                <div class="form-group">
 
+                    <div class="col-md-10">
+                        <label>Наименование аксессуара</label>
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
                 <div class="col-md-10">
-                    <label>Наименование аксессуара</label>
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    <label>Статус</label>
+
+                    @Html.DropDownList("Status", ViewBag.StatusAccessories as SelectList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+
                 </div>
             </div>
 

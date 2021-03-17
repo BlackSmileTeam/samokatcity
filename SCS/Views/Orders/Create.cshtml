@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Create";
 }
-<div class="container">
+<div class="container" id="generalDiv">
     <div class="divTable">
         <h2>Создание заказа</h2>
         @using (Html.BeginForm())
@@ -12,11 +12,10 @@
             <hr />
             <div class="moreInformationOrder">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>ФИО клиента</label>
-                        <select name="UserId" class="form-control" id="UserId" lang="ru" required="true">
+                        <select name="UserId" class="form-control" id="UserId" lang="ru" required>
                             @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
                         </select>
                     </div>
@@ -24,7 +23,7 @@
                     <div class="col-md-10">
                         @Html.LabelFor(model => model.DateStart)
 
-                        <input type="datetime-local" id="dateStart" name="dateStart" value="@String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now.ToLocalTime())" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required="true" onchange="changeDate()">
+                        <input type="datetime-local" id="dateStart" name="dateStart" value="@DateTime.Now.ToString("s").Remove(16)" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required onchange="changeDate()">
                         @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
                     </div>
 
@@ -109,36 +108,35 @@
             <div class="form-group" id="totalDiv">
                 <label>Итого к оплате: </label>
                 <label id="totalSum">0</label>
-                <label > руб</label>
+                <label> руб</label>
             </div>
             <div class="moreInformationOrder">
-
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>Оплата наличными</label>
-                        <input type="number" class="form-control" name="CashPayment" id="CashPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                        <input type="number" class="form-control" name="CashPayment" id="CashPayment" value="0" min="0" max="999999" onchange="calculateLeftToPay()" />
                     </div>
                     <div class="col-md-10">
                         <label>Оплата картой</label>
-                        <input type="number" class="form-control" name="CardPayment" id="CardPayment" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                        <input type="number" class="form-control" name="CardPayment" id="CardPayment" value="0" min="0" max="999999" onchange="calculateLeftToPay()" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>Залог наличными</label>
-                        <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                        <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value="0" min="0" max="999999" onchange="calculateLeftToPay()" />
                     </div>
                     <div class="col-md-10">
                         <label>Залог картой</label>
-                        <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="0" max="999999" onchange="changeInputValue(this)" />
+                        <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value="0" min="0" max="999999" onchange="calculateLeftToPay()" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-10">
                         <label id="labelBonusPayment">Оплата бонусами </label>
-                        <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" onchange="changeInputValue(this)" />
+                        <input type="number" class="form-control" name="bonusPayment" id="bonusPayment" value="0" min="0" max="0" onchange="calculateLeftToPay()" />
                     </div>
                     <div class="col-md-10">
                         <label>Документ</label>
@@ -146,126 +144,187 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group" id="totalDiv">
+                <label>Осталось оплатить: </label>
+                <label id="LeftToPay">0</label>
+                <label> руб</label>
+            </div>
             <br />
-
-            <div class="col-md-offset-2 col-md-10 ml-5">
+            <div class="form-group">
+                <input type="button" value="Очистить" style="margin-right:1em" onclick="changeDate()" class="btn btn btn-dark float-md-left" />
                 <input type="submit" value="Создать заказ" class="btn btn btn-danger float-md-left" />
             </div>
         }
     </div>
 </div>
 
-    <script>
-        $(document).ready(function () {
-            $("#addTransport").click(function () {
-                $.ajax({
-                    url: 'AddDropListTransport',
-                    datatype: 'html',
-                    success: function (data) {
-                        $("#transport").append(data);
-                    }
-                })
-            });
-            $("#addAccessories").click(function () {
-                $.ajax({
-                    url: 'AddDropListAccessories',
-                    datatype: 'html',
-                    success: function (data) {
-                        $("#accessories").append(data);
-                    }
-                })
-            });
-            $("#bonusPayment").change(function () {
-                let bonusValue = document.getElementById("bonusPayment").value;
-                let bonusMax = document.getElementById("bonusPayment").max;
-                if (bonusValue > bonusMax) {
-                    document.getElementById("bonusPayment").value = document.getElementById("bonusPayment").max;
+<script>
+    $(document).ready(function () {
+
+        $("#addTransport").click(function () {
+            $.ajax({
+                url: 'AddDropListTransport',
+                datatype: 'html',
+                data: {
+                    dateTime: document.getElementById("dateStart").value
+                },
+                success: function (data) {
+                    $("#transport").append(data);
                 }
-                if (bonusValue < 0) {
-                    document.getElementById("bonusPayment").value = 0;
-                }
-            });
+            })
         });
-        function changeTransport(id) {
-            document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) - Number(document.getElementById("Markup-" + (id.split("-"))[1]).value);
+        $("#addAccessories").click(function () {
+            $.ajax({
+                url: 'AddDropListAccessories',
+                datatype: 'html',
+                success: function (data) {
+                    $("#accessories").append(data);
+                }
+            })
+        });
+        $("#bonusPayment").change(function () {
+            let bonusValue = document.getElementById("bonusPayment").value;
+            let bonusMax = document.getElementById("bonusPayment").max;
+            if (bonusValue > bonusMax) {
+                document.getElementById("bonusPayment").value = document.getElementById("bonusPayment").max;
+            }
+            if (bonusValue < 0) {
+                document.getElementById("bonusPayment").value = 0;
+            }
+        });
+    });
+    function deleteBlock(nameBlock) {
+        document.getElementById(nameBlock).remove();
+        calculatePrice();
+    }
+    function changeTransport(id) {
+        document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) - Number(document.getElementById("Markup-" + (id.split("-"))[1]).value);
+        document.getElementById("LeftToPay").innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(document.getElementById("Markup-" + (id.split("-"))[1]).value);
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/web/ValueMarkupTransport",
+            data: "id=" + document.getElementById(id).value,
+            success: function (msg) {
+                document.getElementById("Markup-" + (id.split("-"))[1]).value = msg;
+                document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
+                document.getElementById("LeftToPay").innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg);
+            }
+        });
+    };
+    function changeDate() {
+        document.getElementById("transport").innerHTML = '';
+        document.getElementById("accessories").innerHTML = '';
+        document.getElementById("totalSum").innerHTML = "0";
+        document.getElementById("LeftToPay").innerHTML = "0";
+        document.getElementById("CountLock").value = 0;
+        document.getElementById("duration").value = 0;
+        document.getElementById("Discount").value = 0;
+
+        document.getElementById("CashPayment").value = 0;
+        document.getElementById("CardPayment").value = 0;
+        document.getElementById("CashDeposit").value = 0;
+        document.getElementById("CardDeposit").value = 0;
+        document.getElementById("bonusPayment").value = 0;
+        document.getElementById("AddBonuses").value = 0;
+
+        calculatePrice();
+    };
+    function verifyChangeMarkup(id) {
+        let markupValue = document.getElementById(id).value;
+        let markupMax = document.getElementById(id).max;
+        if (markupValue > markupMax) {
+            document.getElementById(id).value = document.getElementById(id).max;
+        }
+        if (bonusValue < 0) {
+            document.getElementById(id).value = 0;
+        }
+    };
+    function calculatePrice() {
+        var summ = document.getElementById("totalSum");
+        var lpay = document.getElementById("LeftToPay");
+
+        var arr = document.getElementsByClassName("Rate");
+        var lock = document.getElementById("CountLock");
+
+        var duration = document.getElementById("duration");
+        var discount = document.getElementById("Discount");
+
+        var arrMarkup = document.getElementsByClassName("Transport");
+
+        if (lock.value == null || lock.value == "") {
+            lock.value = 0;
+        }
+        if (duration.value == null || duration.value == "") {
+            duration.value = 0;
+        }
+        if (discount.value == null || discount.value == "") {
+            discount.value = 0;
+        }
+
+
+        let numberTransport = 0;
+        let numberMarkup = 0;
+        summ.innerHTML = "0";
+        lpay.innerHTML = Number("0");
+
+        while (numberTransport < arr.length) {
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "/api/web/ValueMarkupTransport",
-                data: "id=" + document.getElementById(id).value,
+                url: "/api/web/TarifPrice",
+                data: "id=" + arr[numberTransport].value,
                 success: function (msg) {
-                    document.getElementById("Markup-" + (id.split("-"))[1]).value = msg;
-                    document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
+                    summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
+                    lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg);
                 }
             });
-        };
-        function changeDate() {
-            document.getElementById("transport").innerHTML = '';
-            document.getElementById("accessories").innerHTML = '';
-        };
-        function verifyChangeMarkup(id) {
-            let markupValue = document.getElementById(id).value;
-            let markupMax = document.getElementById(id).max;
-            if (markupValue > markupMax) {
-                document.getElementById(id).value = document.getElementById(id).max;
-            }
-            if (bonusValue < 0) {
-                document.getElementById(id).value = 0;
-            }
-        };
-        function calculatePrice() {
-            var summ = document.getElementById("totalSum");
-            var arr = document.getElementsByClassName("Rate");
-            var lock = document.getElementById("CountLock");            
-            var duration = document.getElementById("duration");
-            var discount = document.getElementById("Discount");
-            var arrMarkup = document.getElementsByClassName("Transport");
-
-            if (lock.value == null || lock.value == "") {
-                lock.value = 0;
-            }
-            if (duration.value == null || duration.value == "") {
-                duration.value = 0;
-            }
-            if (discount.value == null || discount.value == "") {
-                discount.value = 0;
-            }
-
-
-            let numberTransport = 0;
-            let numberMarkup = 0;
-            summ.innerHTML = "0";
-
-            while (numberTransport < arr.length) {
-                $.ajax({
-                    type: "GET",
-                    dataType: "json",
-                    url: "/api/web/TarifPrice",
-                    data: "id=" + arr[numberTransport].value,
-                    success: function (msg) {
-                        summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
-                    }
-                });
-                ++numberTransport;
-            }
-
-            while (numberMarkup < arrMarkup.length) {
-
-                summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(document.getElementById("Markup-" + numberMarkup).value);
-                ++numberMarkup;
-            }
-
-            summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(lock.value * 100);
-            summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(duration.value);
-            summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(discount.value);
-
+            ++numberTransport;
         }
 
-    </script>
-    @Scripts.Render("~/bundles/jqueryval")
+        while (numberMarkup < arrMarkup.length) {
+            summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(document.getElementById("Markup-" + numberMarkup).value);
+            lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(document.getElementById("Markup-" + numberMarkup).value);
+            ++numberMarkup;
+        }
 
-    <script src="~/Scripts/select2/i18n/ru.js"></script>
-    <script src="~/Scripts/select2/select2.full.min.js"></script>
-    <script src="~/Scripts/select2/select2.js"></script>
+        //alert(lock.value);
+        lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(lock.value * 100);
+        summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(lock.value * 100);
+        summ.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(duration.value);
+        summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(duration.value);
+        summ.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(discount.value);
+        summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(discount.value);
+
+        lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) -
+            Number(document.getElementById("CashPayment").value) -
+            Number(document.getElementById("CardPayment").value) -
+            Number(document.getElementById("CashDeposit").value) -
+            Number(document.getElementById("CardDeposit").value) -
+            Number(document.getElementById("bonusPayment").value);
+    }
+    function calculateLeftToPay() {
+        var lpay = document.getElementById("LeftToPay");
+        lpay.innerHTML = document.getElementById("totalSum").textContent;
+        var bonusPayment = 0;
+        if (document.getElementById("bonusPayment").value <= document.getElementById("bonusPayment").max) {
+            bonusPayment = document.getElementById("bonusPayment").value;
+        }
+        else {
+            bonusPayment = document.getElementById("bonusPayment").max
+        }
+        lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) -
+            Number(document.getElementById("CashPayment").value) -
+            Number(document.getElementById("CardPayment").value) -
+            Number(document.getElementById("CashDeposit").value) -
+            Number(document.getElementById("CardDeposit").value) -
+            bonusPayment;
+    };
+</script>
+@Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>
 
 }

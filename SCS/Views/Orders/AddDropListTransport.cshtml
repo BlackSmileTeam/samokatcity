@@ -2,15 +2,14 @@
 @{
     Layout = null;
 }
-<div class="moreInformationOrder" id="transport">
-
+<div class="moreInformationOrder" id="transport-@ViewBag.countTransport">
     <div class="form-group">
         <div class="col-md-10">
             <label>Тариф</label>
             @Html.DropDownList(
                                "RatesId",
                                ((IEnumerable<SelectListItem>)ViewData["Menu"]),
-                               "Выберете значение", 
+                               "Выберете значение",
                                htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = @String.Format("Rates-{0}", ViewBag.countTransport) })
         </div>
     </div>
@@ -32,6 +31,9 @@
             <input type="number" class="form-control" name="markup" value="0" min="0" max="9999" disabled="disabled" onchange="verifyChangeMarkup(this.id)" id=@String.Format("Markup-{0}", ViewBag.countTransport) />
         </div>
     </div>
+    <button type="button" class="close" aria-label="Close" onclick="deleteBlock('transport-@ViewBag.countTransport')">
+        <span aria-hidden="true">&times;</span>
+    </button>
 
 </div>
 

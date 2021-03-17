@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Изменить";
 }
-}
 
 <div class="orderTable">
     <h2>Изменить данные о транспорте</h2>
@@ -25,6 +24,13 @@
                     <label>Наценка за выходной день</label>
                     @Html.EditorFor(model => model.Markup, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Markup, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-10">
+                    <label>Статус</label>
+
+                    @Html.DropDownList("Status", ViewBag.StatusTransport as SelectList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+
                 </div>
             </div>
 

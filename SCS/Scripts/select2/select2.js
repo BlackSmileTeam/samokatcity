@@ -35,11 +35,11 @@ $("#UserId").select2({
             }
     }
 });
+
+
 $('#UserId').on('select2:select', function (e) {
-    let result;
-    result = $("#UserId").select2("data")[0];
-    var id = result.id;
     
+    let id = $("#UserId").val();
     $.ajax({
         type: "GET",
         dataType: "json",

@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-<div class="moreInformationOrder" id="transport">
+<div class="moreInformationOrder" id="accessories-@ViewBag.countTransport">
     <div class="form-group">
         <div class="col-md-10">
             <label>Тариф</label>
@@ -12,13 +12,17 @@
     <div class="form-group">
         <div class="col-md-10 accessories">
             <label>Наименование</label>
-            @Html.DropDownList("AccessoriesId", null, htmlAttributes: new { @class = "form-control" })
+            @Html.DropDownList("AccessoriesId",
+                               ((IEnumerable<SelectListItem>)ViewData["Menu"]),
+                               "Выберете значение", htmlAttributes: new { @class = "form-control" })
         </div>
     </div>
-    
+
     <div class="form-group">
         <div class="col-md-10">
         </div>
     </div>
-
+    <button type="button" class="close" aria-label="Close" onclick="deleteBlock('accessories-@ViewBag.countTransport')">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>

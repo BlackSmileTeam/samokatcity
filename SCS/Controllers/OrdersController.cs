@@ -126,19 +126,19 @@ namespace SCS.Controllers
 			ViewBag.OrderId = new SelectList(db.Orders, "Id", "StatusOrder");
 			ViewBag.RatesId = new SelectList(db.Rates, "Id", "Name");
 			ViewBag.TypeDocumentId = new SelectList(db.TypeDocument, "Id", "Name");
-			
+
 			countTransport = 0;
 			return View();
 		}
 
-		public ActionResult AddDropListTransport()
+		public ActionResult AddDropListTransport(DateTime dateTime)
 		{
 			//Добавляем Id для добавленного транспорта
 			ViewBag.countTransport = countTransport;
 			//Увеличиваем id на единицу, что бы следующий блок был с новым id
 			++countTransport;
 			Session["countTransport"] = countTransport;
-			var rates = db.Rates.Where(x => x.IsTransport == true);
+			var rates = db.Rates.Where(x => x.IsTransport == true).Where(x=>x.TimeStart >= dateTime.TimeOfDay && x.TimeEnd <= dateTime.TimeOfDay);
 			ViewBag.RatesId = new SelectList(rates, "Id", "Name");
 
 			SelectList selectListItems = new SelectList(db.Transport.DistinctBy(x => x.Name).Where(tr => tr.Status == 1), "Id", "Name");
@@ -174,7 +174,6 @@ namespace SCS.Controllers
 
 		public ActionResult Create(DateTime DateStart, int CountLock, string StatusOrder, int UserId,
 									   List<int> AccessoriesId, List<int> TransportId, List<int> RatesId,
-									   List<int> countTransport, List<int> countAccessories,
 									   int addBonuses, int discount, int typeDocumentId,
 									   decimal cashPayment, decimal cardPayment, decimal cardDeposit, decimal cashDeposit, decimal bonusPayment)
 		{
@@ -209,12 +208,8 @@ namespace SCS.Controllers
 						{
 							duration = tmpDuration;
 						}
-						//Добавляем введенное количество аксессуаров пользователем
-						for (int j = 0; j < countAccessories[i]; ++j)
-						{
-							//Увеличиваем сумму заказа
-							totalSum += db.Rates.Find(RatesId[i]).Price;
-						}
+						//Увеличиваем сумму заказа
+						totalSum += db.Rates.Find(RatesId[i]).Price;
 					}
 				}
 				if (TransportId != null)
@@ -227,19 +222,17 @@ namespace SCS.Controllers
 							duration = tmpDuration;
 						}
 						//Добавляем введенное количество транспорта пользователем					
-						for (int j = 0; j < countTransport[i]; ++j)
+
+						//Увеличиваем сумму заказа
+						totalSum += db.Rates.Find(RatesId[i]).Price;
+						db.OrderTransport.Add(new OrderTransport()
 						{
-							//Увеличиваем сумму заказа
-							totalSum += db.Rates.Find(RatesId[i]).Price;
-							db.OrderTransport.Add(new OrderTransport()
-							{
-								Transport = db.Transport.Find(TransportId[i]),
-								TransportId = TransportId[i],
-								OrderId = order.Id,
-								RatesId = RatesId[i],
-								Rates = db.Rates.Find(RatesId[i])
-							});
-						}
+							Transport = db.Transport.Find(TransportId[i]),
+							TransportId = TransportId[i],
+							OrderId = order.Id,
+							RatesId = RatesId[i],
+							Rates = db.Rates.Find(RatesId[i])
+						});
 					}
 					//Счиатем скидку пользователя
 					totalSum = totalSum - totalSum - discount;

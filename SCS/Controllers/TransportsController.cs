@@ -13,17 +13,28 @@ namespace SCS.Controllers
 {
 	public class TransportsController : Controller
 	{
+		private SCSContext db = new SCSContext();
 
-		private List<string> statusTransport = new List<string>
+		private Dictionary<int, string> statusTransport = new Dictionary<int, string>
 		{
-			"В наличии", "Отсутствует"
+			{
+				0,"Отсутствует"
+			},
+			{
+				1,"В наличии"
+			},
+			{
+				2 ,"На зарядке"
+			}
 		};
 		public List<SelectListItem> StatusTransport { get; set; }
 		public TransportsController()
 		{
 			StatusTransport = new List<SelectListItem>();
 
-			foreach (string tmpStatus in statusTransport)
+			StatusTransport.Add(new SelectListItem { Text = "Все" });
+
+			foreach (string tmpStatus in statusTransport.Values)
 			{
 				StatusTransport.Add(new SelectListItem { Text = tmpStatus });
 			}
@@ -38,6 +49,7 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string StatusTransport)
 		{
+			List<Transport> transports = new List<Transport>();
 			int str = 0;
 			switch (StatusTransport)
 			{
@@ -51,16 +63,30 @@ namespace SCS.Controllers
 						str = 0;
 						break;
 					}
+				case "На зарядке":
+					{
+						str = 2;
+						break;
+					}
+				default:
+					{
+						str = -1;
+						break;
+					}
 			}
-			var transports = db.Transport.Include(tr => tr.OrderTransports).Where(tr => tr.Status == str).ToList();
+			if (str == -1)
+			{
+				transports = db.Transport.Include(tr => tr.OrderTransports).ToList();
+			}
+			else
+			{
+				transports = db.Transport.Include(tr => tr.OrderTransports).Where(tr => tr.Status == str).ToList();
 
+			}
 			ViewBag.StatusOrder = StatusTransport;
 
 			return PartialView(transports);
 		}
-
-
-		private SCSContext db = new SCSContext();
 
 		// GET: Transports
 		public async Task<ActionResult> Index()
@@ -68,7 +94,6 @@ namespace SCS.Controllers
 			ViewBag.StatusTransport = StatusTransport;
 			return View(await db.Transport.Include(tr => tr.OrderTransports).ToListAsync());
 		}
-
 
 		// GET: Transports/Create
 		public ActionResult Create()
@@ -106,6 +131,10 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
+
+			SelectList status = new SelectList(statusTransport, "Key", "Value", transport.Status);
+			ViewBag.StatusTransport = status;
+
 			return View(transport);
 		}
 

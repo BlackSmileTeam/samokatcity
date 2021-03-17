@@ -1,5 +1,3 @@
-D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csprojAssemblyReference.cache
-D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.CoreCompileInputs.cache
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\SCS.dll.config
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\SCS.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\SCS.pdb
@@ -63,6 +61,7 @@ D:\Project\DotNET\ASP.NET\SCS\SCS\bin\Newtonsoft.Json.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Net.Http.Formatting.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Helpers.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.dll
+D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.WebHost.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Mvc.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Optimization.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Razor.dll
@@ -76,6 +75,7 @@ D:\Project\DotNET\ASP.NET\SCS\SCS\bin\MySql.Data.xml
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\MySql.Data.Entity.EF6.xml
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Net.Http.Formatting.xml
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.xml
+D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.WebHost.xml
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Helpers.xml
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Mvc.xml
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Optimization.xml
@@ -93,10 +93,10 @@ D:\Project\DotNET\ASP.NET\SCS\SCS\bin\ru\System.Web.Razor.resources.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\ru\System.Web.WebPages.resources.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\ru\System.Web.WebPages.Deployment.resources.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\bin\ru\System.Web.WebPages.Razor.resources.dll
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.IntialDb.resources
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.GenerateResource.cache
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.CoreCompileInputs.cache
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.CopyComplete
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.pdb
-D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.IntialDb.resources
-D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.GenerateResource.cache
-D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.WebHost.dll
-D:\Project\DotNET\ASP.NET\SCS\SCS\bin\System.Web.Http.WebHost.xml
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csprojAssemblyReference.cache
