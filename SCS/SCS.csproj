@@ -162,15 +162,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202102221539039_IntialDb.cs" />
-    <Compile Include="Migrations\202102221539039_IntialDb.Designer.cs">
-      <DependentUpon>202102221539039_IntialDb.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accessories.cs" />
     <Compile Include="Models\ContactUser.cs" />
     <Compile Include="Models\CreateOrder.cs" />
     <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderAccessories.cs" />
     <Compile Include="Models\OrderTransport.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\Rates.cs" />
@@ -532,11 +528,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202102221539039_IntialDb.resx">
-      <DependentUpon>202102221539039_IntialDb.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

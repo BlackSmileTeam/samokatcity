@@ -20,30 +20,19 @@
                         </select>
                     </div>
 
+                </div>
+                <div class="form-group">
                     <div class="col-md-10">
                         @Html.LabelFor(model => model.DateStart)
 
-                        <input type="datetime-local" id="dateStart" name="dateStart" value="@DateTime.Now.ToString("s").Remove(16)" date-format="m/d/yyyy hh:mm" class="form-control" title="Дата начала действия заказа" required onchange="changeDate()">
+                        <input type="datetime-local" id="dateStart" name="dateStart" value="@DateTime.Now.ToString("s").Remove(16)" date-format="m/d/yyyy hh:mm"
+                               min="@DateTime.Now.ToString("s").Remove(16)" class="form-control" title="Дата начала действия заказа" required onchange="changeDate()">
                         @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
                     </div>
-
                 </div>
                 <div class="form-group">
-                    <div class="col-md-10">
-                        <label>Статус заказа</label>
-                        <div class="checkbox">
-                            @Html.DropDownList("StatusOrder", null, htmlAttributes: new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-
-                    </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-10">
 
-                    </div>
-                </div>
             </div>
 
             <h4>Транспорт</h4>
@@ -159,39 +148,151 @@
 </div>
 
 <script>
+    var checkRateTransp = true;
+    var checkRateAccessor = true;
     $(document).ready(function () {
+        //Проверка наличия транспорта, аксессуаров и тарифов в указанное время
+        checkRate();
+        checkTransport();
+        checkAccessories();
+    });
 
-        $("#addTransport").click(function () {
-            $.ajax({
-                url: 'AddDropListTransport',
-                datatype: 'html',
-                data: {
-                    dateTime: document.getElementById("dateStart").value
-                },
-                success: function (data) {
-                    $("#transport").append(data);
+    function checkRate() {
+        //Проверка наличия тарифов в текущее время
+        $.ajax({
+            url: "/api/web/CheckRate",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value,
+                isTransport: true
+            },
+            success: function (data) {
+                if (data == false) {
+                    checkRateTransp = false;
+                    document.getElementById("addTransport").hidden = true;
+                    document.getElementById("transport").innerHTML = '<p class="text - center">В указанное время отсутствуют доступные тарифы для транспорта</p>';
                 }
-            })
-        });
-        $("#addAccessories").click(function () {
-            $.ajax({
-                url: 'AddDropListAccessories',
-                datatype: 'html',
-                success: function (data) {
-                    $("#accessories").append(data);
+                else {
+                    checkRateTransp = true;
+                    document.getElementById("addTransport").hidden = false;
+                    document.getElementById("transport").innerHTML = '';
                 }
-            })
-        });
-        $("#bonusPayment").change(function () {
-            let bonusValue = document.getElementById("bonusPayment").value;
-            let bonusMax = document.getElementById("bonusPayment").max;
-            if (bonusValue > bonusMax) {
-                document.getElementById("bonusPayment").value = document.getElementById("bonusPayment").max;
-            }
-            if (bonusValue < 0) {
-                document.getElementById("bonusPayment").value = 0;
             }
         });
+        $.ajax({
+            url: "/api/web/CheckRate",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value,
+                isTransport: false
+            },
+            success: function (data) {
+                if (data == false) {
+                    checkRateAccessor = false;
+                    document.getElementById("addAccessories").hidden = true;
+                    document.getElementById("accessories").innerHTML = '<p class="text - center">В указанное время отсутствуют доступные тарифы для аксессуаров</p>';
+                }
+                else {
+                    checkRateAccessor = true;
+                    document.getElementById("addAccessories").hidden = false;
+                    document.getElementById("accessories").innerHTML = '';
+
+                }
+            }
+        });
+    };
+    function checkTransport() {
+        $.ajax({
+            url: "/api/web/CheckTransport",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                if (checkRateTransp == true) {
+                    if (data == false) {
+                        document.getElementById("addTransport").hidden = true;
+                        document.getElementById("transport").innerHTML = '<p class="text - center">В указанное время отсутствуют доступные транспортные средства</p>';
+                    }
+                    else {
+                        document.getElementById("addTransport").hidden = false;
+                        document.getElementById("transport").innerHTML = '';
+                    }
+                }
+            }
+        });
+    };
+    function checkAccessories() {
+        $.ajax({
+            url: "/api/web/CheckAccessories",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                if (checkRateAccessor == true) {
+                    if (data == false) {
+                        document.getElementById("addAccessories").hidden = true;
+                        document.getElementById("accessories").innerHTML = '<p class="text - center">В указанное время отсутствуют доступные аксессуары</p>';
+                    }
+                    else {
+                        document.getElementById("addAccessories").hidden = false;
+                        document.getElementById("accessories").innerHTML = '';
+                    }
+                }
+            }
+        });
+    };
+
+    //Добавление транспорта
+    $("#addTransport").click(function () {
+        $.ajax({
+            url: 'AddDropListTransport',
+            datatype: 'html',
+            data: {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                $("#transport").append(data);
+                var countTransport = document.getElementsByClassName("Transport");
+
+                if (countTransport.length >= document.getElementById("Transport-0").length - 1) {
+                    document.getElementById("addTransport").hidden = true;
+                }
+            }
+        })
+    });
+    //Добавление аксессуара
+    $("#addAccessories").click(function () {
+        $.ajax({
+            url: 'AddDropListAccessories',
+            datatype: 'html',
+            data: {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                $("#accessories").append(data);
+                var countAccessories = document.getElementsByClassName("Accessories");
+
+                if (countAccessories.length >= document.getElementById("Accessories-0").length - 1) {
+                    document.getElementById("addAccessories").hidden = true;
+                }
+            }
+        })
+    });
+    $("#bonusPayment").change(function () {
+        let bonusValue = document.getElementById("bonusPayment").value;
+        let bonusMax = document.getElementById("bonusPayment").max;
+        if (bonusValue > bonusMax) {
+            document.getElementById("bonusPayment").value = document.getElementById("bonusPayment").max;
+        }
+        if (bonusValue < 0) {
+            document.getElementById("bonusPayment").value = 0;
+        }
     });
     function deleteBlock(nameBlock) {
         document.getElementById(nameBlock).remove();
@@ -228,6 +329,9 @@
         document.getElementById("bonusPayment").value = 0;
         document.getElementById("AddBonuses").value = 0;
 
+        checkRate();
+        checkTransport();
+        checkAccessories();
         calculatePrice();
     };
     function verifyChangeMarkup(id) {

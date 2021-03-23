@@ -7,7 +7,7 @@
         <div class="col-md-10">
             <label>Тариф</label>
             @Html.DropDownList(
-                               "RatesId",
+                               "RatesIdTransport",
                                ((IEnumerable<SelectListItem>)ViewData["Menu"]),
                                "Выберете значение",
                                htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = @String.Format("Rates-{0}", ViewBag.countTransport) })

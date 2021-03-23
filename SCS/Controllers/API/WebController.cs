@@ -96,6 +96,37 @@ namespace SCS.Controllers.API
 				price = db.Rates.Where(tr => tr.Id == idRates).ToList()[0].Price;
 			}
 			return price;
-		}		
+		}
+		/// <summary>
+		/// Проверка наличия тарифа в указанное время
+		/// </summary>
+		/// <param name="dateTime"></param>
+		/// <param name="isTransport"></param>
+		/// <returns></returns>
+		[HttpGet]
+		public bool CheckRate(DateTime dateTime, bool isTransport)
+		{
+			var rates = db.Rates.Where(x => x.IsTransport == isTransport).Where(x => x.TimeStart <= dateTime.TimeOfDay && x.TimeEnd >= dateTime.TimeOfDay);
+			return rates.Count() > 0 ? true : false;
+		}
+		[HttpGet]
+		public bool CheckTransport(DateTime dateTime)
+		{
+			List<Transport> trans = db.Transport.SqlQuery("CALL transport_vw('"+dateTime.ToString("yyyy-MM-dd HH:mm")+"')").ToList();
+
+			return trans.Count() > 0 ? true : false;
+		}
+		[HttpGet]
+		public bool CheckAccessories(DateTime dateTime)
+		{
+			List<Accessories> access = db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+
+			return access.Count() > 0 ? true : false;
+		}
+		[HttpGet]
+		public bool CheckAccessories(DateTime dateTime, bool isTransport)
+		{
+			return false;
+		}
 	}
 }
