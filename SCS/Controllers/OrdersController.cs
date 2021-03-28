@@ -49,7 +49,7 @@ namespace SCS.Controllers
 		}
 		private List<string> statusOrder = new List<string>
 		{
-			"Забронирован","Оплачен","Отменен","В поездке","Все"
+			"Все","Забронирован","Оплачен","Отменен","В поездке"
 		};
 		public List<SelectListItem> StatusOrder { get; set; }
 		public OrdersController()
@@ -67,7 +67,7 @@ namespace SCS.Controllers
 		// GET: Orders
 		public ActionResult Index()
 		{
-			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o => o.StatusOrder == "Забронирован");
+			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Include(p => p.Payment);//.Take(10);
 			ViewBag.StatusOrder = StatusOrder;
 			SelectList users = new SelectList(db.Users.Include(u => u.ContactUser), "Id", "Id");
 			ViewBag.User = users;
@@ -85,12 +85,12 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string statusOrder, DateTime dateStart, DateTime dateEnd)
 		{
-			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).ToList();
+			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o => o.DateStart >= dateStart && o.DateStart <= dateEnd).ToList();
 
 			if (statusOrder != "Все")
 			{
-				orders = orders.Where(o => o.DateStart >= dateStart && o.DateEnd <= dateEnd && o.StatusOrder == statusOrder).ToList();
-			}	
+				orders = orders.Where(o => o.StatusOrder.Contains(statusOrder)).ToList();
+			}
 
 			ViewBag.StatusOrder = StatusOrder;
 
@@ -139,6 +139,7 @@ namespace SCS.Controllers
 			ViewBag.TypeDocumentId = new SelectList(db.TypeDocument, "Id", "Name");
 
 			countTransport = 0;
+			countAccessories = 0;
 			return View();
 		}
 
@@ -152,10 +153,9 @@ namespace SCS.Controllers
 			var rates = db.Rates.Where(x => x.IsTransport == true).Where(x => x.TimeStart <= dateTime.TimeOfDay && x.TimeEnd >= dateTime.TimeOfDay);
 			ViewBag.RatesIdTransport = new SelectList(rates, "Id", "Name");
 
-			//SelectList selectListItems = new SelectList(db.Transport.DistinctBy(x => x.Name).Where(tr => tr.Status == 1), "Id", "Name");
-			ViewBag.TransportId = new SelectList(db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList(), "Id", "Name");
+			ViewBag.TransportId = new SelectList(db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").DistinctBy(tr => tr.Id).ToList(), "Id", "Name");
 
-			return View(db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList());
+			return View(db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList().DistinctBy(tr => tr.Id));
 		}
 
 		/// <summary>
@@ -177,10 +177,9 @@ namespace SCS.Controllers
 			var rates = db.Rates.Where(x => x.IsTransport == false).Where(x => x.TimeStart <= dateTime.TimeOfDay && x.TimeEnd >= dateTime.TimeOfDay);
 			ViewBag.RatesIdAccessories = new SelectList(rates, "Id", "Name");
 
-			//ViewBag.AccessoriesId = new SelectList(db.Accessories.Where(a => a.Status == 1), "Id", "Name");
-			ViewBag.AccessoriesId = new SelectList(db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList(), "Id", "Name");
+			ViewBag.AccessoriesId = new SelectList(db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").DistinctBy(acc => acc.Id).ToList(), "Id", "Name");
 
-			return View(db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList());
+			return View(db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").DistinctBy(acc => acc.Id).ToList());
 		}
 
 		[HttpPost]
@@ -197,6 +196,20 @@ namespace SCS.Controllers
 			{
 				//Итоговая сумма заказа
 				decimal totalSum = 0;
+				//проверка на выходной день
+				bool weekend = false;
+				if (DateStart.DayOfWeek.ToString().ToLower() == "суббота" || DateStart.DayOfWeek.ToString().ToLower() == "воскресенье" ||
+					DateStart.DayOfWeek.ToString().ToLower() == "saturday" || DateStart.DayOfWeek.ToString().ToLower() == "sunday")
+				{
+					weekend = true;
+				}
+				if (weekend)
+				{
+					foreach (var transp in TransportId)
+					{
+						totalSum += db.Transport.Find(transp).Markup;
+					}
+				}
 
 				foreach (var Rate in RatesIdTransport)
 				{
@@ -207,23 +220,17 @@ namespace SCS.Controllers
 					totalSum += db.Rates.Find(Rate).Price;
 				}
 
-				totalSum -= discount
-							- cashPayment
-							- cardPayment
-							- cardDeposit
-							- cashDeposit
-							- bonusPayment;
-
 				totalSum += CountLock * 100;
+				var remainder = totalSum - cardDeposit - cardPayment - cashDeposit - cashPayment - bonusPayment - discount;
 
-				order.StatusOrder = DateStart >= DateTime.Now.AddHours(1) ? (totalSum == 0 ? "Забронирован (Оплачен)" : "Забронирован (Ожидает оплаты)") : (totalSum == 0 ? "В поездке (Оплачен)" : "В поездке (Ожидает оплаты)");
+				order.StatusOrder = DateStart >= DateTime.Now.AddHours(1) ? (remainder == 0 ? "Забронирован (Оплачен)" : "Забронирован (Ожидает оплаты)") : (remainder == 0 ? "В поездке (Оплачен)" : "В поездке (Ожидает оплаты)");
 				int statusTransportOrAccesories = DateStart >= DateTime.Now.AddHours(1) ? Convert.ToInt32(StatusTransportOrAccessories.Free) : Convert.ToInt32(StatusTransportOrAccessories.Busy);
 
 				order.DateStart = DateStart;
 				order.CountLock = CountLock;
 				order.UserId = UserId;
 				order.User = db.Users.Find(UserId);
-				order.Discount = discount; ;
+				order.Discount = discount;
 				order.AddBonuses = addBonuses;
 
 				db.Orders.Add(order);
@@ -301,28 +308,54 @@ namespace SCS.Controllers
 
 				db.SaveChanges();
 
-
 				return RedirectToAction("Index");
 			}
 
-			//ViewBag.UserId = new SelectList(db.Users, "Id", "Username", order.UserId);
-			//return View(order);
 			return View(order);
 		}
 
 		// GET: Orders/Edit/5
 		public ActionResult Edit(int? id)
 		{
+			decimal TotalSum = 0;
+			bool weekend = false;
+
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Order order = db.Orders.Find(id);
+			Order order = db.Orders.Include(p => p.Payment).FirstOrDefault(p => p.Id == id);
 			if (order == null)
 			{
 				return HttpNotFound();
 			}
+			if (order.DateStart.DayOfWeek.ToString().ToLower() == "суббота" || order.DateStart.DayOfWeek.ToString().ToLower() == "воскресенье" ||
+				order.DateStart.DayOfWeek.ToString().ToLower() == "saturday" || order.DateStart.DayOfWeek.ToString().ToLower() == "sunday")
+			{
+				weekend = true;
+			}
+			var Payment = db.Payment.Where(p => p.Id == order.PaymentId).ToList()[0];
+			var orderTransport = db.OrderTransport.Where(o => o.OrderId == id).Include(t => t.Rates).Include(tr => tr.Transport);
+			var orderAccessories = db.OrderAccessories.Where(o => o.OrderId == id).Include(t => t.Rates).Include(ac => ac.Accessories);
+
+			foreach (var ot in orderTransport)
+			{
+				TotalSum += ot.Rates.Price;
+				if (weekend)
+				{
+					TotalSum += ot.Transport.Markup;
+				}
+			}
+			foreach (var oa in orderAccessories)
+			{
+				TotalSum += oa.Rates.Price;
+			}
+
+			TotalSum += order.CountLock * 100;
+
+			ViewBag.TypeDocumentId = new SelectList(db.TypeDocument, "Id", "Name");
 			ViewBag.UserId = new SelectList(db.Users, "Id", "Username", order.UserId);
+			ViewBag.TotalSum = TotalSum.ToString();
 			return View(order);
 		}
 
@@ -331,16 +364,41 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Edit([Bind(Include = "Id,DateStart,DateEnd,CountLock,StatusOrder,UserId")] Order order)
+		public ActionResult Edit(int Id, decimal? CashPayment, decimal? CashDeposit, decimal? CardPayment, decimal? CardDeposit, int? Discount, int TypeDocumentId, decimal? bonusPayment)
 		{
+			CashPayment = CashPayment == null ? 0 : CashPayment;
+			CashDeposit = CashDeposit == null ? 0 : CashDeposit;
+			CardPayment = CardPayment == null ? 0 : CardPayment;
+			CardDeposit = CardDeposit == null ? 0 : CardDeposit;
+			bonusPayment = bonusPayment == null ? 0 : bonusPayment;
+			Discount = Discount == null ? 0 : Discount;
+
+			Payment pay = new Payment();
 			if (ModelState.IsValid)
 			{
+				Order order = new Order();
+				order = db.Orders.Include(p => p.Payment).FirstOrDefault(p => p.Id == Id);
+				pay = order.Payment;
+				var remainder = pay.TotalSum - CardDeposit - CardPayment - CashDeposit - CashPayment - bonusPayment - Discount;
+
+				order.StatusOrder = order.StatusOrder.Remove(order.StatusOrder.IndexOf('(')+1);
+
+				order.StatusOrder += remainder == 0 ?  "Оплачен)" : "Ожидает оплаты)";
+
+				order.Discount = Convert.ToInt32(Discount);				
+				pay.CashPayment = Convert.ToDecimal(CashPayment);
+				pay.CashDeposit = Convert.ToDecimal(CashDeposit);
+				pay.CardPayment = Convert.ToDecimal(CardPayment);
+				pay.CardDeposit = Convert.ToDecimal(CardDeposit);
+				pay.TypeDocumentId = TypeDocumentId;
+				pay = order.Payment;
+
+				db.Entry(pay).State = EntityState.Modified;
 				db.Entry(order).State = EntityState.Modified;
 				db.SaveChanges();
 				return RedirectToAction("Index");
 			}
-			ViewBag.UserId = new SelectList(db.Users, "Id", "Username", order.UserId);
-			return View(order);
+			return View(pay);
 		}
 
 		// GET: Orders/Delete/5
@@ -350,7 +408,7 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Order order = db.Orders.Find(id);
+			Order order = db.Orders.Include(u=>u.User).Include(p=>p.Payment).FirstOrDefault(o=>o.Id == id);
 			if (order == null)
 			{
 				return HttpNotFound();
@@ -364,7 +422,21 @@ namespace SCS.Controllers
 		public ActionResult DeleteConfirmed(int id)
 		{
 			Order order = db.Orders.Find(id);
+			Payment pay = db.Payment.Find(order.PaymentId);
+			List<OrderAccessories> orderAccesories = db.OrderAccessories.Where(oa=>oa.OrderId == order.Id).ToList();
+			List<OrderTransport> orderTransport = db.OrderTransport.Where(oa => oa.OrderId == order.Id).ToList();
+			foreach (var OA in orderAccesories)
+			{
+				db.OrderAccessories.Remove(OA);
+			}
+			foreach (var OT in orderTransport)
+			{
+				db.OrderTransport.Remove(OT);
+			}
+		
 			db.Orders.Remove(order);
+			db.Payment.Remove(pay);
+
 			db.SaveChanges();
 			return RedirectToAction("Index");
 		}

@@ -22,9 +22,11 @@ namespace SCS.Models
 		public bool IsTransport { get; set; }
 
 		public ICollection<OrderTransport> OrderTransports { get; set; }
+		public ICollection<OrderAccessories> OrderAccessories { get; set; }
 		public Rates()
 		{
 			OrderTransports = new List<OrderTransport>();
+			OrderAccessories = new List<OrderAccessories>();
 		}
 	}
 }

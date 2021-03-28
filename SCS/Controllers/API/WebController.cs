@@ -71,14 +71,14 @@ namespace SCS.Controllers.API
 		/// <param name="nameTransport"></param>
 		/// <returns></returns>
 		[HttpGet]
-		public decimal ValueMarkupTransport(string id)
+		public decimal ValueMarkupTransport(string id, DateTime dateStart)
 		{
 			decimal markup = 0;
 			if (id != null && id.Length > 0 && id != "0")
 			{
 				int idTransport = Convert.ToInt32(id);
-				if (DateTime.Now.DayOfWeek.ToString().ToLower() == "суббота" || DateTime.Now.DayOfWeek.ToString().ToLower() == "воскресенье" ||
-					DateTime.Now.DayOfWeek.ToString().ToLower() == "saturday" || DateTime.Now.DayOfWeek.ToString().ToLower() == "sunday")
+				if (dateStart.DayOfWeek.ToString().ToLower() == "суббота" || dateStart.DayOfWeek.ToString().ToLower() == "воскресенье" ||
+					dateStart.DayOfWeek.ToString().ToLower() == "saturday" || dateStart.DayOfWeek.ToString().ToLower() == "sunday")
 				{
 					markup = db.Transport.Where(tr => tr.Id == idTransport).ToList()[0].Markup;
 				}
@@ -112,7 +112,7 @@ namespace SCS.Controllers.API
 		[HttpGet]
 		public bool CheckTransport(DateTime dateTime)
 		{
-			List<Transport> trans = db.Transport.SqlQuery("CALL transport_vw('"+dateTime.ToString("yyyy-MM-dd HH:mm")+"')").ToList();
+			List<Transport> trans = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
 
 			return trans.Count() > 0 ? true : false;
 		}
@@ -122,11 +122,6 @@ namespace SCS.Controllers.API
 			List<Accessories> access = db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
 
 			return access.Count() > 0 ? true : false;
-		}
-		[HttpGet]
-		public bool CheckAccessories(DateTime dateTime, bool isTransport)
-		{
-			return false;
 		}
 	}
 }

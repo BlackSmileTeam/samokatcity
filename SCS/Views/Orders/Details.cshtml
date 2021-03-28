@@ -49,7 +49,7 @@
                 <div class="orderTableMore">
                     @foreach (var oa in Model.OrderTransports)
                     {
-                        <p>  @oa.Transport.Name</p> 
+                        <p>  @oa.Transport.Name</p>
                     }
                 </div>
             </div>
@@ -106,7 +106,7 @@
         <div class="orderTableMore">
             <div class=" moreInformationRates">
                 <p>
-                    @Model.Discount 
+                    @Model.Discount
                 </p>
             </div>
         </div>
@@ -136,7 +136,10 @@
                 @if (@Model.Payment != null)
                 {
                     <p>
-                        <b> @Model.Payment.TotalSum</b>
+                        <b>Всего - @Model.Payment.TotalSum, руб</b>
+                    </p>
+                    <p>
+                        <b>Осталось к оплате - @(Model.Payment.TotalSum - Model.Payment.CashPayment - Model.Payment.CashDeposit - Model.Payment.CardPayment - Model.Payment.CardDeposit - Model.Payment.BonusPayment - Model.Discount), руб</b>
                     </p>
                 }
                 else

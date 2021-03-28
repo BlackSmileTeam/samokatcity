@@ -77,10 +77,6 @@
                         <input type="number" class="form-control" name="Discount" id="Discount" value="0" min="0" onchange="calculatePrice()" />
                         @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                     </div>
-                    <div class="col-md-10">
-                        <label>Наценка, руб</label>
-                        <input type="number" class="form-control" name="duration" id="duration" value="0" min="0" onchange="calculatePrice()" />
-                    </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
@@ -305,7 +301,8 @@
             type: "GET",
             dataType: "json",
             url: "/api/web/ValueMarkupTransport",
-            data: "id=" + document.getElementById(id).value,
+            data: "id=" + document.getElementById(id).value + "&dateStart=" + document.getElementById("dateStart").value,
+
             success: function (msg) {
                 document.getElementById("Markup-" + (id.split("-"))[1]).value = msg;
                 document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
@@ -351,16 +348,12 @@
         var arr = document.getElementsByClassName("Rate");
         var lock = document.getElementById("CountLock");
 
-        var duration = document.getElementById("duration");
         var discount = document.getElementById("Discount");
 
         var arrMarkup = document.getElementsByClassName("Transport");
 
         if (lock.value == null || lock.value == "") {
             lock.value = 0;
-        }
-        if (duration.value == null || duration.value == "") {
-            duration.value = 0;
         }
         if (discount.value == null || discount.value == "") {
             discount.value = 0;
@@ -392,13 +385,11 @@
             ++numberMarkup;
         }
 
-        //alert(lock.value);
         lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(lock.value * 100);
         summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(lock.value * 100);
-        summ.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(duration.value);
-        summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(duration.value);
-        summ.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(discount.value);
-        summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(discount.value);
+
+        lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(discount.value);
+        //summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(discount.value);
 
         lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) -
             Number(document.getElementById("CashPayment").value) -
@@ -422,7 +413,8 @@
             Number(document.getElementById("CardPayment").value) -
             Number(document.getElementById("CashDeposit").value) -
             Number(document.getElementById("CardDeposit").value) -
-            bonusPayment;
+            Number(document.getElementById("Discount").value) -
+            Number(bonusPayment);
     };
 </script>
 @Scripts.Render("~/bundles/jqueryval")

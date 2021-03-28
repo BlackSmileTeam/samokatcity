@@ -52,7 +52,12 @@
             {
                 foreach (var item in Model)
                 {
-                    <tr>
+                    string className = "";
+                    if ((item.Payment.TotalSum - item.Payment.CardDeposit - item.Payment.CardPayment - item.Payment.CashDeposit - item.Payment.CashPayment - item.Payment.BonusPayment - item.Discount) != 0)
+                    {
+                        className = "p-3 mb-2 bg-danger text-white";
+                    }
+                    <tr class="@className">
                         <td>
                             <a class="btn dropdown-toggle dropdown-toggle-split" id="icon-@item.Id" onclick="showDetails(@item.Id)" />
                         </td>
@@ -94,9 +99,12 @@
             else
             {
                 <tr>
-                    <td colspan="6">
-                        <center>Данные отсутствуют</center>
-                    </td>
+                <td colspan = "6">
+
+                <center> Данные отсутствуют </center>
+
+                </td>
+
                 </tr>
             }
 
