@@ -3,41 +3,46 @@
 @{
     ViewBag.Title = "Изменить";
 }
-}
 
-<div class="orderTable">
-    <h2>Изменить данные о аксессуаре</h2>
+<div class="container">
+    <div class="divTable">
+        <h4>
+            <b>Изменить данные о аксессуаре</b>
+        </h4>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
 
-        <div class="form-horizontal">
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
                 <div class="form-group">
-
                     <div class="col-md-10">
                         <label>Наименование аксессуара</label>
                         @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                     </div>
+
+                    <div class="col-md-10">
+                        <label>Статус</label>
+
+                        @Html.DropDownList("Status", ViewBag.StatusAccessories as SelectList, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <label>Статус</label>
 
-                    @Html.DropDownList("Status", ViewBag.StatusAccessories as SelectList, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
-
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Сохранить" class="btn btn btn-primary ml-0 " />
+                    <a class="btn btn btn-danger " href="@Url.Action("Index","Accessories")">
+                        Отмена
+                    </a>
                 </div>
+                <br />
             </div>
+        }
 
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Изменить" class="btn btn btn-danger float-md-left" />
-            </div>
-            <br />
-        </div>
-    }
-
+    </div>
 </div>

@@ -11,7 +11,7 @@
         @using (Ajax.BeginForm("Filter", new AjaxOptions { UpdateTargetId = "result" }))
         {
             @Html.AntiForgeryToken()
-            <div class="moreInformationOrder">
+            <div class="moreInformationOrder filterPanel">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="orderTableMore">
                     @Html.Label("Статус:")
@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="orderTableMore">
-                    <div></div>
+                    <div class="filterPanel"></div>
                     <input type="submit" value="Поиск" id="search" class="btn btn-outline-dark" />
                 </div>
             </div>

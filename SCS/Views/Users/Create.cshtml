@@ -4,149 +4,157 @@
     ViewBag.Title = "Добавить пользователя";
 }
 
-<div class="orderTable">
-
+<div class="container">
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Новый пользователь</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="divTable">
+            <h2>Новый пользователь</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="moreInformationOrder">
-            <nobr>
-                Авторизационные данные
-            </nobr>
-            <div class="orderTableMore">
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Логин</p>
+            <div class="moreInformationOrder">
+                <nobr>
+                    Авторизационные данные
+                </nobr>
+                <div class="userTable">
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Логин</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                    <br />
-                    <div class="orderTableMore">
-                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Пароль</p>
-                    </div>
-                    <br />
-                    <div class="orderTableMore">
-                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Пароль</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="moreInformationOrder">
-            <nobr>
-                Данные о клиенте
-            </nobr>
-            <div class="orderTableMore">
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Фамилия</p>
+            <div class="moreInformationOrder">
+                <nobr>
+                    Данные о клиенте
+                </nobr>
+                <div class="userTable">
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Фамилия</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Surname" id="Surname" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Surname, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Surname" id="Surname" />
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Имя</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Name" id="Name" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Name, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Имя</p>
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Отчетсво</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Patronymic" id="Patronymic" />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Patronymic, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Name" id="Name" />
-                    </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Отчетсво</p>
-                    </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Patronymic" id="Patronymic" />
-                    </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Контактный телефон</p>
-                    </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Phone" id="Phone" />
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Контактный телефон</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input type="tel"  pattern="^\+7\d{3}\d{7}$" value="+7" inputmode="tel" class="form-control" name="Phone" id="Phone" maxlength="12" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Phone, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="moreInformationOrder">
-            <nobr>
-                Паспортные данные
-            </nobr>
-            <div class="orderTableMore">
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Серия и номер паспорта</p>
+            <div class="moreInformationOrder">
+                <nobr>
+                    Паспортные данные
+                </nobr>
+                <div class="userTable">
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Серия и номер паспорта</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Passport" id="Passport" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Passport, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Passport" id="Passport" />
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Город</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="City" id="City" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.City, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Город</p>
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Улица</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Street" id="Street" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Street, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="City" id="City" />
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Дом</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Home" id="Home" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Home, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Улица</p>
-                    </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Street" id="Street" />
-                    </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Дом</p>
-                    </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Home" id="Home" />
-                    </div>
-                </div>
-                <div class=" moreInformationRates">
-                    <div class="orderTableMore">
-                        <p>Квартира</p>
-                    </div>
-                    <br />
-                    <div class="orderTableMore">
-                        <input class="form-control" name="Apartament" id="Apartament" />
+                    <div class=" moreInformationRates">
+                        <div class="userTable">
+                            <p>Квартира</p>
+                        </div>
+                        <br />
+                        <div class="userTable">
+                            <input class="form-control" name="Apartament" id="Apartament" required />
+                            @Html.ValidationMessageFor(model => model.ContactUser.Apartment, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+
+
+
+            <div class="col-md-offset-2 mb-5">
+                <input type="submit" value="Добавить" class="btn btn btn-danger float-md-left" />
+            </div>
         </div>
-
-
-
-
-
-        <div class="col-md-offset-2 mb-5">
-            <input type="submit" value="Добавить" class="btn btn btn-danger float-md-left" />
-        </div>
-    </div>
     }
 </div>

@@ -1,88 +1,94 @@
 ﻿@model SCS.Models.Order
 
 @{
-    ViewBag.Title = "Edit order";
+    ViewBag.Title = "Изменить";
 }
 
-<div class="orderTable">
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        <br />
-        <div class="form-horizontal">
-            <h4>Изменение заказа</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.Id)
+<div class="container">
+    <div class="divTable">
+        <h4>
+            <b>Изменить данные о заказе</b>
+        </h4>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
 
 
-            <div class="moreInformationOrder">
-                <div class="col-md-10">
-                    <label>Скидка, руб</label>
-                    <input type="number" class="form-control" name="Discount" id="Discount" min="0" max="999999" value=@Convert.ToDouble(Model.Discount) onchange="calculateLeftToPay()" />
-                    @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="moreInformationOrder">
-
-                <div class="form-group">
+                <div class="moreInformationOrder">
                     <div class="col-md-10">
-                        <label>Оплата наличными</label>
-                        <input type="number" class="form-control" name="CashPayment" id="CashPayment" value=@Convert.ToDouble(Model.Payment.CashPayment) min="0" max="999999" onchange="calculateLeftToPay()" />
-                        @Html.ValidationMessageFor(model => model.Payment.CashPayment, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-10">
-                        <label>Оплата картой</label>
-                        <input type="number" class="form-control" name="CardPayment" id="CardPayment" value=@Convert.ToDouble(Model.Payment.CardPayment) min="0" max="999999" onchange="calculateLeftToPay()" />
-                        @Html.ValidationMessageFor(model => model.Payment.CardPayment, "", new { @class = "text-danger" })
+                        <label>Скидка, руб</label>
+                        <input type="number" class="form-control" name="Discount" id="Discount" min="0" max="999999" value=@Convert.ToDouble(Model.Discount) onchange="calculateLeftToPay()" />
+                        @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                     </div>
                 </div>
+                <div class="moreInformationOrder">
 
-                <div class="form-group">
-                    <div class="col-md-10">
-                        <label>Залог наличными</label>
-                        <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value=@Convert.ToDouble(Model.Payment.CashDeposit) min="0" max="999999" onchange="calculateLeftToPay()" />
-                        @Html.ValidationMessageFor(model => model.Payment.CashDeposit, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label>Оплата наличными</label>
+                            <input type="number" class="form-control" name="CashPayment" id="CashPayment" value=@Convert.ToDouble(Model.Payment.CashPayment) min="0" max="999999" onchange="calculateLeftToPay()" />
+                            @Html.ValidationMessageFor(model => model.Payment.CashPayment, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-10">
+                            <label>Оплата картой</label>
+                            <input type="number" class="form-control" name="CardPayment" id="CardPayment" value=@Convert.ToDouble(Model.Payment.CardPayment) min="0" max="999999" onchange="calculateLeftToPay()" />
+                            @Html.ValidationMessageFor(model => model.Payment.CardPayment, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                    <div class="col-md-10">
-                        <label>Залог картой</label>
-                        <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value=@Convert.ToDouble(Model.Payment.CardDeposit) min="0" max="999999" onchange="calculateLeftToPay()" />
-                        @Html.ValidationMessageFor(model => model.Payment.CardDeposit, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label>Залог наличными</label>
+                            <input type="number" class="form-control" name="CashDeposit" id="CashDeposit" value=@Convert.ToDouble(Model.Payment.CashDeposit) min="0" max="999999" onchange="calculateLeftToPay()" />
+                            @Html.ValidationMessageFor(model => model.Payment.CashDeposit, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-10">
+                            <label>Залог картой</label>
+                            <input type="number" class="form-control" name="CardDeposit" id="CardDeposit" value=@Convert.ToDouble(Model.Payment.CardDeposit) min="0" max="999999" onchange="calculateLeftToPay()" />
+                            @Html.ValidationMessageFor(model => model.Payment.CardDeposit, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label>Документ</label>
+                            @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Payment.TypeDocumentId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-10">
+                            <label>Оплата бонусами, руб</label>
+                            <input type="number" class="form-control" name="BonusPayment" id="BonusPayment" min="0" max="999999" value=@Convert.ToDouble(Model.Payment.BonusPayment) onchange="calculateLeftToPay()" readonly />
+                            @Html.ValidationMessageFor(model => model.Payment.BonusPayment, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-10">
-                        <label>Документ</label>
-                        @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Payment.TypeDocumentId, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-10">
-                        <label>Оплата бонусами, руб</label>
-                        <input type="number" class="form-control" name="BonusPayment" id="BonusPayment" min="0" max="999999" value=@Convert.ToDouble(Model.Payment.BonusPayment) onchange="calculateLeftToPay()" readonly />
-                        @Html.ValidationMessageFor(model => model.Payment.BonusPayment, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-group" id="totalDiv">
-                <label>Осталось оплатить: </label>
-                <label id="LeftToPay">0</label>
-                <label> руб</label>
-            </div>
-            <div class="form-group" id="totalDiv">
-                <b>
-                    <label>Всего к оплате: </label>
-                    @Html.LabelFor(model => model.Payment.TotalSum, (string)@ViewBag.TotalSum)
+                <div class="form-group" id="totalDiv">
+                    <label>Осталось оплатить: </label>
+                    <label id="LeftToPay">0</label>
                     <label> руб</label>
-                </b>
+                </div>
+                <div class="form-group" id="totalDiv">
+                    <b>
+                        <label>Всего к оплате: </label>
+                        @Html.LabelFor(model => model.Payment.TotalSum, (string)@ViewBag.TotalSum)
+                        <label> руб</label>
+                    </b>
+                </div>
+                <input type="submit" value="Сохранить" class="btn btn btn-primary ml-0 " />
+                <a class="btn btn btn-danger " href="@Url.Action("Index","Orders")">
+                    Отмена
+                </a>
+                <br />
             </div>
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Изменить" class="btn btn btn-danger float-md-left" />
-            </div>
-            <br />
-        </div>
-    }
+        }
 
+    </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {

@@ -3,23 +3,32 @@
 @{
     ViewBag.Title = "Удалить";
 }
-<div class="orderTable">
-    <h3>Вы уверены что хотите удалить данного пользователя?</h3>
-    <div>
+<div class="container">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="divTable">
+        <h2>Вы уверены что хотите удалить данного пользователя?</h2>
         <hr />
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            <b>
-                <label>Логин пользователя:</label>
-                @Html.DisplayFor(model => model.Username)
-            </b>
-            <div class="form-actions no-color">
-                <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
-                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Users")">
-                    Отмена
-                </a>
-            </div>
-        }
+
+        <b>
+            <label>Логин пользователя:</label>
+        </b>
+        @Html.DisplayFor(model => model.Username)
+        <br />
+        <b>
+            <label>ФИО пользователя:</label>
+        </b>
+        @Html.DisplayFor(model => model.ContactUser.ShortName)
+        <br />
+        <div class="form-actions no-color">
+            <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
+            <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Users")">
+                Отмена
+            </a>
+        </div>
     </div>
+    }
 </div>

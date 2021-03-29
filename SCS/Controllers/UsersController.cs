@@ -63,6 +63,8 @@ namespace SCS.Controllers
 					Username = Username,
 					Password = Password
 				};
+				var userInitialsName = (Name != null && Name.Length > 0) ? Name[0] : ' ';
+				var userInitialsPatronymic = (Patronymic != null && Patronymic.Length > 0) ? Patronymic[0] : ' ';
 				СontactUser contactUser = new СontactUser()
 				{
 					Passport = Passport,
@@ -73,7 +75,7 @@ namespace SCS.Controllers
 					Name = Name,
 					Patronymic = Patronymic,
 					Phone = Phone,
-					ShortName = $"{Surname} {Name[0]}. {Patronymic[0]}."
+					ShortName = $"{Surname} {userInitialsName}. {userInitialsPatronymic}."
 				};
 				db.ContactUser.Add(contactUser);
 				await db.SaveChangesAsync();
@@ -148,7 +150,7 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			User user = await db.Users.FindAsync(id);
+			User user = db.Users.Include(cu => cu.ContactUser).FirstOrDefault(u => u.Id == id);
 			if (user == null)
 			{
 				return HttpNotFound();

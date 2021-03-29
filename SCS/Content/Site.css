@@ -29,6 +29,7 @@ hr {
 .checkboxTransport {
     width: 20px;
     height: 20px;
+    margin: 1em;
 }
 
 .logo {
@@ -161,8 +162,7 @@ footer {
     display: table-header-group;
 }
 
-
-.orderTableMore {
+.filterPanel {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -170,11 +170,26 @@ footer {
     margin: 0 2em 2em 0;
 }
 
+.orderTableMore {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 2em 0 0;
+}
+
 .orderTable {
     margin: 0 0 0 7em;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+.userTable {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 2em 1em 0;
 }
 
 .moreInformationOrder {

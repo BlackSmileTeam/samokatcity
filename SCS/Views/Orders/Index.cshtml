@@ -10,7 +10,7 @@
         @using (Ajax.BeginForm("Filter", new AjaxOptions { UpdateTargetId = "result" }))
         {
             @Html.AntiForgeryToken()
-            <div class="moreInformationOrder">
+            <div class="moreInformationOrder filterPanel">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="orderTableMore">
                     @Html.Label("Статус заказа")
@@ -25,7 +25,7 @@
                     <input type="date" id="dateEnd" name="dateEnd" class="form-control" value="@String.Format("{0:yyyy-MM-dd}", DateTime.Now)" data-date-format="m/d/yyyy" title="Дата окончания действия заказа" />
                 </div>
                 <div class="orderTableMore">
-                    <div></div>
+                    <div class="filterPanel"></div>
                     <input type="submit" value="Поиск" id="search" class="btn btn-outline-dark" />
                 </div>
             </div>
@@ -55,9 +55,13 @@
                     string className = "";
                     if ((item.Payment.TotalSum - item.Payment.CardDeposit - item.Payment.CardPayment - item.Payment.CashDeposit - item.Payment.CashPayment - item.Payment.BonusPayment - item.Discount) != 0)
                     {
-                        className = "p-3 mb-2 bg-danger text-white";
+                        className = "text-danger";
                     }
-                    <tr class="@className">
+                    else
+                    {
+                        className = "text-success";
+                    }
+                    <tr>
                         <td>
                             <a class="btn dropdown-toggle dropdown-toggle-split" id="icon-@item.Id" onclick="showDetails(@item.Id)" />
                         </td>
@@ -74,8 +78,8 @@
                             @Html.DisplayFor(modelItem => item.DateStart)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.StatusOrder)
-                        </td>
+                            <label class="  @className">@Html.DisplayFor(modelItem => item.StatusOrder)</label>
+</td>
                         <td>
                             <a href="@Url.Action("Edit", "Orders", new { id = item.Id })">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

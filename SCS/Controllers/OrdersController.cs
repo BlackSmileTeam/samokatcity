@@ -118,10 +118,9 @@ namespace SCS.Controllers
 			}
 			//Получаем связанные данные
 			order.OrderTransports = db.OrderTransport.Include(ot => ot.Rates).Include(ot => ot.Transport).Where(ot => ot.OrderId == id).ToList();
+			order.OrderAccessories = db.OrderAccessories.Include(ot => ot.Rates).Include(oa => oa.Accessories).Where(ot => ot.OrderId == id).ToList();
 
 			order.Payment = db.Payment.Include(p => p.TypeDocument).FirstOrDefault(s => s.Id == order.PaymentId);
-
-			ViewBag.Accessories = db.Accessories.Where(a => a.Status == 1);
 
 			return PartialView(order);
 		}
@@ -210,14 +209,19 @@ namespace SCS.Controllers
 						totalSum += db.Transport.Find(transp).Markup;
 					}
 				}
-
-				foreach (var Rate in RatesIdTransport)
+				if(RatesIdTransport != null)
 				{
-					totalSum += db.Rates.Find(Rate).Price;
+					foreach (var Rate in RatesIdTransport)
+					{
+						totalSum += db.Rates.Find(Rate).Price;
+					}
 				}
-				foreach (var Rate in RatesIdAccessories)
+				if (RatesIdAccessories != null)
 				{
-					totalSum += db.Rates.Find(Rate).Price;
+					foreach (var Rate in RatesIdAccessories)
+					{
+						totalSum += db.Rates.Find(Rate).Price;
+					}
 				}
 
 				totalSum += CountLock * 100;

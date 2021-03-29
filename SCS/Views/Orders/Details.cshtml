@@ -14,7 +14,7 @@
             {
                 <p>Паспорт: @Html.DisplayFor(model => model.User.ContactUser.Passport)</p>
                 <p>Адрес: @Html.DisplayFor(model => model.User.ContactUser.City), ул. @Html.DisplayFor(model => model.User.ContactUser.Street), д. @Html.DisplayFor(model => model.User.ContactUser.Home)</p>
-                <p>Телефон: @Html.DisplayFor(model => model.User.ContactUser.Phone)</p>
+                <p style="margin-bottom:0em">Телефон: @Html.DisplayFor(model => model.User.ContactUser.Phone)</p>
             }
             else
             {
@@ -28,31 +28,44 @@
             Тарифы
         </nobr>
         <div class="orderTableMore">
-            <div class=" moreInformationRates">
-                <div class="orderTableMore">
-                    @foreach (var oa in ViewBag.Accessories)
-                    {
-                        <p>@oa.Name</p>
-                    }
+            @if (Model.OrderAccessories.Count > 0)
+            {
+                <div class=" moreInformationRates">
+                    <div class="orderTableMore">
+                        @foreach (var oa in Model.OrderAccessories)
+                        {
+                            <p> @oa.Rates.Name</p>
+                        }
+                    </div>
+                    <br />
+                    <div class="orderTableMore">
+                        @foreach (var oa in Model.OrderAccessories)
+                        {
+                            <p>  @oa.Accessories.Name</p>
+                        }
+                    </div>
                 </div>
-            </div>
-            <div class=" moreInformationRates">
-                <div class="orderTableMore">
-                    @foreach (var oa in Model.OrderTransports)
-                    {
-                        <p>
-                            @oa.Rates.Name
-                        </p>
-                    }
+            }
+            @if (Model.OrderTransports.Count > 0)
+            {
+                <div class=" moreInformationRates">
+                    <div class="orderTableMore">
+                        @foreach (var ot in Model.OrderTransports)
+                        {
+                            <p>
+                                @ot.Rates.Name
+                            </p>
+                        }
+                    </div>
+                    <br />
+                    <div class="orderTableMore">
+                        @foreach (var ot in Model.OrderTransports)
+                        {
+                            <p>  @ot.Transport.Name</p>
+                        }
+                    </div>
                 </div>
-                <br />
-                <div class="orderTableMore">
-                    @foreach (var oa in Model.OrderTransports)
-                    {
-                        <p>  @oa.Transport.Name</p>
-                    }
-                </div>
-            </div>
+            }
             <div class=" moreInformationRates">
                 <div class="orderTableMore">
                     <p>Количество замков</p>
@@ -74,20 +87,15 @@
             @if (Model.Payment != null)
             {
                 <p>
-                    @Model.Payment.CashPayment - оплата наличными
+                    Оплата наличными - @Model.Payment.CashPayment
                 </p>
                 <p>
-                    @Model.Payment.CardPayment - оплата картой
+                    Оплата картой - @Model.Payment.CardPayment
                 </p>
-                <p>
-                    @Model.Payment.BonusPayment - оплата бонусами
+                <p style="margin-bottom:0em">
+                    Оплата бонусами - @Model.Payment.BonusPayment
                 </p>
-                <p>
-                    @Model.Payment.CashDeposit - залог наличными
-                </p>
-                <p>
-                    @Model.Payment.CardDeposit - залог картой
-                </p>
+
 
             }
             else
@@ -96,21 +104,22 @@
             }
 
         </div>
-    </div>
-
-    <hr class="hrPunct" />
-    <div class="moreInformationOrder">
-        <nobr>
-            Скидка
-        </nobr>
-        <div class="orderTableMore">
-            <div class=" moreInformationRates">
+        @if (Model.Payment != null)
+        {
+            <div class="orderTableMore">
                 <p>
-                    @Model.Discount
+                    Залог наличными - @Model.Payment.CashDeposit
+                </p>
+                <p>
+                    Залог картой - @Model.Payment.CardDeposit
+                </p>
+                <p style="margin-bottom:0em">
+                    Скидка - @Model.Discount
                 </p>
             </div>
-        </div>
+        }
     </div>
+
 
     <hr class="hrPunct" />
     <div class="moreInformationOrder">
@@ -129,17 +138,16 @@
     <hr class="hrPunct" />
     <div class="moreInformationOrder">
         <nobr>
-            <b> Итого:</b>
         </nobr>
         <div class="orderTableMore">
             <div class=" moreInformationRates">
                 @if (@Model.Payment != null)
                 {
                     <p>
-                        <b>Всего - @Model.Payment.TotalSum, руб</b>
+                        <b>Всего:</b>  @Model.Payment.TotalSum, руб
                     </p>
                     <p>
-                        <b>Осталось к оплате - @(Model.Payment.TotalSum - Model.Payment.CashPayment - Model.Payment.CashDeposit - Model.Payment.CardPayment - Model.Payment.CardDeposit - Model.Payment.BonusPayment - Model.Discount), руб</b>
+                        <b>Осталось к оплате:</b> @(Model.Payment.TotalSum - Model.Payment.CashPayment - Model.Payment.CashDeposit - Model.Payment.CardPayment - Model.Payment.CardDeposit - Model.Payment.BonusPayment - Model.Discount), руб
                     </p>
                 }
                 else
