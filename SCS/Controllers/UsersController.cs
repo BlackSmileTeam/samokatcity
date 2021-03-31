@@ -101,7 +101,7 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			User user = await db.Users.FindAsync(id);
+			User user = await db.Users.Include(c => c.ContactUser).FirstOrDefaultAsync(u => u.Id == id);
 			if (user == null)
 			{
 				return HttpNotFound();
@@ -115,30 +115,37 @@ namespace SCS.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Edit(int Id, string Username, string Password, string Passport, string City,
-											   string Home, string Apartament, string Surname, string Name,
-											   string Patronymic, string Phone)
+											   string Home, string Apartment, string Surname, string Street,
+											   string Patronymic, string Phone, string Name)
 		{
-			User user = db.Users.Find(Id);
-			user.Username = Username;
-			user.Password = Password;
-			СontactUser сontactUser = db.ContactUser.Find(user.ContactUserId);
-			сontactUser.Passport = Passport;
-			сontactUser.City = City;
-			сontactUser.Home = Home;
-			сontactUser.Apartment = Apartament;
-			сontactUser.Surname = Surname;
-			сontactUser.Name = Name;
-			сontactUser.Patronymic = Patronymic;
-			сontactUser.Phone = Phone;
-			сontactUser.ShortName = $"{Surname} {Name[0]}. {Patronymic}.";
-
-			if (ModelState.IsValid)
+			User user = db.Users.Include(cu => cu.ContactUser).FirstOrDefault(u => u.Id == Id);
+			if (user != null)
 			{
+				user.Username = Username;
+				user.Password = Password;
+				var userInitialsName = (Name != null && Name.Length > 0) ? Name[0] : ' ';
+				var userInitialsPatronymic = (Patronymic != null && Patronymic.Length > 0) ? Patronymic[0] : ' ';
 
-				db.Entry(user).State = EntityState.Modified;
-				db.Entry(сontactUser).State = EntityState.Modified;
-				await db.SaveChangesAsync();
-				return RedirectToAction("Index");
+
+				user.ContactUser.Passport = Passport;
+				user.ContactUser.City = City;
+				user.ContactUser.Home = Home;
+				user.ContactUser.Apartment = Apartment;
+				user.ContactUser.Surname = Surname;
+				user.ContactUser.Name = Name;
+				user.ContactUser.Patronymic = Patronymic;
+				user.ContactUser.Phone = Phone;
+				user.ContactUser.Street = Street;
+				user.ContactUser.ShortName = $"{Surname} {userInitialsName}. {userInitialsPatronymic}.";
+
+				if (ModelState.IsValid)
+				{
+
+					db.Entry(user).State = EntityState.Modified;
+					//db.Entry(сontactUser).State = EntityState.Modified;
+					await db.SaveChangesAsync();
+					return RedirectToAction("Index");
+				}
 			}
 			return View(user);
 		}
@@ -165,6 +172,22 @@ namespace SCS.Controllers
 		{
 			User user = await db.Users.FindAsync(id);
 			СontactUser сontactUser = await db.ContactUser.FindAsync(user.ContactUserId);
+
+			foreach (var order in db.Orders.Include(p=>p.Payment).Include(oa => oa.OrderAccessories).Include(ot=>ot.OrderTransports).Where(u=>u.UserId == id))
+			{
+				foreach (var OA in order.OrderAccessories.ToList())
+				{
+					db.OrderAccessories.Remove(OA);
+				}
+				foreach (var OT in order.OrderTransports.ToList())
+				{
+					db.OrderTransport.Remove(OT);
+				}
+
+				db.Payment.Remove(order.Payment);
+				db.Orders.Remove(order);
+			}
+
 			db.Users.Remove(user);
 			db.ContactUser.Remove(сontactUser);
 			await db.SaveChangesAsync();

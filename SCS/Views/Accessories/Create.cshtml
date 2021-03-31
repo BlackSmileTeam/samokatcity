@@ -3,15 +3,14 @@
 @{
     ViewBag.Title = "Добавить аксессуар";
 }
-
-<div class="orderTable">
-    <h2>Добавить аксессуар</h2>
+<div class="container">
 
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-horizontal">
+        <div class="divTable">
+            <h2>Новый аксессуар</h2>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">

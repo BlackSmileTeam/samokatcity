@@ -3,24 +3,26 @@
 @{
     ViewBag.Title = "Удалить";
 }
-<div class="orderTable">
-    <h3>Вы уверены что хотите удалить данный аксессуар?</h3>
-    <div>
-        <hr />
+<div class="container">
+    <div class="divTable">
+        <h3>Вы уверены что хотите удалить данный аксессуар?</h3>
+        <div>
+            <hr />
 
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            <b>
-                <label>Наименование аксессуара:</label>
-                @Html.DisplayFor(model => model.Name)
-            </b>
-            <div class="form-actions no-color">
-                <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
-                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Accessories")">
-                    Отмена
-                </a>
-            </div>
-        }
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <b>
+                    <label>Наименование аксессуара:</label>
+                    @Html.DisplayFor(model => model.Name)
+                </b>
+                <div class="form-actions no-color">
+                    <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
+                    <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Accessories")">
+                        Отмена
+                    </a>
+                </div>
+            }
+        </div>
     </div>
 </div>

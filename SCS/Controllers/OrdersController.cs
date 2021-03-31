@@ -85,7 +85,7 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public ActionResult Filter(string statusOrder, DateTime dateStart, DateTime dateEnd)
 		{
-			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Where(o => o.DateStart >= dateStart && o.DateStart <= dateEnd).ToList();
+			var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Include(p => p.Payment).Where(o => o.DateStart >= dateStart && o.DateStart <= dateEnd).ToList();
 
 			if (statusOrder != "Все")
 			{

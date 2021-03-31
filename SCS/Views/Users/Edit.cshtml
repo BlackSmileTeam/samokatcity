@@ -15,6 +15,8 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <div class="moreInformationOrder">
             <nobr>
                 Авторизационные данные
@@ -26,7 +28,7 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                        <input value=@Model.Username class="form-control" name="Username" id="Username" required />
                         @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -36,12 +38,13 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                        <input value=@Model.Password class="form-control" name="Password" id="Password" required />
                         @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="moreInformationOrder">
             <nobr>
                 Данные о клиенте
@@ -53,7 +56,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Surname" id="Surname" />
+                        <input value=@Model.ContactUser.Surname class="form-control" name="Surname" id="Surname" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Surname, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -62,7 +66,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Name" id="Name" />
+                        <input value=@Model.ContactUser.Name class="form-control" name="Name" id="Name" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Name, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -71,7 +76,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Patronymic" id="Patronymic" />
+                        <input value=@Model.ContactUser.Patronymic class="form-control" name="Patronymic" id="Patronymic"required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Patronymic, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -80,7 +86,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Phone" id="Phone" />
+                        <input type="tel" pattern="^\+7\d{3}\d{7}$" value=@Model.ContactUser.Phone inputmode="tel" class="form-control" name="Phone" id="Phone" maxlength="12" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Phone, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
@@ -97,7 +104,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Passport" id="Passport" />
+                        <input value=@Model.ContactUser.Passport class="form-control" name="Passport" id="Passport" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Passport, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -106,7 +114,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="City" id="City" />
+                        <input value=@Model.ContactUser.City class="form-control" name="City" id="City" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.City, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -115,7 +124,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Street" id="Street" />
+                        <input value=@Model.ContactUser.Street class="form-control" name="Street" id="Street" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Street, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -124,7 +134,8 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Home" id="Home" />
+                        <input value=@Model.ContactUser.Home class="form-control" name="Home" id="Home" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Home, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class=" moreInformationRates">
@@ -133,18 +144,18 @@
                     </div>
                     <br />
                     <div class="userTable">
-                        <input class="form-control" name="Apartament" id="Apartament" />
+                        <input value=@Model.ContactUser.Apartment class="form-control" name="Apartment" id="Apartment" required />
+                        @Html.ValidationMessageFor(model => model.ContactUser.Apartment, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-md-offset-2 col-md-10">
 
-
-
-
-
-        <div class="col-md-offset-2 mb-5">
-            <input type="submit" value="Добавить" class="btn btn btn-danger float-md-left" />
+            <input type="submit" value="Сохранить" class="btn btn btn-primary ml-0 " />
+            <a class="btn btn btn-danger " href="@Url.Action("Index","Users")">
+                Отмена
+            </a>
         </div>
     </div>
     }

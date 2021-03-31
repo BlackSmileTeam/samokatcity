@@ -4,14 +4,13 @@
     ViewBag.Title = "Create";
 }
 
-<div class="container">
-
+<div class="container" id="generalDiv">
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
         <div class="divTable">
-            <h2>Добавление тарифа</h2>
+            <h2>Новый тариф</h2>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -19,7 +18,7 @@
                 <nobr>
                     Наименование тарифа
                 </nobr>
-                <div class="orderTableMore">
+                <div class="userTable">
                     <div class=" moreInformationRates">
                         @Html.EditorFor(model => model.Name, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -31,7 +30,7 @@
                 <nobr>
                     Время начала действия тарифа
                 </nobr>
-                <div class="orderTableMore">
+                <div class="userTable">
                     <div class=" moreInformationRates">
                         @Html.EditorFor(model => model.TimeStart, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.TimeStart, "", new { @class = "text-danger" })
@@ -43,7 +42,7 @@
                 <nobr>
                     @Html.LabelFor(model => model.TimeEnd)
                 </nobr>
-                <div class="orderTableMore">
+                <div class="userTable">
                     <div class=" moreInformationRates">
                         @Html.EditorFor(model => model.TimeEnd, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.TimeEnd, "", new { @class = "text-danger" })
@@ -55,7 +54,7 @@
                 <nobr>
                     Продолжительность, ч
                 </nobr>
-                <div class="orderTableMore">
+                <div class="userTable">
                     <div class=" moreInformationRates">
                         @Html.EditorFor(model => model.Duration, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
@@ -67,7 +66,7 @@
                 <nobr>
                     Цена, руб
                 </nobr>
-                <div class="orderTableMore">
+                <div class="userTable">
                     <div class=" moreInformationRates">
                         @Html.EditorFor(model => model.Price, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
@@ -80,7 +79,7 @@
                 <nobr>
                     Транспортный тариф
                 </nobr>
-                <div class="orderTableMore">
+                <div class="userTable">
                     <div class=" moreInformationRates">
                         @Html.CheckBox("IsTransport", false, new { @class = "checkboxTransport" })
                     </div>
