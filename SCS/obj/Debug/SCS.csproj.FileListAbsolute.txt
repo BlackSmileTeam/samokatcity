@@ -98,3 +98,5 @@ D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.CopyComplete
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.dll
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.pdb
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csprojAssemblyReference.cache
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.First.resources
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.GenerateResource.cache

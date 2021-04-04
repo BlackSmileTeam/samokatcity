@@ -9,87 +9,91 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="divTable">
-            <h2>Новый тариф</h2>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="divTable">
+        <h2>Новый тариф</h2>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="moreInformationOrder">
-                <nobr>
-                    Наименование тарифа
-                </nobr>
-                <div class="userTable">
-                    <div class=" moreInformationRates">
-                        @Html.EditorFor(model => model.Name, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                    </div>
+        <div class="moreInformationOrder">
+            <nobr>
+                Наименование тарифа
+            </nobr>
+            <div class="userTable">
+                <div class=" moreInformationRates">
+                    @Html.EditorFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                 </div>
-            </div>
-
-            <div class="moreInformationOrder">
-                <nobr>
-                    Время начала действия тарифа
-                </nobr>
-                <div class="userTable">
-                    <div class=" moreInformationRates">
-                        @Html.EditorFor(model => model.TimeStart, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.TimeStart, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="moreInformationOrder">
-                <nobr>
-                    @Html.LabelFor(model => model.TimeEnd)
-                </nobr>
-                <div class="userTable">
-                    <div class=" moreInformationRates">
-                        @Html.EditorFor(model => model.TimeEnd, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.TimeEnd, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="moreInformationOrder">
-                <nobr>
-                    Продолжительность, ч
-                </nobr>
-                <div class="userTable">
-                    <div class=" moreInformationRates">
-                        @Html.EditorFor(model => model.Duration, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="moreInformationOrder">
-                <nobr>
-                    Цена, руб
-                </nobr>
-                <div class="userTable">
-                    <div class=" moreInformationRates">
-                        @Html.EditorFor(model => model.Price, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="moreInformationOrder">
-                <nobr>
-                    Транспортный тариф
-                </nobr>
-                <div class="userTable">
-                    <div class=" moreInformationRates">
-                        @Html.CheckBox("IsTransport", false, new { @class = "checkboxTransport" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-offset-2 mb-5">
-                <input type="submit" value="Добавить" class="btn btn btn-danger float-md-left" />
             </div>
         </div>
+
+        <div class="moreInformationOrder">
+            <nobr>
+                Время начала действия тарифа
+            </nobr>
+            <div class="userTable">
+                <div class=" moreInformationRates">
+                    @*@Html.EditorFor(model => model.TimeStart, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.TimeStart, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+        </div>
+
+        @*<div class="moreInformationOrder">
+            <nobr>
+                @Html.LabelFor(model => model.TimeEnd)
+            </nobr>
+            <div class="userTable">
+                <div class=" moreInformationRates">
+                    @Html.EditorFor(model => model.TimeEnd, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.TimeEnd, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>*@
+
+        <div class="moreInformationOrder">
+            <nobr>
+                Продолжительность, ч
+            </nobr>
+            <div class="userTable">
+                <div class=" moreInformationRates">
+                    @Html.EditorFor(model => model.Duration, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="moreInformationOrder">
+            <nobr>
+                Цена, руб
+            </nobr>
+            <div class="userTable">
+                <div class=" moreInformationRates">
+                    @Html.EditorFor(model => model.Price, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="moreInformationOrder">
+            <nobr>
+                Транспортный тариф
+            </nobr>
+            <div class="userTable">
+                <div class=" moreInformationRates">
+                    @Html.CheckBox("IsTransport", false, new { @class = "checkboxTransport" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-offset-2 col-md-10">
+
+            <input type="submit" value="Добавить" class="btn btn btn-primary ml-0 " />
+            <a class="btn btn btn-danger " href="@Url.Action("Index","Rates")">
+                Отмена
+            </a>
+        </div>
+    </div>
     }
 
 

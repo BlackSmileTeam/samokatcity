@@ -34,7 +34,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.TimeStart)
                         </td>
                         <td>
@@ -45,7 +45,7 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Price)
-                        </td>
+                        </td>*@
                         <td>
                             <a href="@Url.Action("Edit", "Rates", new { id = item.Id })">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

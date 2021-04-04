@@ -34,7 +34,7 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
-			user.ContactUser = db.ContactUser.Find(user.ContactUserId);
+			//user.ContactUser = db.ContactUser.Find(user.ContactUserId);
 
 
 			return PartialView(user);
@@ -83,14 +83,14 @@ namespace SCS.Controllers
 				//Добавляем созданные данные пользователя к авторизационным данным
 				user.ContactUser = contactUser;
 				//У полученные данных пользователя и сохраненных в БД берем ID (которые сгенерирован автоматически) и присваиваем в модель пользователя
-				user.ContactUserId = contactUser.Id;
+				//user.ContactUserId = contactUser.Id;
 
 				db.Users.Add(user);
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
 			}
 
-			ViewBag.ContactUserId = new SelectList(db.ContactUser, "Id", "ShortName", user.ContactUserId);
+			//ViewBag.ContactUserId = new SelectList(db.ContactUser, "Id", "ShortName", user.ContactUserId);
 			return View(user);
 		}
 
@@ -157,7 +157,7 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			User user = db.Users.Include(cu => cu.ContactUser).FirstOrDefault(u => u.Id == id);
+			User user = await db.Users.Include(cu => cu.ContactUser).FirstOrDefaultAsync(u => u.Id == id);
 			if (user == null)
 			{
 				return HttpNotFound();
@@ -171,25 +171,25 @@ namespace SCS.Controllers
 		public async Task<ActionResult> DeleteConfirmed(int id)
 		{
 			User user = await db.Users.FindAsync(id);
-			СontactUser сontactUser = await db.ContactUser.FindAsync(user.ContactUserId);
+			//СontactUser сontactUser = await db.ContactUser.FindAsync(user.ContactUserId);
 
-			foreach (var order in db.Orders.Include(p=>p.Payment).Include(oa => oa.OrderAccessories).Include(ot=>ot.OrderTransports).Where(u=>u.UserId == id))
-			{
-				foreach (var OA in order.OrderAccessories.ToList())
-				{
-					db.OrderAccessories.Remove(OA);
-				}
-				foreach (var OT in order.OrderTransports.ToList())
-				{
-					db.OrderTransport.Remove(OT);
-				}
+			//foreach (var order in db.Orders.Include(p => p.Payment).Include(oa => oa.OrderAccessories).Include(ot => ot.OrderTransports).Where(u => u.UserId == id))
+			//{
+			//	foreach (var OA in order.OrderAccessories.ToList())
+			//	{
+			//		db.OrderAccessories.Remove(OA);
+			//	}
+			//	foreach (var OT in order.OrderTransports.ToList())
+			//	{
+			//		db.OrderTransport.Remove(OT);
+			//	}
 
-				db.Payment.Remove(order.Payment);
-				db.Orders.Remove(order);
-			}
+			//	db.Payment.Remove(order.Payment);
+			//	db.Orders.Remove(order);
+			//}
 
 			db.Users.Remove(user);
-			db.ContactUser.Remove(сontactUser);
+			//db.ContactUser.Remove(сontactUser);
 			await db.SaveChangesAsync();
 			return RedirectToAction("Index");
 		}

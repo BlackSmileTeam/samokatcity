@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
 
 namespace SCS.Models
 {
@@ -18,9 +14,13 @@ namespace SCS.Models
 		public DbSet<OrderAccessories> OrderAccessories { get; set; }
 		public DbSet<Payment> Payment { get; set; }
 		public DbSet<Rates> Rates { get; set; }
+		public DbSet<RatesTransports> RatesTransports { get; set; }
 		public DbSet<Transport> Transport { get; set; }
-		public DbSet<TypeDocument> TypeDocument { get; set; }
 		public DbSet<User> Users { get; set; }
+		public DbSet<Helpers> Helpers { get; set; }
+		public DbSet<Promotions> Promotions { get; set; }
+		public DbSet<PromotionsTransportModels> PromotionsTransportModels { get; set; }
+		public DbSet<TransportModels> TransportModels { get; set; }
 	}
 
 	public class DBInitializzer : DropCreateDatabaseIfModelChanges<SCSContext>

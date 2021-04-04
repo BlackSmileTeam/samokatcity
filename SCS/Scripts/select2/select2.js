@@ -53,6 +53,38 @@ $('#UserId').on('select2:select', function (e) {
         }
     });
 });
+
+
+$("#TransportSelect2").select2({
+    placeholder: "Выберете название модели",
+    //theme: "bootstrap4",
+    allowClear: true,
+    ajax: {
+        url: "/api/web/GetModel",
+        contentType: "application/json; charset=utf-8",
+        data: function (params) {
+            var query =
+            {
+                term: params.term,
+            };
+            return query;
+        },
+        processResults:
+            function (result) {
+                return {
+                    results: $.map(result, function (item) {
+                        return {
+                            id: item.Id,
+                            text: item.Name
+                        };
+                    })
+                };
+            }
+    }
+});
+
+
+
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.

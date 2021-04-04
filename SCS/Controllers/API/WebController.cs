@@ -31,20 +31,28 @@ namespace SCS.Controllers.API
 		{
 			if (!string.IsNullOrEmpty(term))
 			{
-				string json = "";
-
-				var states = await db.Users.Include(u => u.ContactUser).ToListAsync();
-				var data = states.Where(a => a.ContactUser.Name.Contains(term)
+				var states = await db.Users.Include(u => u.ContactUser).Where(a => a.ContactUser.Name.Contains(term)
 				|| a.ContactUser.Surname.Contains(term)
-				|| a.ContactUser.Patronymic.Contains(term)).ToList();
+				|| a.ContactUser.Patronymic.Contains(term)).ToListAsync();
 
-				json = JsonConvert.SerializeObject(data, Formatting.Indented);
-
-				return data;
+				return states;
 			}
 			else
 			{
-				return null;
+				return await db.Users.Include(u => u.ContactUser).Take(10).ToListAsync();
+			}
+		}
+		[HttpGet]
+		public List<TransportModels> GetModel(string term)
+		{
+			if (!string.IsNullOrEmpty(term))
+			{
+				var model = db.TransportModels.Where(m => m.Name.Contains(term)).ToList();
+				return model;
+			}
+			else
+			{
+				return db.TransportModels.Take(10).ToList();
 			}
 		}
 
@@ -93,7 +101,7 @@ namespace SCS.Controllers.API
 			if (id != null && id.Length != 0)
 			{
 				int idRates = Convert.ToInt32(id);
-				price = db.Rates.Where(tr => tr.Id == idRates).ToList()[0].Price;
+				//price = db.Rates.Where(tr => tr.Id == idRates).ToList()[0].Price;
 			}
 			return price;
 		}
@@ -106,8 +114,9 @@ namespace SCS.Controllers.API
 		[HttpGet]
 		public bool CheckRate(DateTime dateTime, bool isTransport)
 		{
-			var rates = db.Rates.Where(x => x.IsTransport == isTransport).Where(x => x.TimeStart <= dateTime.TimeOfDay && x.TimeEnd >= dateTime.TimeOfDay);
-			return rates.Count() > 0 ? true : false;
+			//var rates = db.Rates.Where(x => x.IsTransport == isTransport).Where(x => x.TimeStart <= dateTime.TimeOfDay && x.TimeEnd >= dateTime.TimeOfDay);
+			//return rates.Count() > 0 ? true : false;
+			return false;
 		}
 		[HttpGet]
 		public bool CheckTransport(DateTime dateTime)

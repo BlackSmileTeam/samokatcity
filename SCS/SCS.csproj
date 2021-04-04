@@ -154,25 +154,33 @@
     <Compile Include="Controllers\API\WebController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\PromotionsController.cs" />
     <Compile Include="Controllers\RatesController.cs" />
-    <Compile Include="Controllers\testController.cs" />
     <Compile Include="Controllers\TransportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Data\SCSContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104031956423_First.cs" />
+    <Compile Include="Migrations\202104031956423_First.Designer.cs">
+      <DependentUpon>202104031956423_First.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accessories.cs" />
-    <Compile Include="Models\ContactUser.cs" />
-    <Compile Include="Models\CreateOrder.cs" />
-    <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\OrderAccessories.cs" />
-    <Compile Include="Models\OrderTransport.cs" />
-    <Compile Include="Models\Payment.cs" />
-    <Compile Include="Models\Rates.cs" />
-    <Compile Include="Models\Transport.cs" />
-    <Compile Include="Models\TypeDocument.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Rates\RatesTransports.cs" />
+    <Compile Include="Models\User\ContactUser.cs" />
+    <Compile Include="Models\Helpers.cs" />
+    <Compile Include="Models\Order\Order.cs" />
+    <Compile Include="Models\Order\OrderAccessories.cs" />
+    <Compile Include="Models\Order\OrderTransport.cs" />
+    <Compile Include="Models\Order\Payment.cs" />
+    <Compile Include="Models\Promotions\Promotions.cs" />
+    <Compile Include="Models\Promotions\PromotionsTransportModels.cs" />
+    <Compile Include="Models\Rates\Rates.cs" />
+    <Compile Include="Models\Transport\Transport.cs" />
+    <Compile Include="Models\Transport\TransportModels.cs" />
+    <Compile Include="Models\User\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -511,6 +519,11 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper.min.js.map" />
     <Content Include="Scripts\README.md" />
+    <Content Include="Views\Promotions\Create.cshtml" />
+    <Content Include="Views\Promotions\Delete.cshtml" />
+    <Content Include="Views\Promotions\Details.cshtml" />
+    <Content Include="Views\Promotions\Edit.cshtml" />
+    <Content Include="Views\Promotions\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -528,6 +541,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202104031956423_First.resx">
+      <DependentUpon>202104031956423_First.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

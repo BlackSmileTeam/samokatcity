@@ -15,18 +15,6 @@ namespace SCS.Controllers
 	{
 		private SCSContext db = new SCSContext();
 
-		private Dictionary<int, string> statusTransport = new Dictionary<int, string>
-		{
-			{
-				0,"Отсутствует"
-			},
-			{
-				1,"В наличии"
-			},
-			{
-				2 ,"На зарядке"
-			}
-		};
 		public List<SelectListItem> StatusTransport { get; set; }
 		public TransportsController()
 		{
@@ -34,9 +22,10 @@ namespace SCS.Controllers
 
 			StatusTransport.Add(new SelectListItem { Text = "Все" });
 
-			foreach (string tmpStatus in statusTransport.Values)
+			var ListStatus = db.Helpers.Where(h => h.Code == 2).ToList();
+			foreach (var tmpStatus in ListStatus)
 			{
-				StatusTransport.Add(new SelectListItem { Text = tmpStatus });
+				StatusTransport.Add(new SelectListItem { Text = tmpStatus.Text });
 			}
 		}
 
@@ -50,37 +39,14 @@ namespace SCS.Controllers
 		public ActionResult Filter(string StatusTransport)
 		{
 			List<Transport> transports = new List<Transport>();
-			int str = 0;
-			switch (StatusTransport)
-			{
-				case "В наличии":
-					{
-						str = 1;
-						break;
-					}
-				case "Отсутствует":
-					{
-						str = 0;
-						break;
-					}
-				case "На зарядке":
-					{
-						str = 2;
-						break;
-					}
-				default:
-					{
-						str = -1;
-						break;
-					}
-			}
-			if (str == -1)
+			
+			if (StatusTransport == "Все")
 			{
 				transports = db.Transport.Include(tr => tr.OrderTransports).ToList();
 			}
 			else
 			{
-				transports = db.Transport.Include(tr => tr.OrderTransports).Where(tr => tr.Status == str).ToList();
+				transports = db.Transport.Include(tr => tr.OrderTransports).Where(h => h.Status.Text == StatusTransport && h.Status.Code == 2).ToList();
 
 			}
 			ViewBag.StatusOrder = StatusTransport;
@@ -110,7 +76,7 @@ namespace SCS.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				transport.Status = 1;
+				transport.Status.Value = 1;
 				db.Transport.Add(transport);
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
@@ -126,13 +92,13 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Transport transport = await db.Transport.FindAsync(id);
+			Transport transport = await db.Transport.Include(h => h.Status.Code == 2).FirstOrDefaultAsync(t => t.Id == id);
 			if (transport == null)
 			{
 				return HttpNotFound();
 			}
 
-			SelectList status = new SelectList(statusTransport, "Key", "Value", transport.Status);
+			SelectList status = new SelectList(db.Helpers.Where(h => h.Code == 2).ToList(), "Key", "Value", transport.Status.Value);
 			ViewBag.StatusTransport = status;
 
 			return View(transport);

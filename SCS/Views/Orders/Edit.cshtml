@@ -68,29 +68,39 @@
                     </div>
                 </div>
 
-                <div class="form-group" id="totalDiv">
-                    <label>Осталось оплатить: </label>
-                    <label id="LeftToPay">0</label>
-                    <label> руб</label>
+                <div class="moreInformationOrder">
+
+                    <div class="col-md-10">
+                        <label>Примечание</label>
+                        <input type="text" class="form-control" name="Note" id="Note" value=@Convert.ToDouble(Model.Note) />
+                        @Html.ValidationMessageFor(model => model.Payment.CardPayment, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-                <div class="form-group" id="totalDiv">
-                    <b>
-                        <label>Всего к оплате: </label>
-                        @Html.LabelFor(model => model.Payment.TotalSum, (string)@ViewBag.TotalSum)
-                        <label> руб</label>
-                    </b>
-                </div>
-                <input type="submit" value="Сохранить" class="btn btn btn-primary ml-0 " />
-                <a class="btn btn btn-danger " href="@Url.Action("Index","Orders")">
-                    Отмена
-                </a>
-                <br />
             </div>
-        }
+
+            <div class="form-group" id="totalDiv">
+                <label>Осталось оплатить: </label>
+                <label id="LeftToPay">0</label>
+                <label> руб</label>
+            </div>
+            <div class="form-group" id="totalDiv">
+                <b>
+                    <label>Всего к оплате: </label>
+                    @Html.LabelFor(model => model.Payment.TotalSum, (string)@ViewBag.TotalSum)
+                    <label> руб</label>
+                </b>
+            </div>
+            <input type="submit" value="Сохранить" class="btn btn btn-primary ml-0 " />
+            <a class="btn btn btn-danger " href="@Url.Action("Index","Orders")">
+                Отмена
+            </a>
+            <br />
+        </div>
+    }
 
     </div>
-</div>
-<script type="text/javascript">
+    </div>
+    <script type="text/javascript">
     $(document).ready(function () {
         calculateLeftToPay();
     });
@@ -105,11 +115,11 @@
             @Model.Payment.BonusPayment;
 
     }
-</script>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    </script>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
 
-    <script src="~/Scripts/select2/i18n/ru.js"></script>
-    <script src="~/Scripts/select2/select2.full.min.js"></script>
-    <script src="~/Scripts/select2/select2.js"></script>
-}
+        <script src="~/Scripts/select2/i18n/ru.js"></script>
+        <script src="~/Scripts/select2/select2.full.min.js"></script>
+        <script src="~/Scripts/select2/select2.js"></script>
+    }

@@ -1,10 +1,8 @@
 ﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Net;
-//using System.Web.Mvc;
 using SCS.Models;
 using System.Web.Mvc;
-using System.Collections.Generic;
 
 namespace SCS.Controllers
 {
