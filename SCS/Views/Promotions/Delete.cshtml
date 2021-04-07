@@ -3,25 +3,34 @@
 @{
     ViewBag.Title = "Удалить";
 }
-<<div class="container">
+
+<div class="container">
     <div class="divTable">
-        <h3>Вы уверены что хотите удалить данный тариф?</h3>
-        <div>
-            <hr />
-            @using (Html.BeginForm())
-            {
-                @Html.AntiForgeryToken()
-                <b>
-                    <label>Наименование модели:</label>
-                    @Html.DisplayFor(model => model.Name)
-                </b>
-                <div class="form-actions no-color">
-                    <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
-                    <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Rates")">
-                        Отмена
-                    </a>
-                </div>
-            }
-        </div>
+        <h4>
+            <b>Вы уверены что хотите удалить данную акцию?</b>
+        </h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Наименование")
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
+                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","promotions")">
+                    Отмена
+                </a>
+            </div>
+        }
     </div>
 </div>

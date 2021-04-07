@@ -1,74 +1,38 @@
 ﻿@model SCS.Models.Promotions
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Детали";
 }
 
-<h2>Details</h2>
+<div class="orderTable">
+    <div class="moreInformationOrder">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayName("Описание акции")
+            </dt>
 
-<div>
-    <h4>Rates</h4>
-    <hr />
-    @*<dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Accessories.Name)
-        </dt>
+            <dd>
+                <label>@Model.Description</label>
 
-        <dd>
-            @Html.DisplayFor(model => model.Accessories.Name)
-        </dd>
+            </dd>
+            <dt>
+                @Html.DisplayName("Наименование ТС")
+            </dt>
+            @if (Model.PromotionsTransportModels != null && Model.PromotionsTransportModels.Count > 0)
+            {
+                string NameModels = "";
+                foreach (var mod in Model.PromotionsTransportModels)
+                {
+                    NameModels += @mod.TransportModels.Name + ", ";
+                }
+                NameModels = NameModels.Remove(NameModels.Length - 2);
+                <label>@NameModels</label>
+            }
+            <dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Transport.Name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Transport.Name)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TimeStart)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TimeStart)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TimeEnd)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TimeEnd)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Duration)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Duration)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-
-    </dl>*@
+            </dd>
+        </dl>
+    </div>
 </div>
-@*<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>*@

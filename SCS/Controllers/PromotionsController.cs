@@ -1,11 +1,10 @@
-﻿using Microsoft.Ajax.Utilities;
-using SCS.Models;
+﻿using SCS.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
+
 namespace SCS.Controllers
 {
 	public class PromotionsController : Controller
@@ -14,33 +13,20 @@ namespace SCS.Controllers
 		// GET: Promotions
 		public ActionResult Index()
 		{
-
-			var prom = from fac in db.Promotions
-					   join sem in db.PromotionsTransportModels on fac.PromotionsTransportModels equals sem.Id;
-
-			//select new { Faculty = fac, SemesterText = sem.SemesterText };
-
-
-
-			//var ptm = db.PromotionsTransportModels.Include(m => m.TransportModels);
-			var Promotions = db.Promotions.Include(ptm => ptm.PromotionsTransportModels.
-			Join(db.TransportModels,
-				p => p.TransportModels.Id,
-				c => c.Id,
-				(p, c) =>
-				{
-					c.Name = p.TransportModels.Name
-				}));
-			ViewData["TransportModels"] = db.TransportModels;
-			return View(Promotions.ToList());
+			return View(db.Promotions.Include(ptm => ptm.PromotionsTransportModels).ToList());
 		}
 
 		// GET: Promotions/Details/5
 		public ActionResult Details(int id)
 		{
-			var Promotions = db.Promotions.Include(ptm => ptm.PromotionsTransportModels).FirstOrDefault(p => p.Id == id);
+			var promotions = db.Promotions.Include(ptm => ptm.PromotionsTransportModels.Select(m => m.TransportModels)).FirstOrDefault(pr=>pr.Id == id);
 
-			return View();
+			if (promotions == null)
+			{
+				return HttpNotFound();
+			}
+			return PartialView(promotions);
+
 		}
 
 		// GET: Promotions/Create
@@ -63,7 +49,6 @@ namespace SCS.Controllers
 
 		// POST: Promotions/Create
 		[HttpPost]
-		//public ActionResult Create(string Name, string Description, int DayOfWeek,TimeSpan TimeStart, TimeSpan TimeEnd, decimal Discount, List<TransportModels> TransportSelect2)
 		public ActionResult Create(FormCollection collection)
 		{
 			try
@@ -126,7 +111,13 @@ namespace SCS.Controllers
 		// GET: Promotions/Delete/5
 		public ActionResult Delete(int id)
 		{
-			return View();
+			var promotions = db.Promotions.Include(ptm => ptm.PromotionsTransportModels.Select(m => m.TransportModels)).FirstOrDefault(pr => pr.Id == id);
+			if (promotions == null)
+			{
+				return HttpNotFound();
+			}
+
+			return View(promotions);
 		}
 
 		// POST: Promotions/Delete/5
