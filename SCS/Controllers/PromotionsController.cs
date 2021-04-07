@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 
 namespace SCS.Controllers
@@ -19,7 +20,7 @@ namespace SCS.Controllers
 		// GET: Promotions/Details/5
 		public ActionResult Details(int id)
 		{
-			var promotions = db.Promotions.Include(ptm => ptm.PromotionsTransportModels.Select(m => m.TransportModels)).FirstOrDefault(pr=>pr.Id == id);
+			var promotions = db.Promotions.Include(ptm => ptm.PromotionsTransportModels.Select(m => m.TransportModels)).FirstOrDefault(pr => pr.Id == id);
 
 			if (promotions == null)
 			{
@@ -126,13 +127,28 @@ namespace SCS.Controllers
 		{
 			try
 			{
-				// TODO: Add delete logic here
+				var promot = db.Promotions.Find(id);
+				var ptm = db.PromotionsTransportModels.Include(p => p.Promotions).Where(p => p.Promotions.Id == id).ToList();
+				if (promot == null && ptm == null)
+				{
+					return HttpNotFound();
+				}
+
+				foreach (var PTM in ptm)
+				{
+					db.PromotionsTransportModels.Remove(PTM);
+				}
+
+				db.Promotions.Remove(promot);
+
+				db.SaveChanges();
 
 				return RedirectToAction("Index");
 			}
 			catch
 			{
-				return View();
+
+				return RedirectToAction("Index");
 			}
 		}
 	}
