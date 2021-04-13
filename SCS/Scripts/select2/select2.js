@@ -53,8 +53,7 @@ $('#UserId').on('select2:select', function (e) {
         }
     });
 });
-
-
+    
 $("#TransportSelect2").select2({
     placeholder: "Выберете название модели",
     //theme: "bootstrap4",

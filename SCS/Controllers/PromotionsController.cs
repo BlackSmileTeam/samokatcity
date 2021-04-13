@@ -10,6 +10,7 @@ namespace SCS.Controllers
 {
 	public class PromotionsController : Controller
 	{
+		public string data = "gs";
 		private SCSContext db = new SCSContext();
 		// GET: Promotions
 		public ActionResult Index()
@@ -63,7 +64,7 @@ namespace SCS.Controllers
 					DayOfWeek = dayOfWeek,
 					TimeStart = TimeSpan.Parse(collection["TimeStart"]),
 					TimeEnd = TimeSpan.Parse(collection["TimeEnd"]),
-					Discount = decimal.Parse(collection["Discount"])
+					Discount = decimal.Parse(collection["Discount"].ToString().Replace('.', ','))
 				};
 				db.Promotions.Add(promotions);
 				db.SaveChanges();
@@ -90,7 +91,27 @@ namespace SCS.Controllers
 		// GET: Promotions/Edit/5
 		public ActionResult Edit(int id)
 		{
-			return View();
+			List<SelectListItem> dropdownItems = new List<SelectListItem>();
+			dropdownItems.AddRange(new[]{
+										new SelectListItem { Text = "Понедельник", Value = "1"},
+										new SelectListItem { Text = "Вторник", Value = "2"},
+										new SelectListItem { Text = "Среда", Value = "3"},
+										new SelectListItem { Text = "Четверг", Value = "4"},
+										new SelectListItem { Text = "Пятница", Value = "5"},
+										new SelectListItem { Text = "Суббота", Value = "6"},
+										new SelectListItem { Text = "Воскресенье", Value = "7"}
+			});
+			
+			var promotions = db.Promotions.Include(trm => trm.PromotionsTransportModels.Select(m => m.TransportModels)).FirstOrDefault(p => p.Id == id);
+
+			if (promotions == null)
+			{
+				return HttpNotFound();
+			}
+
+			dropdownItems[promotions.DayOfWeek-1].Selected = true;
+			ViewData.Add("DayOfWeek", dropdownItems);
+			return View(promotions);
 		}
 
 		// POST: Promotions/Edit/5
@@ -99,11 +120,44 @@ namespace SCS.Controllers
 		{
 			try
 			{
-				// TODO: Add update logic here
+				int dayOfWeek = 0;
+				int.TryParse(collection["DayOfWeek"].ToString(), out dayOfWeek);
+
+				var promotions = db.Promotions.Find(id);
+				promotions.Name = collection["Name"];
+				promotions.Description = collection["Description"];
+				promotions.DayOfWeek = dayOfWeek;
+				promotions.TimeStart = TimeSpan.Parse(collection["TimeStart"]);
+				promotions.TimeEnd = TimeSpan.Parse(collection["TimeEnd"]);
+				promotions.Discount = decimal.Parse(collection["Discount"].ToString().Replace('.', ','));
+
+
+				db.Entry(promotions).State = EntityState.Modified;
+				db.SaveChanges();
+
+				var Models = collection["TransportSelect2"].Split(',');
+
+				var ptm = db.PromotionsTransportModels.Include(p => p.Promotions).Where(p => p.Promotions.Id == id).ToList();
+				foreach (var PTM in ptm)
+				{
+					db.PromotionsTransportModels.Remove(PTM);
+				}
+
+				db.SaveChanges();
+
+				foreach (var model in Models)
+				{
+					db.PromotionsTransportModels.Add(new PromotionsTransportModels
+					{
+						TransportModels = db.TransportModels.Find(Convert.ToInt32(model)),
+						Promotions = promotions
+					});
+				}
+				db.SaveChanges();
 
 				return RedirectToAction("Index");
 			}
-			catch
+			catch (Exception ex)
 			{
 				return View();
 			}

@@ -55,6 +55,39 @@ namespace SCS.Controllers.API
 				return db.TransportModels.Take(10).ToList();
 			}
 		}
+		public class ModelsSelect2
+		{
+			public string Name { get; set; }
+			public int Id { get; set; }
+			public bool Select { get; set; }
+		}
+		[HttpGet]
+		public async Task<List<ModelsSelect2>> GetModelPromotionsEdit(string term)
+		{
+			if (!string.IsNullOrEmpty(term))
+			{
+				return null;
+			}
+			//else
+			//{
+			//	return db.TransportModels.Take(10).ToList();
+			//}
+
+			var formattedData = db.PromotionsTransportModels.Include(p => p.Promotions).Include(m => m.TransportModels).Where(ptm => ptm.Promotions.Id == Convert.ToInt32(term)).ToList();
+			List<ModelsSelect2> ms2 = new List<ModelsSelect2>();
+			foreach (var model in formattedData)
+			{
+				ms2.Add(new ModelsSelect2
+				{
+					Name = model.TransportModels.Name,
+					Id = model.TransportModels.Id,
+					Select = true
+				});
+
+			}
+
+			return ms2;
+		}
 
 		/// <summary>
 		/// Запрос на получение количества бонусов у пользователя

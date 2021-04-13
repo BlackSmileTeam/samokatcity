@@ -24,7 +24,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <textarea id="Description" name="Description" class="form-control" style="min-height:200px"></textarea>                    
+                    <textarea id="Description" name="Description" class="form-control" style="min-height:200px"></textarea>
                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                 </div>
 
@@ -82,8 +82,6 @@
 </div>
 @Scripts.Render("~/bundles/jqueryval")
 
-<script src="~/Scripts/select2/i18n/ru.js"></script>
-<script src="~/Scripts/select2/select2.full.min.js"></script>
-<script src="~/Scripts/select2/select2.js"></script>
-
-}
+    <script src="~/Scripts/select2/i18n/ru.js"></script>
+    <script src="~/Scripts/select2/select2.full.min.js"></script>
+    <script src="~/Scripts/select2/select2.js"></script>
