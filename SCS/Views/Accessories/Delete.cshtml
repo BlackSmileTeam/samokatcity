@@ -12,10 +12,17 @@
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-                <b>
-                    <label>Наименование аксессуара:</label>
-                    @Html.DisplayFor(model => model.Name)
-                </b>
+
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.Label("Наименование аксессуара:")
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+
+                </dl>
                 <div class="form-actions no-color">
                     <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
                     <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","Accessories")">

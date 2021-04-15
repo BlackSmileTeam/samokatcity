@@ -13,28 +13,18 @@ namespace SCS.Controllers
 {
 	public class AccessoriesController : Controller
 	{
-
-
-		private Dictionary<int, string> statusAccessories = new Dictionary<int, string>
-		{
-			{
-				0,"Отсутствует"
-			},
-			{
-				1,"В наличии"
-			}
-		};
-
 		public List<SelectListItem> StatusAccessories { get; set; }
 		public AccessoriesController()
 		{
 			StatusAccessories = new List<SelectListItem>();
 
-			StatusAccessories.Add(new SelectListItem { Text = "Все" });
+			StatusAccessories.Add(new SelectListItem { Value="-1", Text = "Все" });
 
-			foreach (string tmpStatus in statusAccessories.Values)
+			var status = db.Helpers.Where(statusType => statusType.Code == 3).ToList();
+
+			foreach (var tmpStatus in status)
 			{
-				StatusAccessories.Add(new SelectListItem { Text = tmpStatus });
+				StatusAccessories.Add(new SelectListItem { Value = tmpStatus.Value.ToString(), Text = tmpStatus.Text.ToString() });
 			}
 		}
 		private SCSContext db = new SCSContext();
@@ -43,6 +33,7 @@ namespace SCS.Controllers
 		public async Task<ActionResult> Index()
 		{
 			ViewBag.StatusAccessories = StatusAccessories;
+			ViewData["status"] = db.Helpers.Where(statusType=>statusType.Code == 3).ToList();
 			return View(await db.Accessories.ToListAsync());
 		}
 
@@ -53,37 +44,21 @@ namespace SCS.Controllers
 		/// <param name="dateStart"></param>
 		/// <param name="dateEnd"></param>
 		/// <returns></returns>
-		public ActionResult Filter(string StatusAccessories)
+		public ActionResult Filter(FormCollection collection)
 		{
 			List<Accessories> accessories = new List<Accessories>();
-			int str = 0;
-			switch (StatusAccessories)
-			{
-				case "В наличии":
-					{
-						str = 1;
-						break;
-					}
-				case "Отсутствует":
-					{
-						str = 0;
-						break;
-					}
-				default:
-					{
-						str = -1;
-						break;
-					}
-			}
-			if (str == -1)
+
+			if (collection[1] == "-1")
 			{
 				accessories = db.Accessories.ToList();
 			}
 			else
 			{
-				accessories = db.Accessories.Where(tr => tr.Status == str).ToList();
+				var idStatus = Convert.ToInt32(collection[1]);
+				accessories = db.Accessories.Where(tr => tr.Status == idStatus).ToList();
 			}
-			ViewBag.StatusOrder = StatusAccessories;
+			ViewBag.StatusAccessories = StatusAccessories;
+			ViewData["status"] = db.Helpers.Where(statusType => statusType.Code == 3).ToList();
 
 			return PartialView(accessories);
 		}
@@ -99,7 +74,7 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Status")] Accessories accessories)
+		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Price")] Accessories accessories)
 		{
 			if (ModelState.IsValid)
 			{
@@ -124,10 +99,18 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
-
-			SelectList status = new SelectList(statusAccessories, "Key", "Value", accessories.Status);
-			ViewBag.StatusAccessories = status;
-
+			var status = StatusAccessories;
+			//Удоляем 0 элемент "Все"
+			status.RemoveAt(0);
+			foreach (var stat in status)
+			{
+				if (stat.Value == accessories.Status.ToString())
+				{
+					stat.Selected = true;
+					break;
+				}
+			}
+			ViewData["Status"] = status;
 			return View(accessories);
 		}
 
@@ -136,7 +119,7 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status")] Accessories accessories)
+		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status,Price")] Accessories accessories)
 		{
 			if (ModelState.IsValid)
 			{

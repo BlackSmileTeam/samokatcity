@@ -24,11 +24,15 @@
                         @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                     </div>
+                    <div class="col-md-10">
+                        <label>Цена</label>
+                        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
 
+                    </div>
                     <div class="col-md-10">
                         <label>Статус</label>
-
-                        @Html.DropDownList("Status", ViewBag.StatusAccessories as SelectList, htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownList("Status", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
 
                     </div>
