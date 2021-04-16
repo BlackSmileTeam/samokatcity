@@ -1,0 +1,38 @@
+﻿@model SCS.Models.Promotions
+
+@{
+    ViewBag.Title = "Детали";
+}
+
+<div class="orderTable">
+    <div class="moreInformationOrder">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayName("Описание акции")
+            </dt>
+
+            <dd>
+                <label>@Model.Description</label>
+
+            </dd>
+            <dt>
+                @Html.DisplayName("Наименование ТС")
+            </dt>
+            @if (Model.PromotionsTransportModels != null && Model.PromotionsTransportModels.Count > 0)
+            {
+                string NameModels = "";
+                foreach (var mod in Model.PromotionsTransportModels)
+                {
+                    NameModels += @mod.TransportModels.Name + ", ";
+                }
+                NameModels = NameModels.Remove(NameModels.Length - 2);
+                <label>@NameModels</label>
+            }
+            <dd>
+
+
+
+            </dd>
+        </dl>
+    </div>
+</div>

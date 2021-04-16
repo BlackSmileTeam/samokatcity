@@ -1,0 +1,36 @@
+﻿@model SCS.Models.Promotions
+
+@{
+    ViewBag.Title = "Удалить";
+}
+
+<div class="container">
+    <div class="divTable">
+        <h4>
+            <b>Вы уверены что хотите удалить данную акцию?</b>
+        </h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Наименование")
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
+                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","promotions")">
+                    Отмена
+                </a>
+            </div>
+        }
+    </div>
+</div>

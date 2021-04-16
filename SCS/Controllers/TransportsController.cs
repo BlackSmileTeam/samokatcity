@@ -58,7 +58,7 @@ namespace SCS.Controllers
 		public async Task<ActionResult> Index()
 		{
 			ViewBag.StatusTransport = StatusTransport;
-			return View(await db.Transport.Include(tr => tr.OrderTransports).ToListAsync());
+			return View(await db.Transport.Include(tr => tr.OrderTransports).Include(m=>m.TransportModels).ToListAsync());
 		}
 
 		// GET: Transports/Create

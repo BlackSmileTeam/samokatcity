@@ -10,7 +10,6 @@ namespace SCS.Controllers
 {
 	public class PromotionsController : Controller
 	{
-		public string data = "gs";
 		private SCSContext db = new SCSContext();
 		// GET: Promotions
 		public ActionResult Index()
@@ -201,7 +200,6 @@ namespace SCS.Controllers
 			}
 			catch
 			{
-
 				return RedirectToAction("Index");
 			}
 		}
