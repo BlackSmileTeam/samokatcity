@@ -1,7 +1,9 @@
 ﻿using SCS.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,9 +13,9 @@ namespace SCS.Controllers
 	{
 		private SCSContext db = new SCSContext();
 		// GET: Models
-		public ActionResult Index()
+		public async Task<ActionResult> Index()
 		{
-			return View();
+			return View(await db.TransportModels.ToListAsync());
 		}
 
 		// GET: Models/Details/5

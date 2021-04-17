@@ -51,6 +51,7 @@ namespace SCS.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.СontactUser", t => t.ContactUser_Id);
 
+
             CreateTable(
                 "dbo.Orders",
                 c => new
@@ -162,28 +163,14 @@ namespace SCS.Migrations
                 {
                     Id = c.Int(nullable: false, identity: true),
                     IsBlocked = c.Boolean(nullable: false),
-                    StatusId = c.Int(nullable: false),
+                    Status = c.Int(nullable: false),
                     Markup = c.Decimal(nullable: false, precision: 18, scale: 2),
                     SerialNumber = c.String(unicode: false),
                     IndexNumber = c.String(unicode: false),
                     TransportModels_Id = c.Int(),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Helpers", t => t.StatusId, cascadeDelete: true)
                 .ForeignKey("dbo.TransportModels", t => t.TransportModels_Id);
-            
-            CreateTable(
-                "dbo.Helpers",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        NameHelper = c.String(unicode: false),
-                        Code = c.Int(nullable: false),
-                        Value = c.Int(nullable: false),
-                        Text = c.String(unicode: false),
-                        Queue = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.Payments",
@@ -200,6 +187,19 @@ namespace SCS.Migrations
                     })
                 .PrimaryKey(t => t.Id);
             
+            CreateTable(
+                "dbo.Helpers",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        NameHelper = c.String(unicode: false),
+                        Code = c.Int(nullable: false),
+                        Value = c.Int(nullable: false),
+                        Text = c.String(unicode: false),
+                        Queue = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
         }
         
         public override void Down()
@@ -208,7 +208,6 @@ namespace SCS.Migrations
             DropForeignKey("dbo.Orders", "Payment_Id", "dbo.Payments");
             DropForeignKey("dbo.OrderTransports", "Rates_Id", "dbo.Rates");
             DropForeignKey("dbo.Transports", "TransportModels_Id", "dbo.TransportModels");
-            DropForeignKey("dbo.Transports", "StatusId", "dbo.Helpers");
             DropForeignKey("dbo.OrderTransports", "Transport_Id", "dbo.Transports");
             DropForeignKey("dbo.RatesTransports", "TransportModels_Id", "dbo.TransportModels");
             DropForeignKey("dbo.PromotionsTransportModels", "TransportModels_Id", "dbo.TransportModels");
@@ -219,7 +218,6 @@ namespace SCS.Migrations
             DropForeignKey("dbo.OrderAccessories", "Accessories_Id", "dbo.Accessories");
             DropForeignKey("dbo.Users", "ContactUser_Id", "dbo.СontactUser");
             DropIndex("dbo.Transports", new[] { "TransportModels_Id" });
-            DropIndex("dbo.Transports", new[] { "StatusId" });
             DropIndex("dbo.PromotionsTransportModels", new[] { "TransportModels_Id" });
             DropIndex("dbo.PromotionsTransportModels", new[] { "Promotions_Id" });
             DropIndex("dbo.RatesTransports", new[] { "TransportModels_Id" });
@@ -232,8 +230,8 @@ namespace SCS.Migrations
             DropIndex("dbo.Orders", new[] { "User_Id" });
             DropIndex("dbo.Orders", new[] { "Payment_Id" });
             DropIndex("dbo.Users", new[] { "ContactUser_Id" });
-            DropTable("dbo.Payments");
             DropTable("dbo.Helpers");
+            DropTable("dbo.Payments");
             DropTable("dbo.Transports");
             DropTable("dbo.Promotions");
             DropTable("dbo.PromotionsTransportModels");

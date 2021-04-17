@@ -15,20 +15,31 @@
             <h2>Новый транспорт</h2>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
+        <div class="form-group">
 
-                <div class="col-md-10">
-                    <label>Наименование модели</label>
-                    @*@Html.EditorFor(model => model.ame, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })*@
-                </div>
-                <div class="col-md-10">
-                    <label>Наценка за выходной день</label>
-                    @*@Html.EditorFor(model => model.Markup, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Markup, "", new { @class = "text-danger" })*@
-                </div>
-
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.TransportModels, htmlAttributes: new { @class = "control-label col-md-2" })
+                <select name="TransportSelect2" class="form-control js-example-basic-single" id="TransportSelect2" lang="ru" required>
+                </select>
             </div>
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.SerialNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.SerialNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SerialNumber, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.IndexNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.IndexNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.IndexNumber, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.Markup, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.Markup, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Markup, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
             <div class="col-md-offset-2 col-md-10">
 
@@ -42,3 +53,8 @@
     }
 
 </div>
+@Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>

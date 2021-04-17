@@ -20,13 +20,9 @@ namespace SCS.Controllers
 		{
 			StatusTransport = new List<SelectListItem>();
 
-			StatusTransport.Add(new SelectListItem { Text = "Все" });
+			StatusTransport.Add(new SelectListItem { Value = "-1", Text = "Все" });
 
-			var ListStatus = db.Helpers.Where(h => h.Code == 2).ToList();
-			foreach (var tmpStatus in ListStatus)
-			{
-				StatusTransport.Add(new SelectListItem { Text = tmpStatus.Text });
-			}
+			var status = db.Helpers.Where(statusType => statusType.Code == 2).ToList();
 		}
 
 		/// <summary>
@@ -39,14 +35,14 @@ namespace SCS.Controllers
 		public ActionResult Filter(string StatusTransport)
 		{
 			List<Transport> transports = new List<Transport>();
-			
+
 			if (StatusTransport == "Все")
 			{
 				transports = db.Transport.Include(tr => tr.OrderTransports).ToList();
 			}
 			else
 			{
-				transports = db.Transport.Include(tr => tr.OrderTransports).Where(h => h.Status.Text == StatusTransport && h.Status.Code == 2).ToList();
+				//transports = db.Transport.Include(tr => tr.OrderTransports).Where(h => h.Status.Text == StatusTransport && h.Status.Code == 2).ToList();
 
 			}
 			ViewBag.StatusOrder = StatusTransport;
@@ -57,8 +53,8 @@ namespace SCS.Controllers
 		// GET: Transports
 		public async Task<ActionResult> Index()
 		{
-			ViewBag.StatusTransport = StatusTransport;
-			return View(await db.Transport.Include(tr => tr.OrderTransports).Include(m=>m.TransportModels).ToListAsync());
+			ViewData["StatusTransport"] = StatusTransport;
+			return View(await db.Transport.Include(m => m.TransportModels).ToListAsync());
 		}
 
 		// GET: Transports/Create
@@ -72,11 +68,20 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Create([Bind(Include = "Id,Name,Status, Markup")] Transport transport)
+		public async Task<ActionResult> Create(FormCollection collection)
 		{
+			Transport transport = new Transport();
 			if (ModelState.IsValid)
 			{
-				transport.Status.Value = 1;
+				if (int.TryParse(collection["TransportSelect2"].ToString(), out int idModel))
+				{
+					transport.TransportModels = db.TransportModels.Find(idModel);
+				}
+				transport.SerialNumber = collection["SerialNumber"];
+				transport.IndexNumber = collection["IndexNumber"];
+				transport.Markup = decimal.Parse(collection["Markup"].ToString().Replace('.', ','));
+				transport.IsBlocked = false;
+				transport.Status = 1;
 				db.Transport.Add(transport);
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
@@ -92,14 +97,14 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Transport transport = await db.Transport.Include(h => h.Status.Code == 2).FirstOrDefaultAsync(t => t.Id == id);
+			Transport transport = await db.Transport./*Include(h => h.Status.Code == 2).*/FirstOrDefaultAsync(t => t.Id == id);
 			if (transport == null)
 			{
 				return HttpNotFound();
 			}
 
-			SelectList status = new SelectList(db.Helpers.Where(h => h.Code == 2).ToList(), "Key", "Value", transport.Status.Value);
-			ViewBag.StatusTransport = status;
+			//SelectList status = new SelectList(db.Helpers.Where(h => h.Code == 2).ToList(), "Key", "Value", transport.Status.Value);
+			//ViewBag.StatusTransport = status;
 
 			return View(transport);
 		}

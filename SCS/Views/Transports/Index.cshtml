@@ -17,12 +17,18 @@
                 <div class="orderTableMore">
                     @Html.Label("Статус:")
                     @Html.DropDownList("StatusTransport", null, htmlAttributes: new { @class = "form-control" })
-
                 </div>
 
                 <div class="orderTableMore">
                     <div class="filterPanel"></div>
                     <input type="submit" value="Поиск" id="search" class="btn btn-outline-dark" />
+                </div>
+                <div class="ml-auto">
+                    <div class="filterPanel"></div>
+                    <a href="@Url.Action("Index", "Models")">
+                        <input type="button" value="Модели" id="models" class="btn btn-outline-dark" />
+                    </a>
+                    
                 </div>
             </div>
 
@@ -52,7 +58,6 @@
                     {
                         <tr>
                             <td>
-
                                 @Html.DisplayFor(modelItem => item.TransportModels.Name)
                             </td>
                             <td>
@@ -96,3 +101,20 @@
         </a>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function showDetails(id) {
+            var x = document.getElementById(id);
+            if (x.style.display === 'none') {
+                x.removeAttribute("style");
+                var icon = document.getElementById("icon-" + id);
+                icon.style.transform = 'rotate(-180deg)';
+
+            } else {
+                x.style.display = 'none';
+                var icon = document.getElementById("icon-" + id);
+                icon.style.transform = 'rotate(0deg)';
+            }
+        };
+    </script>
+}

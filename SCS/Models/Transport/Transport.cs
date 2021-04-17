@@ -7,12 +7,17 @@ namespace SCS.Models
 	{
 		public int Id { get; set; }
 		public bool IsBlocked { get; set; } = false;
-		public int StatusId { get; set; }
+		[Display(Name = "Статус")]
+		public int Status { get; set; }
+		[Display(Name = "Наценка (руб)")]
 		public decimal Markup { get; set; } = 0;
+		[Display(Name = "Серийный номер")]
 		public string SerialNumber { get; set; }
+		[Display(Name = "Порядковый номер")]
 		public string IndexNumber { get; set; }
+		[Display(Name = "Наименование модели")]
 		public TransportModels TransportModels { get; set; }
-		public Helpers Status { get; set; }
+	
 
 		public ICollection<OrderTransport> OrderTransports { get; set; }
 

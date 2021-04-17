@@ -13,7 +13,7 @@ namespace SCS.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202104061933547_first"; }
+            get { return "202104170910420_first"; }
         }
         
         string IMigrationMetadata.Source

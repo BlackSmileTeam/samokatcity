@@ -162,7 +162,8 @@ namespace SCS.Controllers
 		/// <returns></returns>
 		public int MaxCountransport(string nameTransport)
 		{
-			return db.Transport.Include(m => m.TransportModels.Name == nameTransport).Include(h => h.Status.Code == 2).Where(h => h.Status.Value == 1).ToList().Count;
+			//return db.Transport.Include(m => m.TransportModels.Name == nameTransport).Include(h => h.Status.Code == 2).Where(h => h.Status.Value == 1).ToList().Count;
+			return 0;
 		}
 
 		public ActionResult AddDropListAccessories(DateTime dateTime)
@@ -250,7 +251,7 @@ namespace SCS.Controllers
 						var trans = db.Transport.FirstOrDefault(tr => tr.Id == idTransport);
 						if (DateStart <= DateTime.Now.AddHours(1))
 						{
-							trans.Status.Value = 0;
+							//trans.Status.Value = 0;
 							db.Entry(trans).State = EntityState.Modified;
 							db.SaveChanges();
 						}

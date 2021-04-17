@@ -1,145 +1,84 @@
 ﻿@model IEnumerable<SCS.Models.TransportModels>
 
 @{
-    ViewBag.Title = "Акции";
+    ViewBag.Title = "Модели";
 }
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 <div class="container">
+
     <div class="divTable">
-        <h4><b>Акции</b></h4>
-        <hr />
-        <table class="table" id="result">
-            <tr style="background-color: #F5F5F5">
-                <th></th>
-                <th>
-                    @Html.Label("Наименование акции")
-                </th>
-                <th>
-                    @Html.Label("День недели акции")
-                </th>
-                <th>
-                    @Html.Label("Время начала акции")
-                </th>
-                <th>
-                    @Html.Label("Время окончания акции")
-                </th>
-                <th>
-                    @Html.Label("Скидка")
-                </th>
-                <th></th>
-            </tr>
-            @if (Model != null && Model.Count() > 0)
-            {
-                foreach (var item in Model)
-                {
-        <tr>
-            <td>
-                <a class="btn dropdown-toggle dropdown-toggle-split" id="icon-@item.Id" onclick="showDetails(@item.Id)" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @switch (item.DayOfWeek)
-                {
-                    case 1:
-                        {
-                            <label>Понедельник</label>
-                            break;
-                        }
-                    case 2:
-                        {
-                            <label>Вторник</label>
-                            break;
-                        }
-                    case 3:
-                        {
-                            <label>Среда</label>
+        <h4><b>Модели</b></h4>
 
-                            break;
-                        }
-                    case 4:
-                        {
-                            <label>Четверг</label>
-                            break;
-                        }
-                    case 5:
-                        {
-                            <label>Пятница</label>
-                            break;
-                        }
-                    case 6:
-                        {
-                            <label>Суббота</label>
-                            break;
-                        }
-                    case 7:
-                        {
-                            <label>Воскресенье</label>
-                            break;
-                        }
+        @using (Ajax.BeginForm("Filter", new AjaxOptions { UpdateTargetId = "result" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="moreInformationOrder filterPanel">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="orderTableMore">
+                    @Html.Label("Статус:")
+                    @Html.DropDownList("StatusTransport", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+
+                <div class="orderTableMore">
+                    <div class="filterPanel"></div>
+                    <input type="submit" value="Поиск" id="search" class="btn btn-outline-dark" />
+                </div>                
+            </div>
+
+            <table class="table" id="result">
+                <tr style="background-color: #F5F5F5">
+                    <th>
+                        @Html.Label("Наименование модели")
+                    </th>
+                    <th>
+                        @Html.Label("Время зарядки")
+                    </th>
+                    <th>
+                        @Html.Label("Наценка")
+                    </th>
+                    <th />
+                    <th />
+                </tr>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ChargingTime)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Markup)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Edit", "Models", new { id = item.Id })">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" />
+                                        <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" />
+                                    </svg>
+                                </a>
+                                <a href="@Url.Action("Delete", "Models", new { id = item.Id })" class="close" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Discount)
-            </td>
-
-            <td>
-                <a href="@Url.Action("Edit", "Promotions", new { id = item.Id })">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" />
-                        <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" />
-                    </svg>
-                </a>
-                <a href="@Url.Action("Delete", "Promotions", new { id = item.Id, Prtomotion = 1 })" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </a>
-            </td>
-        </tr>
-                    <tr id="@item.Id" style="display:none">
+                else
+                {
+                    <tr>
                         <td colspan="6">
-                            @Html.Action("Details", new { id = item.Id })
+                            <center> Данные отсутствуют</center>
                         </td>
                     </tr>
                 }
-            }
-            else
-            {
-
-                <tr>
-                    <td colspan="6">
-                        <center>Данные отсутствуют</center>
-                    </td>
-                </tr>
-            }
-        </table>
-
+            </table>
+        }
         <a href="@Url.Action("Create","Models")" class="btn btn-default btn-circle">
             +
         </a>
     </div>
 </div>
-
-
-@section Scripts {
-    <script>
-        function showDetails(id) {
-            var x = document.getElementById(id);
-            if (x.style.display === 'none') {
-                x.removeAttribute("style");
-                var icon = document.getElementById("icon-" + id);
-                icon.style.transform = 'rotate(-180deg)';
-
-            } else {
-                x.style.display = 'none';
-                var icon = document.getElementById("icon-" + id);
-                icon.style.transform = 'rotate(0deg)';
-            }
-        };
-    </script>
-}
