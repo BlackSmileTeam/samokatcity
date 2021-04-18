@@ -1,0 +1,90 @@
+﻿@model SCS.Models.TransportModels
+
+@{
+    ViewBag.Title = "Изменить";
+}
+
+<div class="container">
+    <div class="divTable">
+        <h4>
+            <b>Изменить данные о модели</b>
+        </h4>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="moreInformationOrder">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ChargingTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <input type="number" id="ChargingTime" name="ChargingTime" value=@Model.ChargingTime.ToString().Replace(',','.') class="form-control" />
+                        @Html.ValidationMessageFor(model => model.ChargingTime, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Markup, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <input type="number" id="Markup" name="Markup" value=@Model.Markup.ToString().Replace(',','.') class="form-control" />
+                        @Html.ValidationMessageFor(model => model.Markup, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-offset-2 col-md-10">                
+                <input type="submit" value="Изменить" class="btn btn btn-primary ml-0 " />
+                <a class="btn btn btn-danger " href="@Url.Action("Index","Promotions")">
+                    Отмена
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>
+<script>
+
+
+    //$(document).ready(function () {
+    //    //alert();
+    //    $.ajax({
+    //        url: "/api/web/GetModelPromotionsEdit",
+    //        contentType: "application/json; charset=utf-8",
+    //        data: function () {
+    //            var query =
+    //            {
+    //                term: "7",
+    //            };
+    //            return query;
+    //        },
+    //        success:
+    //            function (result) {
+    //                $("#TransportSelect2").select2({
+    //                    data: data
+    //                });
+    //            }
+    //    });
+    //});
+    //alert(@ViewData["models"] );
+</script>

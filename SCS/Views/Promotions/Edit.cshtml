@@ -65,7 +65,6 @@
                     @Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <input type="number" id="Discount" name="Discount" value= @Model.Discount.ToString().Replace(',','.') class="form-control" />
-                        @*@Html.EditorFor(model => model.Discount.ToString("0.00"), new { htmlAttributes = new { @class = "form-control" } })*@
                         @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                     </div>
                 </div>

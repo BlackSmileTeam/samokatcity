@@ -1,4 +1,4 @@
-﻿@model SCS.Models.Promotions
+﻿@model SCS.Models.TransportModels
 
 @{
     ViewBag.Title = "Удалить";
@@ -7,7 +7,7 @@
 <div class="container">
     <div class="divTable">
         <h4>
-            <b>Вы уверены что хотите удалить данную акцию?</b>
+            <b>Вы уверены что хотите удалить данную модель?</b>
         </h4>
         <hr />
         <dl class="dl-horizontal">
@@ -27,7 +27,7 @@
 
             <div class="form-actions no-color">
                 <input type="submit" value="ДА" class="btn btn btn-danger float-md-left" />
-                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","promotions")">
+                <a class="btn btn btn-primary ml-4" href="@Url.Action("Index","TMoldes")">
                     Отмена
                 </a>
             </div>

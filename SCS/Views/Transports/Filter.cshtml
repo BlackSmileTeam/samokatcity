@@ -24,24 +24,19 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
+                    @Html.DisplayFor(modelItem => item.TransportModels.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.SerialNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IndexNumber)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Markup)
                 </td>
                 <td>
-                    @if (item.Status == 1)
-                    {
-                        @Html.Label("В наличии")
-                    }
-                    else
-                    {
-                        @Html.Label("Отсутствует")
-
-                    }
+                    @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
                     <a href="@Url.Action("Edit", "Transports", new { id = item.Id })">

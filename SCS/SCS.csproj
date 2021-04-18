@@ -153,7 +153,7 @@
     <Compile Include="Controllers\AccessoriesController.cs" />
     <Compile Include="Controllers\API\WebController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ModelsController.cs" />
+    <Compile Include="Controllers\TModelsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\PromotionsController.cs" />
     <Compile Include="Controllers\RatesController.cs" />
@@ -525,12 +525,10 @@
     <Content Include="Views\Promotions\Details.cshtml" />
     <Content Include="Views\Promotions\Edit.cshtml" />
     <Content Include="Views\Promotions\Index.cshtml" />
-    <Content Include="Views\Models\Index.cshtml" />
-    <Content Include="Views\Models\Create.cshtml" />
-    <Content Include="Views\Models\Delete.cshtml" />
-    <Content Include="Views\Models\Details.cshtml" />
-    <Content Include="Views\Models\Edit.cshtml" />
-    <Content Include="Views\Models\Filter.cshtml" />
+    <Content Include="Views\TModels\Index.cshtml" />
+    <Content Include="Views\TModels\Create.cshtml" />
+    <Content Include="Views\TModels\Delete.cshtml" />
+    <Content Include="Views\TModels\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

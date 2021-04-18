@@ -23,6 +23,17 @@ namespace SCS.Controllers
 			StatusTransport.Add(new SelectListItem { Value = "-1", Text = "Все" });
 
 			var status = db.Helpers.Where(statusType => statusType.Code == 2).ToList();
+			foreach (var stTr in status)
+			{
+				StatusTransport.Add(new SelectListItem { Value = stTr.Value.ToString(), Text = stTr.Text });
+			}
+		}
+
+		// GET: Transports
+		public async Task<ActionResult> Index()
+		{
+			ViewData["StatusTransport"] = StatusTransport;
+			return View(await db.Transport.Include(m => m.TransportModels).ToListAsync());
 		}
 
 		/// <summary>
@@ -36,26 +47,21 @@ namespace SCS.Controllers
 		{
 			List<Transport> transports = new List<Transport>();
 
-			if (StatusTransport == "Все")
+			ViewData["StatusTransport"] = this.StatusTransport;
+			if (StatusTransport == "-1")
 			{
-				transports = db.Transport.Include(tr => tr.OrderTransports).ToList();
+				transports = db.Transport.Include(m => m.TransportModels).ToList();
 			}
 			else
 			{
-				//transports = db.Transport.Include(tr => tr.OrderTransports).Where(h => h.Status.Text == StatusTransport && h.Status.Code == 2).ToList();
-
+				var statusNumber = int.Parse(StatusTransport);
+				transports = db.Transport.Include(m => m.TransportModels).Where(t => t.Status == statusNumber).ToList();
 			}
 			ViewBag.StatusOrder = StatusTransport;
 
 			return PartialView(transports);
 		}
 
-		// GET: Transports
-		public async Task<ActionResult> Index()
-		{
-			ViewData["StatusTransport"] = StatusTransport;
-			return View(await db.Transport.Include(m => m.TransportModels).ToListAsync());
-		}
 
 		// GET: Transports/Create
 		public ActionResult Create()
@@ -97,15 +103,23 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Transport transport = await db.Transport./*Include(h => h.Status.Code == 2).*/FirstOrDefaultAsync(t => t.Id == id);
+			Transport transport = await db.Transport.FindAsync(id);
 			if (transport == null)
 			{
 				return HttpNotFound();
 			}
-
-			//SelectList status = new SelectList(db.Helpers.Where(h => h.Code == 2).ToList(), "Key", "Value", transport.Status.Value);
-			//ViewBag.StatusTransport = status;
-
+			var status = StatusTransport;
+			//Удоляем 0 элемент "Все"
+			status.RemoveAt(0);
+			foreach (var stat in status)
+			{
+				if (stat.Value == transport.Status.ToString())
+				{
+					stat.Selected = true;
+					break;
+				}
+			}
+			ViewData["Status"] = status;
 			return View(transport);
 		}
 
@@ -114,10 +128,24 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Status,Markup")] Transport transport)
+		public async Task<ActionResult> Edit(int id, FormCollection collection)
 		{
+			Transport transport = new Transport();
 			if (ModelState.IsValid)
 			{
+				transport = db.Transport.Find(id);
+				transport.IndexNumber = collection["IndexNumber"];
+				transport.SerialNumber = collection["SerialNumber"];
+				transport.Markup = decimal.Parse(collection["Markup"].ToString().Replace('.', ','));
+				transport.Status = int.Parse(collection["Status"]);
+				TransportModels transportModels = new TransportModels();
+				if (int.TryParse(collection["TransportSelect2"], out int idModel))
+				{
+					transportModels = db.TransportModels.Find(idModel);
+				}
+
+				transport.TransportModels = transportModels;
+
 				db.Entry(transport).State = EntityState.Modified;
 				await db.SaveChangesAsync();
 				return RedirectToAction("Index");
@@ -126,13 +154,13 @@ namespace SCS.Controllers
 		}
 
 		// GET: Transports/Delete/5
-		public async Task<ActionResult> Delete(int? id)
+		public ActionResult Delete(int? id)
 		{
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Transport transport = await db.Transport.FindAsync(id);
+			Transport transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == id);
 			if (transport == null)
 			{
 				return HttpNotFound();
@@ -141,14 +169,30 @@ namespace SCS.Controllers
 		}
 
 		// POST: Transports/Delete/5
-		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> DeleteConfirmed(int id)
+
+		[HttpPost]
+		public ActionResult Delete(int id, FormCollection collection)
 		{
-			Transport transport = await db.Transport.FindAsync(id);
-			db.Transport.Remove(transport);
-			await db.SaveChangesAsync();
-			return RedirectToAction("Index");
+			try
+			{
+				Transport transport = db.Transport.Find(id);
+				db.Transport.Remove(transport);
+				var orderTransport = db.OrderTransport.Include(tr => tr.Transport).Where(tr => tr.Transport.Id == id);
+
+				foreach (var ot in orderTransport)
+				{
+					db.Orders.Remove(ot.Order);
+					db.OrderTransport.Remove(ot);
+				}
+
+				db.SaveChanges();
+
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return RedirectToAction("Index");
+			}
 		}
 
 		protected override void Dispose(bool disposing)

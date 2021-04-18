@@ -13,6 +13,8 @@ namespace SCS.Controllers
 {
 	public class AccessoriesController : Controller
 	{
+		private SCSContext db = new SCSContext();
+
 		public List<SelectListItem> StatusAccessories { get; set; }
 		public AccessoriesController()
 		{
@@ -27,7 +29,6 @@ namespace SCS.Controllers
 				StatusAccessories.Add(new SelectListItem { Value = tmpStatus.Value.ToString(), Text = tmpStatus.Text.ToString() });
 			}
 		}
-		private SCSContext db = new SCSContext();
 
 		// GET: Accessories
 		public async Task<ActionResult> Index()
