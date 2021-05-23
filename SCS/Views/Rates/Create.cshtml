@@ -4,97 +4,65 @@
     ViewBag.Title = "Create";
 }
 
+
 <div class="container" id="generalDiv">
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
-    <div class="divTable">
-        <h2>Новый тариф</h2>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="moreInformationOrder">
-            <nobr>
-                Наименование тарифа
-            </nobr>
-            <div class="userTable">
-                <div class=" moreInformationRates">
-                    @Html.EditorFor(model => model.Name, new { @class = "form-control" })
+        <div class="divTable">
+            <h2>Новый тариф</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                 </div>
-            </div>
-        </div>
 
-        <div class="moreInformationOrder">
-            <nobr>
-                Время начала действия тарифа
-            </nobr>
-            <div class="userTable">
-                <div class=" moreInformationRates">
-                    @*@Html.EditorFor(model => model.TimeStart, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.TimeStart, "", new { @class = "text-danger" })*@
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <textarea id="Description" name="Description" class="form-control" style="min-height:200px"></textarea>
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                 </div>
-            </div>
-        </div>
-
-        @*<div class="moreInformationOrder">
-            <nobr>
-                @Html.LabelFor(model => model.TimeEnd)
-            </nobr>
-            <div class="userTable">
-                <div class=" moreInformationRates">
-                    @Html.EditorFor(model => model.TimeEnd, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.TimeEnd, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>*@
-
-        <div class="moreInformationOrder">
-            <nobr>
-                Продолжительность, ч
-            </nobr>
-            <div class="userTable">
-                <div class=" moreInformationRates">
-                    @Html.EditorFor(model => model.Duration, new { @class = "form-control" })
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.Duration, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.EditorFor(model => model.Duration, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
                 </div>
-            </div>
-        </div>
-
-        <div class="moreInformationOrder">
-            <nobr>
-                Цена, руб
-            </nobr>
-            <div class="userTable">
-                <div class=" moreInformationRates">
-                    @Html.EditorFor(model => model.Price, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+               
+                <h4>Модели</h4>
+                <hr />
+                <div id="model">
                 </div>
-            </div>
-        </div>
-
-
-        <div class="moreInformationOrder">
-            <nobr>
-                Транспортный тариф
-            </nobr>
-            <div class="userTable">
-                <div class=" moreInformationRates">
-                    @Html.CheckBox("IsTransport", false, new { @class = "checkboxTransport" })
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" value="+" id="addModels" class="btn btn-outline-dark" />
                 </div>
+                <br />
+            </div>
+
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Добавить" class="btn btn btn-primary ml-0 " />
+                <a class="btn btn btn-danger " href="@Url.Action("Index","Rates")">
+                    Отмена
+                </a>
             </div>
         </div>
-
-        <div class="col-md-offset-2 col-md-10">
-
-            <input type="submit" value="Добавить" class="btn btn btn-primary ml-0 " />
-            <a class="btn btn btn-danger " href="@Url.Action("Index","Rates")">
-                Отмена
-            </a>
-        </div>
-    </div>
     }
 
 
 </div>
+
+
+<script>
+    $("#addModels").click(function () {
+        $.ajax({
+            url: 'AddDropListModels',
+            datatype: 'html',
+            success: function (data) {
+                $("#model").append(data);                
+            }
+        })
+    });
+</script>

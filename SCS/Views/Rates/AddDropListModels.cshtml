@@ -1,0 +1,23 @@
+﻿@model IEnumerable<SCS.Models.TransportModels>
+@{
+    Layout = null;
+}
+<div class="moreInformationOrder" id="transport-@ViewBag.countTransport">
+    <div class="d-flex flex-row bd-highlight mb-3">
+        <div class="col-md-10">
+            <label>Наименование </label>
+            @Html.DropDownList("Model", ViewBag.Models as SelectList, "Выберете значение",
+                               htmlAttributes: new { @class = "Model form-control", id = string.Format("Model-{0}", ViewData["countModels"]) }
+                               )
+        </div>
+        <div class="col-md-10">
+            @Html.Label("Цена", htmlAttributes: new { @class = "control-label col-md-2" })
+            <input type="number" id="Price" name="Price" class="form-control" title="Цена" value="0" min="0" required>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jqueryval")
+    
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>

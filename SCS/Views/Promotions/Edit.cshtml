@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Изменить";
 }
-
 <div class="container">
     <div class="divTable">
         <h4>
@@ -40,7 +39,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.DayOfWeek, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownList("DayOfWeek",null, new { @class = "form-control" })
+                        @Html.DropDownList("DayOfWeek", ViewData["DayOfWeek"] as List<SelectListItem>, new { @class = "form-control", multiple = "multiple" })
                         @Html.ValidationMessageFor(model => model.DayOfWeek, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -64,7 +63,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        <input type="number" id="Discount" name="Discount" value= @Model.Discount.ToString().Replace(',','.') class="form-control" />
+                        <input type="number" id="Discount" name="Discount" value=@Model.Discount.ToString().Replace(',','.') class="form-control" />
                         @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                     </div>
                 </div>

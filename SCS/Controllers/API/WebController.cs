@@ -121,7 +121,7 @@ namespace SCS.Controllers.API
 				if (dateStart.DayOfWeek.ToString().ToLower() == "суббота" || dateStart.DayOfWeek.ToString().ToLower() == "воскресенье" ||
 					dateStart.DayOfWeek.ToString().ToLower() == "saturday" || dateStart.DayOfWeek.ToString().ToLower() == "sunday")
 				{
-					markup = db.Transport.Where(tr => tr.Id == idTransport).ToList()[0].Markup;
+					//markup = db.Transport.Where(tr => tr.Id == idTransport).ToList()[0].Markup;
 				}
 			}
 
@@ -164,6 +164,42 @@ namespace SCS.Controllers.API
 			List<Accessories> access = db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
 
 			return access.Count() > 0 ? true : false;
+		}
+		[HttpGet]
+		public int CountFreeAccessories(DateTime dateTime, string nameAccessories)
+		{
+			var nameAccessoriesFind = db.Accessories.Find(Convert.ToInt32(nameAccessories)).Name;
+			List<Accessories> access = db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").Where(ac => ac.Name == nameAccessoriesFind).ToList();
+
+			return access.Count();
+		}
+		[HttpGet]
+		public int CountFreeTransport(DateTime dateTime, string idTransportModels)
+		{
+			int idTrModel = Convert.ToInt32(idTransportModels);
+			var nameTransportModelsFind = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTrModel).TransportModels.Id;
+
+			var transp = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+			List<int> idTransp = new List<int>();
+			List<Transport> transports = new List<Transport>();
+			foreach (var trans in transp)
+			{
+				var tmpTransp = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trans.Id && tr.TransportModels.Id == nameTransportModelsFind);
+				if (tmpTransp != null)
+				{
+					transports.Add(tmpTransp);
+				}
+			}
+			return transports.Count();
+		}
+
+		[HttpGet]
+		public List<Promotions> GetPromotions(DateTime dateTime)
+		{
+			int dayOfWeek = (int)dateTime.DayOfWeek;
+			List<Promotions> promotions = db.Promotions.Include(pr=>pr.PromotionsTransportModels.Select(tm=>tm.TransportModels)).Where(day => day.DayOfWeek.Contains(dayOfWeek.ToString())).ToList();
+
+			return promotions;
 		}
 	}
 }

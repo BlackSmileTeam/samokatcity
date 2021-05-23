@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<SCS.Models.Transport>
-
+@using SCS.Models;
 @{
     ViewBag.Title = "Транспорт";
 }
@@ -28,7 +28,7 @@
                     <a href="@Url.Action("Index", "TModels")">
                         <input type="button" value="Модели" id="models" class="btn btn-outline-dark" />
                     </a>
-                    
+
                 </div>
             </div>
 
@@ -42,9 +42,6 @@
                     </th>
                     <th>
                         @Html.Label("Порядковый номер")
-                    </th>
-                    <th>
-                        @Html.Label("Наценка")
                     </th>
                     <th>
                         @Html.Label("Статус")
@@ -67,10 +64,15 @@
                                 @Html.DisplayFor(modelItem => item.IndexNumber)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Markup)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Status)
+                                @foreach (var status in ViewData["status"] as List<Helpers>)
+                                {
+                                    if (status.Value == item.Status)
+                                    {
+                                        @Html.Label(status.Text)
+                                        break;
+                                    }
+                                }
+
                             </td>
                             <td>
                                 <a href="@Url.Action("Edit", "Transports", new { id = item.Id })">

@@ -100,3 +100,5 @@ D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.pdb
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csprojAssemblyReference.cache
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.first.resources
 D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.csproj.GenerateResource.cache
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.UpdateRates.resources
+D:\Project\DotNET\ASP.NET\SCS\SCS\obj\Debug\SCS.Migrations.UpdateTransportPromotion.resources

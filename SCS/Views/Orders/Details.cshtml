@@ -32,10 +32,7 @@
             {
                 <div class=" moreInformationRates">
                     <div class="orderTableMore">
-                        @foreach (var oa in Model.OrderAccessories)
-                        {
-                            @*<p> @oa.Rates.Name</p>*@
-                        }
+                      <p></p>
                     </div>
                     <br />
                     <div class="orderTableMore">
@@ -61,7 +58,7 @@
                     <div class="orderTableMore">
                         @foreach (var ot in Model.OrderTransports)
                         {
-                            @*<p>  @ot.Transport.Name</p>*@
+                            <p>  @ot.Transport.TransportModels.Name</p>
                         }
                     </div>
                 </div>

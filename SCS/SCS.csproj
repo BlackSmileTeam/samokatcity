@@ -167,6 +167,14 @@
     <Compile Include="Migrations\202104170910420_first.Designer.cs">
       <DependentUpon>202104170910420_first.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104191918167_UpdateRates.cs" />
+    <Compile Include="Migrations\202104191918167_UpdateRates.Designer.cs">
+      <DependentUpon>202104191918167_UpdateRates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202104211723133_UpdateTransportPromotion.cs" />
+    <Compile Include="Migrations\202104211723133_UpdateTransportPromotion.Designer.cs">
+      <DependentUpon>202104211723133_UpdateTransportPromotion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Accessories.cs" />
     <Compile Include="Models\Rates\RatesTransports.cs" />
@@ -324,6 +332,8 @@
     <Content Include="Scripts\jquery-3.5.1.min.js" />
     <Content Include="Scripts\jquery-3.5.1.slim.js" />
     <Content Include="Scripts\jquery-3.5.1.slim.min.js" />
+    <Content Include="Scripts\jquery.multi-select.js" />
+    <Content Include="Scripts\jquery.multi-select.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -529,6 +539,7 @@
     <Content Include="Views\TModels\Create.cshtml" />
     <Content Include="Views\TModels\Delete.cshtml" />
     <Content Include="Views\TModels\Edit.cshtml" />
+    <Content Include="Views\Rates\AddDropListModels.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -550,6 +561,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202104170910420_first.resx">
       <DependentUpon>202104170910420_first.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104191918167_UpdateRates.resx">
+      <DependentUpon>202104191918167_UpdateRates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104211723133_UpdateTransportPromotion.resx">
+      <DependentUpon>202104211723133_UpdateTransportPromotion.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

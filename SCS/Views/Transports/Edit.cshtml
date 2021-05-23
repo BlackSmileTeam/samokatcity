@@ -38,11 +38,6 @@
                     </div>
 
                     <div class="col-md-10">
-                        @Html.LabelFor(model => model.Markup, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <input type="number" id="Markup" name="Markup" value=@Model.Markup.ToString().Replace(',','.') class="form-control" />
-                        @Html.ValidationMessageFor(model => model.Markup, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-10">
                         @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
                         @Html.DropDownList("Status", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })

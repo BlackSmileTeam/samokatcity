@@ -9,5 +9,6 @@ namespace SCS.Models
 		public int Id { get; set; }
 		public Rates Rates { get; set; }
 		public TransportModels TransportModels { get; set; }
+		public decimal Price { get; set; }
 	}
 }

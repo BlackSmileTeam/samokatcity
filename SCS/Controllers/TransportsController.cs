@@ -32,7 +32,8 @@ namespace SCS.Controllers
 		// GET: Transports
 		public async Task<ActionResult> Index()
 		{
-			ViewData["StatusTransport"] = StatusTransport;
+			ViewBag.StatusTransport = StatusTransport;
+			ViewData["status"] = db.Helpers.Where(statusType => statusType.Code == 2).ToList();
 			return View(await db.Transport.Include(m => m.TransportModels).ToListAsync());
 		}
 
@@ -85,7 +86,6 @@ namespace SCS.Controllers
 				}
 				transport.SerialNumber = collection["SerialNumber"];
 				transport.IndexNumber = collection["IndexNumber"];
-				transport.Markup = decimal.Parse(collection["Markup"].ToString().Replace('.', ','));
 				transport.IsBlocked = false;
 				transport.Status = 1;
 				db.Transport.Add(transport);
@@ -109,7 +109,7 @@ namespace SCS.Controllers
 				return HttpNotFound();
 			}
 			var status = StatusTransport;
-			//Удоляем 0 элемент "Все"
+			//Удаляем 0 элемент "Все"
 			status.RemoveAt(0);
 			foreach (var stat in status)
 			{
@@ -136,7 +136,6 @@ namespace SCS.Controllers
 				transport = db.Transport.Find(id);
 				transport.IndexNumber = collection["IndexNumber"];
 				transport.SerialNumber = collection["SerialNumber"];
-				transport.Markup = decimal.Parse(collection["Markup"].ToString().Replace('.', ','));
 				transport.Status = int.Parse(collection["Status"]);
 				TransportModels transportModels = new TransportModels();
 				if (int.TryParse(collection["TransportSelect2"], out int idModel))

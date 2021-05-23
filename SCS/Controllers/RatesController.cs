@@ -1,14 +1,32 @@
 ﻿using System.Data.Entity;
 using System.Threading.Tasks;
-using System.Net;
 using SCS.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
+using System.Net;
 
 namespace SCS.Controllers
 {
 	public class RatesController : Controller
 	{
 		private SCSContext db = new SCSContext();
+		private int countModels
+		{
+			get
+			{
+				if (Session["countModels"] != null)
+				{
+					return Convert.ToInt32(Session["countModels"]);
+				}
+				return 0;
+			}
+			set
+			{
+				Session["countModels"] = value;
+			}
+		}
 
 		// GET: Rates
 		public async Task<ActionResult> Index()
@@ -25,17 +43,18 @@ namespace SCS.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Rates rates = await db.Rates.FindAsync(id);
+			var rates = db.Rates.Include(rt => rt.RatesTransports.Select(m => m.TransportModels)).FirstOrDefault(pr => pr.Id == id);
 			if (rates == null)
 			{
 				return HttpNotFound();
 			}
-			return View(rates);
+			return PartialView(rates);
 		}
 
 		// GET: Rates/Create
 		public ActionResult Create()
 		{
+			countModels = 0;
 			return View();
 		}
 
@@ -44,16 +63,43 @@ namespace SCS.Controllers
 		// Дополнительные сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Create([Bind(Include = "Id,Name,TimeStart,TimeEnd,Duration,Price,IsTransport")] Rates rates)
+		public async Task<ActionResult> Create(FormCollection collection)
 		{
 			if (ModelState.IsValid)
-			{	
-				db.Rates.Add(rates);
-				await db.SaveChangesAsync();
-				return RedirectToAction("Index");
-			}
+			{
+				Rates rates = new Rates()
+				{
+					Name = collection["Name"],
+					Description = collection["Description"]
+				};
+				if (int.TryParse(collection["Duration"], out int duration))
+				{
+					rates.Duration = duration;
+				}
 
-			return View(rates);
+				db.Rates.Add(rates);
+
+				var models = collection["Model"].Split(',');
+				var prices = collection["Price"].Split(',');
+				for (int i = 0, countModels = models.Count(); i < countModels; ++i)
+				{
+					if (int.TryParse(models[i], out int numberModel))
+					{
+						RatesTransports ratesTransports = new RatesTransports()
+						{
+							TransportModels = db.TransportModels.Find(numberModel),
+							Rates = rates
+						};
+						if (decimal.TryParse(prices[i], out decimal price))
+						{
+							ratesTransports.Price = price;
+						}
+						db.RatesTransports.Add(ratesTransports);
+					}
+				}
+			}
+			await db.SaveChangesAsync();
+			return RedirectToAction("Index");
 		}
 
 		// GET: Rates/Edit/5
@@ -102,17 +148,39 @@ namespace SCS.Controllers
 			return View(rates);
 		}
 
-		// POST: Rates/Delete/5
-		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> DeleteConfirmed(int id)
+
+		// POST: Promotions/Delete/5
+		[HttpPost]
+		public ActionResult Delete(int id, FormCollection collection)
 		{
-			Rates rates = await db.Rates.FindAsync(id);
-			db.Rates.Remove(rates);
-			await db.SaveChangesAsync();
+			try
+			{
+				var rates = db.Rates.Find(id);
+				var ratesTransport = db.RatesTransports.Include(r => r.Rates).Where(r => r.Rates.Id == id);
+				foreach (var rTransport in ratesTransport)
+				{
+					db.RatesTransports.Remove(rTransport);
+				}
+				db.Rates.Remove(rates);
+				db.SaveChanges();
+			}
+			catch
+			{
+			}
+
 			return RedirectToAction("Index");
 		}
-
+		public ActionResult AddDropListModels()
+		{
+			//Добавляем Id для добавленной модели
+			ViewData["countModels"] = countModels;
+			//Увеличиваем id на единицу, что бы следующий блок был с новым id
+			++countModels;
+			Session["countModels"] = countModels;
+			SelectList Models = new SelectList(db.TransportModels, "Id", "Name");
+			ViewBag.Models = Models;
+			return View(db.TransportModels);
+		}
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)

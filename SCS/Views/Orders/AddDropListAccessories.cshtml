@@ -4,18 +4,18 @@
 }
 <div class="moreInformationOrder" id="accessories-@ViewBag.countTransport">
     <div class="form-group">
-        <div class="col-md-10">
-            <label>Тариф</label>
-            @Html.DropDownList("RatesIdAccessories", ((IEnumerable<SelectListItem>)ViewData["Menu"]), "Выберете значение", htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()" })
-        </div>
-    </div>
-    <div class="form-group">
         <div class="col-md-10 accessories">
             <label>Наименование</label>
             @Html.DropDownList("AccessoriesId",
                                ((IEnumerable<SelectListItem>)ViewData["Menu"]),
                                "Выберете значение",
-                               htmlAttributes: new { @class = "Accessories form-control", id = string.Format("Accessories-{0}", ViewBag.countAccessories) })
+                               htmlAttributes: new { @class = "Accessories form-control", @id = string.Format("Accessories-{0}", ViewBag.countAccessories), @onchange = "CountFreeAccessories(this," + ViewBag.countAccessories + ");", @required = "required" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10 accessories">
+            <label>Количество (Доступно: <label id="availableAccessories-@ViewBag.countAccessories" style="margin-bottom:0;">0</label> шт.)</label>
+            <input type="number" min="0" name="countAccessories" id="countAccessories-@ViewBag.countAccessories" class="form-control" value="0" onchange="checkValueAccessories(this);" />
         </div>
     </div>
 
@@ -23,7 +23,32 @@
         <div class="col-md-10">
         </div>
     </div>
-    <button type="button" class="close" aria-label="Close" onclick="deleteBlock('accessories-@ViewBag.countTransport')">
+    <button type="button" class="close" aria-label="Close" onclick="deleteBlock('accessories-@ViewBag.countAccessories')">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
+<script>
+    function CountFreeAccessories(nameAccessories, idInputCounter) {
+        $.ajax({
+            url: "/api/web/CountFreeAccessories",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value,
+                nameAccessories: nameAccessories.value
+            },
+            success: function (data) {
+                $("#countAccessories-" + idInputCounter).attr("max", data);
+                $("#availableAccessories-" + idInputCounter).html(data);
+            }
+        });
+    };
+    function checkValueAccessories(countAccessories) {
+        if (countAccessories.value < countAccessories.min) {
+            countAccessories.value = 0;
+        }
+        if (countAccessories.value > countAccessories.max) {
+            countAccessories.value = countAccessories.max;
+        };
+    };
+</script>

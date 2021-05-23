@@ -11,16 +11,16 @@
             <tr style="background-color: #F5F5F5">
                 <th></th>
                 <th>
-                    @Html.Label("Наименование акции")
+                    @Html.Label("Наименование ")
                 </th>
                 <th>
-                    @Html.Label("День недели акции")
+                    @Html.Label("День недели")
                 </th>
                 <th>
-                    @Html.Label("Время начала акции")
+                    @Html.Label("Время начала")
                 </th>
                 <th>
-                    @Html.Label("Время окончания акции")
+                    @Html.Label("Время окончания")
                 </th>
                 <th>
                     @Html.Label("Скидка")
@@ -38,45 +38,50 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
-                        <td>
-                            @switch (item.DayOfWeek)
+                        <td style="display:flex">
+                            @if (item.DayOfWeek != null)
                             {
-                                case 1:
+                                foreach (var day in item.DayOfWeek.Split(','))
+                                {
+                                    switch (day)
                                     {
-                                        <label>Понедельник</label>
-                                        break;
+                                        case "1":
+                                            {
+                                                <div class="lbl-circle-gray">Пн</div>
+                                                break;
+                                            }
+                                        case "2":
+                                            {
+                                                <div class="lbl-circle-gray">Вт</div>
+                                                break;
+                                            }
+                                        case "3":
+                                            {
+                                                <div class="lbl-circle-gray">Ср</div>
+                                                break;
+                                            }
+                                        case "4":
+                                            {
+                                                <div class="lbl-circle-gray">Чт</div>
+                                                break;
+                                            }
+                                        case "5":
+                                            {
+                                                <div class="lbl-circle-gray">Пт</div>
+                                                break;
+                                            }
+                                        case "6":
+                                            {
+                                                <div class="lbl-circle-red">Сб</div>
+                                                break;
+                                            }
+                                        case "7":
+                                            {
+                                                <div class="lbl-circle-red">Вс</div>
+                                                break;
+                                            }
                                     }
-                                case 2:
-                                    {
-                                        <label>Вторник</label>
-                                        break;
-                                    }
-                                case 3:
-                                    {
-                                        <label>Среда</label>
-
-                                        break;
-                                    }
-                                case 4:
-                                    {
-                                        <label>Четверг</label>
-                                        break;
-                                    }
-                                case 5:
-                                    {
-                                        <label>Пятница</label>
-                                        break;
-                                    }
-                                case 6:
-                                    {
-                                        <label>Суббота</label>
-                                        break;
-                                    }
-                                case 7:
-                                    {
-                                        <label>Воскресенье</label>
-                                        break;
-                                    }
+                                }
                             }
                         </td>
                         <td>

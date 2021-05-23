@@ -5,12 +5,15 @@
 <div class="moreInformationOrder" id="transport-@ViewBag.countTransport">
     <div class="form-group">
         <div class="col-md-10">
-            <label>Тариф</label>
-            @Html.DropDownList(
-                               "RatesIdTransport",
-                               ((IEnumerable<SelectListItem>)ViewData["Menu"]),
-                               "Выберете значение",
-                               htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = @String.Format("Rates-{0}", ViewBag.countTransport) })
+            @if (!ViewBag.createRate)
+            {
+                <label>Тариф</label>
+                @Html.DropDownList(
+                                            "RatesIdTransport",
+                                            ((IEnumerable<SelectListItem>)ViewData["Menu"]),
+                                            "Выберете значение",
+                                            htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = "Rates", @required = "required" })
+            }
         </div>
     </div>
     <div class="form-group">
@@ -24,19 +27,34 @@
                                )
         </div>
     </div>
-
     <div class="form-group">
-        <div class="col-md-10">
-            <label>Наценка, руб</label>
-            <input type="number" class="form-control" name="markup" value="0" min="0" max="9999" disabled="disabled" onchange="verifyChangeMarkup(this.id)" id=@String.Format("Markup-{0}", ViewBag.countTransport) />
+        <div class="col-md-10 accessories">
+            <label>Количество (Доступно: <label id="availableTransport-@ViewBag.countTransport" style="margin-bottom:0;">0</label> шт.)</label>
+            <input type="number" min="0" name="countTransport" id="countTransport-@ViewBag.countTransport" class="form-control" value="0" onchange="checkValueTransport(this);" />
         </div>
     </div>
+    @*<div class="form-group">
+            <div class="col-md-10">
+                <label>Наценка, руб</label>
+                <input type="number" class="form-control" name="markup" value="0" min="0" max="9999" disabled="disabled" onchange="verifyChangeMarkup(this.id)" id=@String.Format("Markup-{0}", ViewBag.countTransport) />
+            </div>
+        </div>*@
     <button type="button" class="close" aria-label="Close" onclick="deleteBlock('transport-@ViewBag.countTransport')">
         <span aria-hidden="true">&times;</span>
     </button>
 
 </div>
+<script>
 
+    function checkValueTransport(countTransport) {
+        if (countTransport.value < countTransport.min) {
+            countTransport.value = 0;
+        }
+        if (countTransport.value > countTransport.max) {
+            countTransport.value = countTransport.max;
+        };
+    };
+</script>
 
 
 

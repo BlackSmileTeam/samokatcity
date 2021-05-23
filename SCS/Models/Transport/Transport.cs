@@ -9,8 +9,6 @@ namespace SCS.Models
 		public bool IsBlocked { get; set; } = false;
 		[Display(Name = "Статус")]
 		public int Status { get; set; }
-		[Display(Name = "Наценка (руб)")]
-		public decimal Markup { get; set; } = 0;
 		[Display(Name = "Серийный номер")]
 		public string SerialNumber { get; set; }
 		[Display(Name = "Порядковый номер")]
@@ -18,9 +16,7 @@ namespace SCS.Models
 		[Display(Name = "Наименование модели")]
 		public TransportModels TransportModels { get; set; }
 	
-
 		public ICollection<OrderTransport> OrderTransports { get; set; }
-
 		public Transport()
 		{
 			OrderTransports = new List<OrderTransport>();

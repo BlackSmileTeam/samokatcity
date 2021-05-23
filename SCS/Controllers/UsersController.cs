@@ -23,13 +23,13 @@ namespace SCS.Controllers
 		}
 
 		// GET: Users/Details/5
-		public async Task<ActionResult> Details(int? id)
+		public ActionResult Details(int? id)
 		{
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			User user = await db.Users.FindAsync(id);
+			User user = db.Users.Include(cu => cu.ContactUser).FirstOrDefault(u => u.Id == id);
 			if (user == null)
 			{
 				return HttpNotFound();
@@ -52,7 +52,7 @@ namespace SCS.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Create(string Username, string Password, string Passport, string City,
-											   string Home, string Apartament, string Surname, string Name,
+											   string Home, string Apartament, string Surname, string Name, string Street,
 											   string Patronymic, string Phone)
 		{
 			User user = new User();
@@ -75,6 +75,7 @@ namespace SCS.Controllers
 					Name = Name,
 					Patronymic = Patronymic,
 					Phone = Phone,
+					Street = Street,
 					ShortName = $"{Surname} {userInitialsName}. {userInitialsPatronymic}."
 				};
 				db.ContactUser.Add(contactUser);

@@ -12,7 +12,7 @@ namespace SCS.Models
 		[Display(Name = "Описание")]
 		public string Description { get; set; }
 		[Display(Name = "День недели")]
-		public int DayOfWeek { get; set; }
+		public string DayOfWeek { get; set; }
 		[Display(Name = "Время начала действия")]
 		public TimeSpan TimeStart { get; set; }
 		[Display(Name = "Время окончания действия")]

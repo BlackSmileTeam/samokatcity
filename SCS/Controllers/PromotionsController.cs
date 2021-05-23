@@ -54,12 +54,12 @@ namespace SCS.Controllers
 			try
 			{
 				int dayOfWeek = 0;
-				int.TryParse(collection["DayOfWeek"].ToString(), out dayOfWeek);
+				//int.TryParse(collection["DayOfWeek"].ToString(), out dayOfWeek);
 				Promotions promotions = new Promotions()
 				{
 					Name = collection["Name"],
 					Description = collection["Description"],
-					DayOfWeek = dayOfWeek,
+					DayOfWeek = collection["DayOfWeek"],
 					TimeStart = TimeSpan.Parse(collection["TimeStart"]),
 					TimeEnd = TimeSpan.Parse(collection["TimeEnd"]),
 					Discount = decimal.Parse(collection["Discount"].ToString().Replace('.', ','))
@@ -107,7 +107,11 @@ namespace SCS.Controllers
 				return HttpNotFound();
 			}
 
-			dropdownItems[promotions.DayOfWeek-1].Selected = true;
+			var selectDay = promotions.DayOfWeek.Split(',');
+			foreach (var day in selectDay)
+			{				
+				dropdownItems[int.Parse(day)].Selected = true;
+			}
 			ViewData.Add("DayOfWeek", dropdownItems);
 			return View(promotions);
 		}
@@ -124,7 +128,7 @@ namespace SCS.Controllers
 				var promotions = db.Promotions.Find(id);
 				promotions.Name = collection["Name"];
 				promotions.Description = collection["Description"];
-				promotions.DayOfWeek = dayOfWeek;
+				promotions.DayOfWeek = collection["DayOfWeek"];
 				promotions.TimeStart = TimeSpan.Parse(collection["TimeStart"]);
 				promotions.TimeEnd = TimeSpan.Parse(collection["TimeEnd"]);
 				promotions.Discount = decimal.Parse(collection["Discount"].ToString().Replace('.', ','));
@@ -194,13 +198,12 @@ namespace SCS.Controllers
 				db.Promotions.Remove(promot);
 
 				db.SaveChanges();
-
-				return RedirectToAction("Index");
 			}
 			catch
 			{
-				return RedirectToAction("Index");
 			}
+
+			return RedirectToAction("Index");
 		}
 	}
 }
