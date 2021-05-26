@@ -20,14 +20,14 @@
                 @Html.HiddenFor(model => model.Id)
 
 
-                <div class="moreInformationOrder">
+                <div class="moreInformationOrder mb-2">
                     <div class="col-md-10">
                         <label>Скидка, руб</label>
                         <input type="number" class="form-control" name="Discount" id="Discount" min="0" max="999999" value=@Convert.ToDouble(Model.Discount) onchange="calculateLeftToPay()" />
                         @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="moreInformationOrder">
+                <div class="moreInformationOrder mb-2">
 
                     <div class="form-group">
                         <div class="col-md-10">
@@ -68,7 +68,7 @@
                     </div>
                 </div>
 
-                <div class="moreInformationOrder">
+                <div class="moreInformationOrder mb-2">
 
                     <div class="col-md-10">
                         <label>Примечание</label>
@@ -78,12 +78,12 @@
                 </div>
             </div>
 
-            <div class="form-group" id="totalDiv">
+            <div class="form-group mb-2" id="totalDiv">
                 <label>Осталось оплатить: </label>
                 <label id="LeftToPay">0</label>
                 <label> руб</label>
             </div>
-            <div class="form-group" id="totalDiv">
+            <div class="form-group mb-2" id="totalDiv">
                 <b>
                     <label>Всего к оплате: </label>
                     @Html.LabelFor(model => model.Payment.TotalSum, (string)@ViewBag.TotalSum)
@@ -95,12 +95,11 @@
                 Отмена
             </a>
             <br />
-        </div>
-    }
+        }
 
     </div>
-    </div>
-    <script type="text/javascript">
+</div>
+<script type="text/javascript">
     $(document).ready(function () {
         calculateLeftToPay();
     });
@@ -115,11 +114,10 @@
             @Model.Payment.BonusPayment;
 
     }
-    </script>
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
+</script>
+@Scripts.Render("~/bundles/jqueryval")
 
-        <script src="~/Scripts/select2/i18n/ru.js"></script>
-        <script src="~/Scripts/select2/select2.full.min.js"></script>
-        <script src="~/Scripts/select2/select2.js"></script>
-    }
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>
+

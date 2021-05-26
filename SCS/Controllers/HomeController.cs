@@ -12,16 +12,12 @@ namespace SCS.Controllers
 		SCSContext db = new SCSContext();
 		public ActionResult Index()
 		{
-			//using (SCSContext db = new SCSContext())
-			//{
-			//	var users = db.User;
-			//	foreach (User u in users)
-			//	{
-			//		Console.WriteLine("{0}.{1} - {2}", u.Id, u.Username, u.Password);
-			//	}
-			//}
+			ViewData["TransportModels"] = db.TransportModels.ToList();
+			ViewData["FreeTransport"] = db.Transport.SqlQuery("CALL transport_vw('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "')").ToList().Count;
+			ViewData["FreeAccessories"] = db.Accessories.SqlQuery("CALL accessories_vw('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "')").ToList().Count;
 			var users = db.Users;
 			ViewBag.User = users;
+
 			return View();
 		}
 

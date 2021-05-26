@@ -25,34 +25,29 @@
     <hr class="hrPunct" />
     <div class="moreInformationOrder">
         <nobr>
-            Тарифы
+            Данные заказа
         </nobr>
         <div class="orderTableMore">
-            @if (Model.OrderAccessories.Count > 0)
+            @if (Model.OrderTransports.Count > 0)
             {
                 <div class=" moreInformationRates">
                     <div class="orderTableMore">
-                      <p></p>
+                        <p>Тариф</p>
                     </div>
                     <br />
                     <div class="orderTableMore">
-                        @foreach (var oa in Model.OrderAccessories)
-                        {
-                            <p>  @oa.Accessories.Name</p>
-                        }
+                        <p>
+                            @Model.OrderTransports.First().Rates.Name
+                        </p>
                     </div>
                 </div>
+
             }
             @if (Model.OrderTransports.Count > 0)
             {
                 <div class=" moreInformationRates">
                     <div class="orderTableMore">
-                        @foreach (var ot in Model.OrderTransports)
-                        {
-                            <p>
-                                @ot.Rates.Name
-                            </p>
-                        }
+                        <p>Транспорт</p>
                     </div>
                     <br />
                     <div class="orderTableMore">
@@ -63,6 +58,22 @@
                     </div>
                 </div>
             }
+            @if (Model.OrderAccessories.Count > 0)
+            {
+                <div class=" moreInformationRates">
+                    <div class="orderTableMore">
+                        <p>Аксессуары</p>
+                    </div>
+                    <br />
+                    <div class="orderTableMore">
+                        @foreach (var oa in Model.OrderAccessories)
+                        {
+                            <p>  @oa.Accessories.Name</p>
+                        }
+                    </div>
+                </div>
+            }
+
             <div class=" moreInformationRates">
                 <div class="orderTableMore">
                     <p>Количество замков</p>
@@ -75,25 +86,42 @@
         </div>
     </div>
     <hr class="hrPunct" />
+
+
     <div class="moreInformationOrder">
         <nobr>
             Оплата
         </nobr>
         <div class="orderTableMore">
-
             @if (Model.Payment != null)
             {
-                <p>
-                    Оплата наличными - @Model.Payment.CashPayment
-                </p>
-                <p>
-                    Оплата картой - @Model.Payment.CardPayment
-                </p>
-                <p style="margin-bottom:0em">
-                    Оплата бонусами - @Model.Payment.BonusPayment
-                </p>
-
-
+                <div class=" moreInformationRates">
+                    <div class="orderTableMore">
+                        <p>
+                            Оплата наличными - @Model.Payment.CashPayment
+                        </p>
+                        <p>
+                            Оплата картой - @Model.Payment.CardPayment
+                        </p>
+                        <p style="margin-bottom:0em">
+                            Оплата бонусами - @Model.Payment.BonusPayment
+                        </p>
+                    </div>
+                    <br />
+                    <div class="orderTableMore">
+                        <p>
+                        <p>
+                            Залог наличными - @Model.Payment.CashDeposit
+                        </p>
+                        <p>
+                            Залог картой - @Model.Payment.CardDeposit
+                        </p>
+                        <p style="margin-bottom:0em">
+                            Скидка - @Model.Discount
+                        </p>
+                        </p>
+                    </div>
+                </div>
             }
             else
             {
@@ -101,23 +129,7 @@
             }
 
         </div>
-        @if (Model.Payment != null)
-        {
-            <div class="orderTableMore">
-                <p>
-                    Залог наличными - @Model.Payment.CashDeposit
-                </p>
-                <p>
-                    Залог картой - @Model.Payment.CardDeposit
-                </p>
-                <p style="margin-bottom:0em">
-                    Скидка - @Model.Discount
-                </p>
-            </div>
-        }
     </div>
-
-
     <hr class="hrPunct" />
     <div class="moreInformationOrder">
         <nobr>
@@ -138,9 +150,19 @@
         </nobr>
         <div class="orderTableMore">
             <div class=" moreInformationRates">
-                <p>
-                    @Model.Note
-                </p>
+
+                @if (!string.IsNullOrEmpty(Model.Note))
+                {
+                    <p>
+                        @Model.Note;
+                    </p>
+                }
+                else
+                {
+                    <p>
+                        Отсутствует
+                    </p>
+                }
             </div>
         </div>
     </div>

@@ -18,7 +18,7 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.Id)
 
-            <div class="moreInformationOrder">
+            <div class="moreInformationOrder mb-2">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
                     @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -29,8 +29,7 @@
                 </div>
             </div>
             <div class="form-group">
-
-                <div class="form-group">
+                <div class="form-group mb-2">
                     @Html.LabelFor(model => model.ChargingTime, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <input type="number" id="ChargingTime" name="ChargingTime" value=@Model.ChargingTime.ToString().Replace(',','.') class="form-control" />
@@ -38,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     @Html.LabelFor(model => model.Markup, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <input type="number" id="Markup" name="Markup" value=@Model.Markup.ToString().Replace(',','.') class="form-control" />

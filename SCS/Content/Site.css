@@ -42,6 +42,7 @@ hr {
 p {
     text-align: center;
 }
+
 .header {
     width: 100%;
     height: 150px;
@@ -183,12 +184,14 @@ footer {
     flex-direction: column;
     justify-content: space-between;
 }
+
 .userTableDetails {
     margin: 0 0 0 3.2em;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
+
 .userTable {
     display: flex;
     flex-direction: column;
@@ -269,23 +272,24 @@ footer {
 
 
 .lbl-circle-gray {
-    width: 2em;
-    height: 2em;
-    padding: 0.3em 0px;
+    width: 3em;
+    height: 3em;
+    padding: 0.7em 0px;
     border-radius: 50px;
     border-color: black;
     text-align: center;
     line-height: 1.42857;
-    background-color:gray;
-    color:white;
-    font-size:14px;
+    background-color: gray;
+    color: white;
+    font-size: 14px;
     justify-content: flex-end;
-    margin-right:0.5em;
+    margin-right: 0.5em;
 }
+
 .lbl-circle-red {
-    width: 2em;
-    height: 2em;
-    padding: 0.3em 0px;
+    width: 3em;
+    height: 3em;
+    padding: 0.7em 0px;
     border-radius: 50px;
     border-color: black;
     text-align: center;
@@ -312,7 +316,3 @@ footer {
 .hide {
     display: none;
 }
-
-
-
-

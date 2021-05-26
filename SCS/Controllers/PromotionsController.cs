@@ -110,7 +110,7 @@ namespace SCS.Controllers
 			var selectDay = promotions.DayOfWeek.Split(',');
 			foreach (var day in selectDay)
 			{				
-				dropdownItems[int.Parse(day)].Selected = true;
+				dropdownItems[int.Parse(day)-1].Selected = true;
 			}
 			ViewData.Add("DayOfWeek", dropdownItems);
 			return View(promotions);

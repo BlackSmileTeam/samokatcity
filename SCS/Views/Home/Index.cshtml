@@ -1,7 +1,111 @@
-﻿@{
+﻿@model IEnumerable<SCS.Models.TransportModels>
+@{
     ViewBag.Title = "Samokat City Administration";
 }
-<div>
-    
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <div id="profitYesterday" title="Наличные - 0&#13;Картой - 0" class="card d-flex flex-row">
+                <div class="card-body ">
+                    <h6 class="card-title">Прибыль за вчера</h6>
+                    <p class="card-text text-start">900 руб.</p>
+                </div>
+
+                <div class="d-flex flex-row align-items-center w-25 p-3">
+                    <h2 class="text-black-50">&#8381;</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div id="profitToday" title="Наличные - 0&#13;Картой - 0" class="card d-flex flex-row">
+                <div class="card-body ">
+                    <h6 class="card-title">Прибыль за сегодня</h6>
+                    <p class="card-text text-start">700 руб.</p>
+                </div>
+
+                <div class="d-flex flex-row align-items-center w-25 p-3">
+                    <h2 class="text-black-50">&#8381;</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div id="cardInfoTransport" title="Max Pro - 2&#13;Nintendo - 5" class="card d-flex flex-row">
+                <div class="card-body ">
+                    <h6 class="card-title">Свободные ТС</h6>
+                    <p class="card-text text-start">@ViewData["FreeTransport"] шт.</p>
+                </div>
+
+                <div class="d-flex flex-row align-items-center w-25 p-3">
+                    <h2 class="text-black-50">
+                        &#128756;
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div id="cardInfoAccessories" title="Шлем детский - 3&#13;Держатель для телефона - 5" class="card d-flex flex-row">
+                <div class="card-body " style="padding-right:0">
+                    <h6 class="card-title">Свободные аксессуары </h6>
+                    <p class="card-text text-start">@ViewData["FreeAccessories"] шт.</p>
+                </div>
+
+                <div class="d-flex flex-row align-items-center w-25 p-3">
+                    <h2 class="text-black-50">
+                        &#128736;
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-column">
+
+        <div class="d-flex justify-content-start align-content-start mt-5 mb-2">
+            <input type="date" class="input-group date p-2" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <table class="table table-hover ">
+                <thead>
+                    <tr>
+                        <th class="border">
+                            Время/Модель
+                        </th>
+                        @foreach (var tm in ViewData["TransportModels"] as List<SCS.Models.TransportModels>)
+                        {
+                            <th scope="col" class="border">@tm.Name</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var countModels = (ViewData["TransportModels"] as List<SCS.Models.TransportModels>).Count;
+                        for (int i = 0; i < 24; ++i)
+                        {
+                            <tr>
+                                <td style="padding:0" class="border" scope="row">@i : 00 </td>
+                                @for (int j = 0; j < countModels; ++j)
+                                {
+                                    if ((i + j) % 8 == 0)
+                                    {
+                                        <td class="border border-start bg-info text-white"></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="border border-start"></td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    }
+
+
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 </div>
+
 

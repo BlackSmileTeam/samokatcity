@@ -39,7 +39,7 @@
                                     <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" />
                                 </svg>
                             </a>*@
-                            <a href="@Url.Action("Delete", "Rates", new { id = item.Id, transport = 1 })" class="close" aria-label="Close">
+                            <a href="@Url.Action("Delete", "Rates", new { id = item.Id, transport = 1 })" class="close text-dark text-decoration-none" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </td>
@@ -71,8 +71,6 @@
 </div>
 
 
-
-@section Scripts {
     <script>
         function showDetails(id) {
             var x = document.getElementById(id);
@@ -88,4 +86,3 @@
             }
         };
     </script>
-}
