@@ -11,6 +11,7 @@ namespace SCS.Controllers
 {
 	public class OrdersController : Controller
 	{
+		#region variables
 		enum StatusTransportOrAccessories
 		{
 			Free = 1,
@@ -63,6 +64,9 @@ namespace SCS.Controllers
 			}
 		}
 		public List<SelectListItem> StatusOrder { get; set; }
+		private SCSContext db = new SCSContext();
+		#endregion
+
 		public OrdersController()
 		{
 			StatusOrder = new List<SelectListItem>();
@@ -73,8 +77,6 @@ namespace SCS.Controllers
 				StatusOrder.Add(new SelectListItem { Text = tmpStatus.Text });
 			}
 		}
-
-		private SCSContext db = new SCSContext();
 
 		// GET: Orders
 		public ActionResult Index()
@@ -127,6 +129,8 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
+			order.OrderTransports = order.OrderTransports.DistinctBy(m=>m.Transport.TransportModels).ToList();
+			order.OrderAccessories = order.OrderAccessories.DistinctBy(a=>a.Accessories.Name).ToList();
 
 			return PartialView(order);
 		}
@@ -200,7 +204,11 @@ namespace SCS.Controllers
 			//return db.Transport.Include(m => m.TransportModels.Name == nameTransport).Include(h => h.Status.Code == 2).Where(h => h.Status.Value == 1).ToList().Count;
 			return 0;
 		}
-
+		[HttpGet]
+		public void DeleteBlockTransport()
+		{
+			Session["countTransport"] = countTransport - 1;
+		}
 		public ActionResult AddDropListAccessories(DateTime dateTime)
 		{
 			//Добавляем Id для добавленного транспорта
@@ -227,23 +235,8 @@ namespace SCS.Controllers
 			Order order = new Order();
 			if (ModelState.IsValid)
 			{
-
 				//Итоговая сумма заказа
 				decimal totalSum = 0;
-				//проверка на выходной день
-				//bool weekend = false;
-				//if (DateStart.DayOfWeek.ToString().ToLower() == "суббота" || DateStart.DayOfWeek.ToString().ToLower() == "воскресенье" ||
-				//	DateStart.DayOfWeek.ToString().ToLower() == "saturday" || DateStart.DayOfWeek.ToString().ToLower() == "sunday")
-				//{
-				//	weekend = true;
-				//}
-				//if (weekend)
-				//{
-				//	foreach (var transp in TransportId)
-				//	{
-				//		//totalSum += db.Transport.Include(h => h.Status).FirstOrDefault(trans => trans.Id == transp).Markup;
-				//	}
-				//}
 
 				try
 				{
@@ -297,17 +290,18 @@ namespace SCS.Controllers
 				db.SaveChanges();
 
 				db.Users.Find(UserId).Bonus += addBonuses - bonusPayment;
+				var rate = db.Rates.Find(RatesIdTransport);
 
 				if (TransportId != null)
 				{
 					for (int i = 0; i < TransportId.Count; ++i)
 					{
 						//Ищем данные о выбранном тарифе для добавление к заказу и поиску свободных в определенное время
-						var rate = db.Rates.Find(RatesIdTransport);
+
 						var idTransport = TransportId[i];
-						var transModel = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTransport).TransportModels.Id;						
+						var transModel = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTransport).TransportModels.Id;
 						//ищем ТС которые подходят в выбранную дату (свободны) и определенное количество
-						var transp = db.Transport.SqlQuery("CALL transport_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','"+ DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").Take(countTransport[i]).ToList();
+						var transp = db.Transport.SqlQuery("CALL transport_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").Take(countTransport[i]).ToList();
 
 						List<Transport> transports = new List<Transport>();
 						foreach (var trans in transp)
@@ -319,36 +313,56 @@ namespace SCS.Controllers
 						{
 							//меняем статус, если это необходимо
 							tr.Status = statusTransportOrAccesories;
+							db.Entry(tr).State = EntityState.Modified;
 						}
 
-						db.Entry(transports).State = EntityState.Modified;
 						db.SaveChanges();
 
-						db.OrderTransport.Add(new OrderTransport()
+						foreach (var tr in transports)
 						{
-							Transport = db.Transport.Find(idTransport),
-							Order = order,
-							Rates = rate
-						});
+							db.OrderTransport.Add(new OrderTransport()
+							{
+								Transport = tr,
+								Order = order,
+								Rates = rate
+							});
+						}
+						db.SaveChanges();
 					}
 				}
-				//////////////////////////////////////////////// Сделать тоже самое что и с ТС
+
 				if (AccessoriesId != null)
 				{
 					for (int i = 0; i < AccessoriesId.Count; ++i)
 					{
 						var idAccesories = AccessoriesId[i];
-						var access = db.Accessories.FirstOrDefault(acc => acc.Id == idAccesories);
+						var accName = db.Accessories.FirstOrDefault(ac => ac.Id == idAccesories).Name;
+						var access = db.Accessories.SqlQuery("CALL accessories_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").Take(countAccessories[i]).ToList();
 
-						access.Status = statusTransportOrAccesories;
-						db.Entry(access).State = EntityState.Modified;
+						List<Accessories> accessories = new List<Accessories>();
+						foreach (var acc in access)
+						{
+							//из полученного списка ранее ищем еще те которые подходят нам по модели
+							accessories.Add(db.Accessories.FirstOrDefault(ac => ac.Id == acc.Id && ac.Name == accName));
+						}
+						foreach (var ac in accessories)
+						{
+							//меняем статус, если это необходимо
+							ac.Status = statusTransportOrAccesories;
+							db.Entry(ac).State = EntityState.Modified;
+						}
+
 						db.SaveChanges();
 
-						db.OrderAccessories.Add(new OrderAccessories()
+						foreach (var ac in accessories)
 						{
-							Accessories = db.Accessories.Find(AccessoriesId[i]),
-							Order = order
-						});
+							db.OrderAccessories.Add(new OrderAccessories()
+							{
+								Accessories = ac,
+								Order = order,
+							});
+						}
+						db.SaveChanges();
 					}
 				}
 
@@ -481,21 +495,29 @@ namespace SCS.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteConfirmed(int id)
 		{
-			Order order = db.Orders.Find(id);
-			//Payment pay = db.Payment.Find(order.PaymentId);
-			//List<OrderAccessories> orderAccesories = db.OrderAccessories.Where(oa => oa.OrderId == order.Id).ToList();
-			//List<OrderTransport> orderTransport = db.OrderTransport.Where(oa => oa.OrderId == order.Id).ToList();
-			//foreach (var OA in orderAccesories)
-			//{
-			//	db.OrderAccessories.Remove(OA);
-			//}
-			//foreach (var OT in orderTransport)
-			//{
-			//	db.OrderTransport.Remove(OT);
-			//}
+			Order order = db.Orders.Include(u => u.User).Include(p => p.Payment).FirstOrDefault(o => o.Id == id);
+			List<OrderAccessories> orderAccessories = db.OrderAccessories.Include(o => o.Order).Where(oa => oa.Order.Id == order.Id).ToList();
+			List<OrderTransport> orderTransports = db.OrderTransport.Include(o => o.Order).Where(oa => oa.Order.Id == order.Id).ToList();
+
+			var user = db.Users.Find(order.User.Id);
+
+			foreach (var oa in orderAccessories)
+			{
+				db.OrderAccessories.Remove(oa);
+			}
+			foreach (var ot in orderTransports)
+			{
+				db.OrderTransport.Remove(ot);
+			}
 
 			db.Orders.Remove(order);
-			//db.Payment.Remove(pay);
+
+			if (order.Payment != null)
+			{
+				user.Bonus -= order.AddBonuses + order.Payment.BonusPayment;
+				db.Entry(user).State = EntityState.Modified;
+				db.Payment.Remove(order.Payment);
+			}
 
 			db.SaveChanges();
 			return RedirectToAction("Index");

@@ -33,12 +33,6 @@
             <input type="number" min="0" name="countTransport" id="countTransport-@ViewBag.countTransport" class="form-control" value="0" onchange="checkValueTransport(this);" />
         </div>
     </div>
-    @*<div class="form-group">
-            <div class="col-md-10">
-                <label>Наценка, руб</label>
-                <input type="number" class="form-control" name="markup" value="0" min="0" max="9999" disabled="disabled" onchange="verifyChangeMarkup(this.id)" id=@String.Format("Markup-{0}", ViewBag.countTransport) />
-            </div>
-        </div>*@
     <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('transport-@ViewBag.countTransport')">
         <span aria-hidden="true" class="h5">&times;</span>
     </button>

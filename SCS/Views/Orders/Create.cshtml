@@ -319,6 +319,11 @@ $("#bonusPayment").change(function () {
 });
 function deleteBlock(nameBlock) {
     document.getElementById(nameBlock).remove();
+
+    $.ajax({
+        url: "DeleteBlockTransport",
+        dataType: "json"
+    });
     calculatePrice();
 }
 function changeTransport(id) {

@@ -80,10 +80,19 @@
                 <tbody>
                     @{
                         var countModels = (ViewData["TransportModels"] as List<SCS.Models.TransportModels>).Count;
-                        for (int i = 0; i < 24; ++i)
+                        for (int i = 9; i <= 24; ++i)
                         {
                             <tr>
-                                <td style="padding:0" class="border" scope="row">@i : 00 </td>
+                                @if (i == 24)
+                                {
+
+                                    <td style="padding:0" class="border" scope="row">00 : 00 </td>
+                                }
+                                else
+                                {
+
+                                    <td style="padding:0" class="border" scope="row">@i : 00 </td>
+                                }
                                 @for (int j = 0; j < countModels; ++j)
                                 {
                                     if ((i + j) % 8 == 0)

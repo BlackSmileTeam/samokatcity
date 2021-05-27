@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 
+using System.Web.SessionState;
+
 namespace SCS.Controllers.API
 {
 	public class WebController : ApiController
@@ -33,7 +35,8 @@ namespace SCS.Controllers.API
 			{
 				var states = await db.Users.Include(u => u.ContactUser).Where(a => a.ContactUser.Name.Contains(term)
 				|| a.ContactUser.Surname.Contains(term)
-				|| a.ContactUser.Patronymic.Contains(term)).ToListAsync();
+				|| a.ContactUser.Patronymic.Contains(term)
+				|| a.ContactUser.Phone.Contains(term)).ToListAsync();
 
 				return states;
 			}
@@ -176,30 +179,36 @@ namespace SCS.Controllers.API
 		[HttpGet]
 		public int CountFreeTransport(DateTime dateTime, string idTransportModels)
 		{
-			int idTrModel = Convert.ToInt32(idTransportModels);
-			var nameTransportModelsFind = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTrModel).TransportModels.Id;
-
-			var transp = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
-			List<int> idTransp = new List<int>();
 			List<Transport> transports = new List<Transport>();
-			foreach (var trans in transp)
+			if (idTransportModels != null)
 			{
-				var tmpTransp = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trans.Id && tr.TransportModels.Id == nameTransportModelsFind);
-				if (tmpTransp != null)
+				int idTrModel = Convert.ToInt32(idTransportModels);
+				var nameTransportModelsFind = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTrModel).TransportModels.Id;
+
+				var transp = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+				List<int> idTransp = new List<int>();
+
+				foreach (var trans in transp)
 				{
-					transports.Add(tmpTransp);
+					var tmpTransp = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trans.Id && tr.TransportModels.Id == nameTransportModelsFind);
+					if (tmpTransp != null)
+					{
+						transports.Add(tmpTransp);
+					}
 				}
 			}
-			return transports.Count();
+			return transports == null ? 0 : transports.Count();
 		}
 
 		[HttpGet]
 		public List<Promotions> GetPromotions(DateTime dateTime)
 		{
 			int dayOfWeek = (int)dateTime.DayOfWeek;
-			List<Promotions> promotions = db.Promotions.Include(pr=>pr.PromotionsTransportModels.Select(tm=>tm.TransportModels)).Where(day => day.DayOfWeek.Contains(dayOfWeek.ToString())).ToList();
+			List<Promotions> promotions = db.Promotions.Include(pr => pr.PromotionsTransportModels.Select(tm => tm.TransportModels)).Where(day => day.DayOfWeek.Contains(dayOfWeek.ToString())).ToList();
 
 			return promotions;
 		}
+
+		
 	}
 }
