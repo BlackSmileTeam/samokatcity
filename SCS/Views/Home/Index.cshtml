@@ -7,10 +7,11 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-3">
-            <div id="profitYesterday" title="Наличные - 0&#13;Картой - 0" class="card d-flex flex-row">
+            <div id="profitYesterday" class="card d-flex flex-row"
+                 title="Наличные - @ViewData["YesterdayCashPaymentProfit"] руб. &#13;Картой - @ViewData["YesterdayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["YesterdayBonusPaymentProfit"] руб." >
                 <div class="card-body ">
                     <h6 class="card-title">Прибыль за вчера</h6>
-                    <p class="card-text text-start">900 руб.</p>
+                    <p class="card-text text-start">@ViewData["YesterdayProfit"] руб.</p>
                 </div>
 
                 <div class="d-flex flex-row align-items-center w-25 p-3">
