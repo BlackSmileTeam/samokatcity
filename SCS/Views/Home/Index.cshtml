@@ -67,7 +67,11 @@
             <input type="date" class="input-group date p-2" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
         </div>
         <div>
-            <table class="table table-hover ">
+
+
+            @Html.Raw(ViewData["CalendarFreeTransport"])
+
+            @*<table class="table table-hover ">
                 <thead>
                     <tr>
                         <th class="border">
@@ -113,7 +117,7 @@
 
 
                 </tbody>
-            </table>
+            </table>*@
 
         </div>
     </div>

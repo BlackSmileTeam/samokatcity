@@ -312,7 +312,7 @@ namespace SCS.Controllers
 						foreach (var tr in transports)
 						{
 							//меняем статус, если это необходимо
-							tr.Status = statusTransportOrAccesories;
+							//tr.Status = statusTransportOrAccesories;
 							db.Entry(tr).State = EntityState.Modified;
 						}
 
@@ -348,7 +348,7 @@ namespace SCS.Controllers
 						foreach (var ac in accessories)
 						{
 							//меняем статус, если это необходимо
-							ac.Status = statusTransportOrAccesories;
+							//ac.Status = statusTransportOrAccesories;
 							db.Entry(ac).State = EntityState.Modified;
 						}
 

@@ -17,7 +17,7 @@ namespace SCS.Controllers
 			decimal YesterdayCashPaymentProfit = 0;
 			decimal YesterdayCardPaymentProfit = 0;
 			decimal YesterdayBonusPaymentProfit = 0;
-			
+
 			decimal TodayProfit = 0;
 			decimal TodayCashPaymentProfit = 0;
 			decimal TodayCardPaymentProfit = 0;
@@ -52,7 +52,7 @@ namespace SCS.Controllers
 			string FreeTransportTitle = "";
 			foreach (var ft in transportModels)
 			{
-				FreeTransportTitle += ft.Key + " - " + ft.Value +"\n";
+				FreeTransportTitle += ft.Key + " - " + ft.Value + "\n";
 			}
 
 			ViewData["FreeTransportTitle"] = FreeTransportTitle;
@@ -136,6 +136,50 @@ namespace SCS.Controllers
 			ViewData["TodayCashPaymentProfit"] = TodayCashPaymentProfit;
 			ViewData["TodayCardPaymentProfit"] = TodayCardPaymentProfit;
 			ViewData["TodayBonusPaymentProfit"] = TodayBonusPaymentProfit;
+
+			string CalendarFreeTransport = "<div class=\"d-flex bd-highlight\">	";
+			CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3\">";
+			CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">Время/модель</div>";
+			for (int i = 9; i <= 24; ++i)
+			{
+				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">" + (i != 24 ? i.ToString() : "00") + ":00</div>";
+			}
+			CalendarFreeTransport += "</div>";
+
+
+			var orders = db.OrderTransport.Include(o => o.Order).Include(tr => tr.Transport).ToList();
+
+			foreach (var model in db.TransportModels)
+			{
+				CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3 border\">";
+
+				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">" + model.Name + "</div>";
+				bool freeBackTime = false;
+				for (int i = 9; i <= 24; ++i)
+				{
+					var timeSearch = DateTime.Today.AddHours(i);
+
+					var transportFree = orders.Where(o => !(o.Order.DateStart >= timeSearch || o.Order.DateEnd <= timeSearch)).Where(t => t.Transport.TransportModels.Id == model.Id).ToList();
+
+					if (transportFree.Count > 0)
+					{
+						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border bg-info text-white\">" + (freeBackTime == false ? transportFree.Count.ToString() : "&nbsp;") + "</div>";
+						if (!freeBackTime)
+						{
+							freeBackTime = true;
+						}
+					}
+					else
+					{
+						freeBackTime = false;
+						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border \">&nbsp;</div>";
+					}
+				}
+
+				CalendarFreeTransport += "</div>";
+			}
+			CalendarFreeTransport += "</div>";
+			ViewData["CalendarFreeTransport"] = CalendarFreeTransport;
 
 			return View();
 		}
