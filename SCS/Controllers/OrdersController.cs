@@ -403,11 +403,7 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
-			if (order.DateStart.DayOfWeek.ToString().ToLower() == "суббота" || order.DateStart.DayOfWeek.ToString().ToLower() == "воскресенье" ||
-				order.DateStart.DayOfWeek.ToString().ToLower() == "saturday" || order.DateStart.DayOfWeek.ToString().ToLower() == "sunday")
-			{
-				weekend = true;
-			}
+
 			//var Payment = db.Payment.Where(p => p.Id == order.PaymentId).ToList()[0];
 			//var orderTransport = db.OrderTransport.Where(o => o.OrderId == id).Include(t => t.Rates).Include(tr => tr.Transport);
 			//var orderAccessories = db.OrderAccessories.Where(o => o.OrderId == id).Include(ac => ac.Accessories);

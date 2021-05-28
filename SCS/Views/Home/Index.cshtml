@@ -20,10 +20,11 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <div id="profitToday" title="Наличные - 0&#13;Картой - 0" class="card d-flex flex-row">
+            <div id="profitToday" class="card d-flex flex-row"
+                 title="Наличные - @ViewData["TodayCashPaymentProfit"] руб. &#13;Картой - @ViewData["TodayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["TodayBonusPaymentProfit"] руб." >
                 <div class="card-body ">
                     <h6 class="card-title">Прибыль за сегодня</h6>
-                    <p class="card-text text-start">700 руб.</p>
+                    <p class="card-text text-start">@ViewData["TodayProfit"] руб.</p>
                 </div>
 
                 <div class="d-flex flex-row align-items-center w-25 p-3">
@@ -32,7 +33,7 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <div id="cardInfoTransport" title="Max Pro - 2&#13;Nintendo - 5" class="card d-flex flex-row">
+            <div id="cardInfoTransport" title="@ViewData["FreeTransportTitle"]" class="card d-flex flex-row">
                 <div class="card-body ">
                     <h6 class="card-title">Свободные ТС</h6>
                     <p class="card-text text-start">@ViewData["FreeTransport"] шт.</p>
@@ -46,7 +47,7 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <div id="cardInfoAccessories" title="Шлем детский - 3&#13;Держатель для телефона - 5" class="card d-flex flex-row">
+            <div id="cardInfoAccessories" title="@ViewData["FreeAccessoriesTitle"]" class="card d-flex flex-row">
                 <div class="card-body " style="padding-right:0">
                     <h6 class="card-title">Свободные аксессуары </h6>
                     <p class="card-text text-start">@ViewData["FreeAccessories"] шт.</p>

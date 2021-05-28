@@ -17,18 +17,82 @@ namespace SCS.Controllers
 			decimal YesterdayCashPaymentProfit = 0;
 			decimal YesterdayCardPaymentProfit = 0;
 			decimal YesterdayBonusPaymentProfit = 0;
-
-
-			ViewData["TransportModels"] = db.TransportModels.ToList();
-			ViewData["FreeTransport"] = db.Transport.SqlQuery("CALL transport_vw('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "')").ToList().Count;
-			ViewData["FreeAccessories"] = db.Accessories.SqlQuery("CALL accessories_vw('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "')").ToList().Count;
-			var users = db.Users;
-			ViewBag.User = users;
+			
+			decimal TodayProfit = 0;
+			decimal TodayCashPaymentProfit = 0;
+			decimal TodayCardPaymentProfit = 0;
+			decimal TodayBonusPaymentProfit = 0;
 
 			var dateYesterday = DateTime.Today.AddDays(-1);
 
-			var orders = db.Orders.Include(p => p.Payment).Include(t => t.OrderTransports.Select(r => r.Rates)).Where(o => o.DateStart >= dateYesterday).ToList();
-			foreach (var order in orders)
+
+			var FreeTransport = db.Transport.SqlQuery("CALL transport_vw('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+			var FreeAccessories = db.Accessories.SqlQuery("CALL accessories_vw('" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+
+			List<Transport> transports = new List<Transport>();
+			foreach (var trans in FreeTransport)
+			{
+				//из полученного списка ранее ищем еще те которые подходят нам по модели
+				transports.Add(db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trans.Id));
+			}
+
+			var transportModels = new Dictionary<string, int>();
+			foreach (var ftr in transports)
+			{
+				if (transportModels.ContainsKey(ftr.TransportModels.Name))
+				{
+					transportModels[ftr.TransportModels.Name]++;
+				}
+				else
+				{
+					transportModels.Add(ftr.TransportModels.Name, 1);
+				}
+			}
+
+			string FreeTransportTitle = "";
+			foreach (var ft in transportModels)
+			{
+				FreeTransportTitle += ft.Key + " - " + ft.Value +"\n";
+			}
+
+			ViewData["FreeTransportTitle"] = FreeTransportTitle;
+
+			List<Accessories> accessories = new List<Accessories>();
+			foreach (var access in FreeAccessories)
+			{
+				//из полученного списка ранее ищем еще те которые подходят нам по модели
+				accessories.Add(db.Accessories.FirstOrDefault(tr => tr.Id == access.Id));
+			}
+
+			var accesoriesName = new Dictionary<string, int>();
+			foreach (var acc in accessories)
+			{
+				if (accesoriesName.ContainsKey(acc.Name))
+				{
+					accesoriesName[acc.Name]++;
+				}
+				else
+				{
+					accesoriesName.Add(acc.Name, 1);
+				}
+			}
+
+			string FreeAccessoriesTitle = "";
+			foreach (var fa in accesoriesName)
+			{
+				FreeAccessoriesTitle += fa.Key + " - " + fa.Value + "\n";
+			}
+
+			ViewData["FreeAccessoriesTitle"] = FreeAccessoriesTitle;
+
+
+			ViewData["TransportModels"] = db.TransportModels.ToList();
+			ViewData["FreeTransport"] = FreeTransport.Count;
+			ViewData["FreeAccessories"] = FreeAccessories.Count;
+
+
+			var ordersYesterday = db.Orders.Include(p => p.Payment).Include(t => t.OrderTransports.Select(r => r.Rates)).Where(o => o.DateStart >= dateYesterday).ToList();
+			foreach (var order in ordersYesterday)
 			{
 				if (order.OrderTransports != null)
 				{
@@ -48,6 +112,30 @@ namespace SCS.Controllers
 			ViewData["YesterdayCashPaymentProfit"] = YesterdayCashPaymentProfit;
 			ViewData["YesterdayCardPaymentProfit"] = YesterdayCardPaymentProfit;
 			ViewData["YesterdayBonusPaymentProfit"] = YesterdayBonusPaymentProfit;
+
+
+
+			var ordersToday = db.Orders.Include(p => p.Payment).Include(t => t.OrderTransports.Select(r => r.Rates)).Where(o => o.DateStart >= DateTime.Today).ToList();
+			foreach (var order in ordersToday)
+			{
+				if (order.OrderTransports != null)
+				{
+					//Добавляем день и на всякий случай еще час
+					var dateEndDuration = DateTime.Today.AddDays(1).AddHours(order.OrderTransports.First().Rates.Duration + 1);
+					if (order.DateEnd <= dateEndDuration)
+					{
+						var payment = order.Payment;
+						TodayProfit += payment.CashDeposit + payment.CashPayment + payment.CardDeposit + payment.CardPayment;
+						TodayCashPaymentProfit += payment.CashDeposit + payment.CashPayment;
+						TodayCardPaymentProfit += payment.CardDeposit + payment.CardPayment;
+						TodayBonusPaymentProfit += payment.BonusPayment;
+					}
+				}
+			}
+			ViewData["TodayProfit"] = TodayProfit;
+			ViewData["TodayCashPaymentProfit"] = TodayCashPaymentProfit;
+			ViewData["TodayCardPaymentProfit"] = TodayCardPaymentProfit;
+			ViewData["TodayBonusPaymentProfit"] = TodayBonusPaymentProfit;
 
 			return View();
 		}
