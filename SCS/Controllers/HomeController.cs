@@ -138,8 +138,8 @@ namespace SCS.Controllers
 			ViewData["TodayBonusPaymentProfit"] = TodayBonusPaymentProfit;
 
 			string CalendarFreeTransport = "<div class=\"d-flex bd-highlight\">	";
-			CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3\">";
-			CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">Время/модель</div>";
+			CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3 w-100\">";
+			CalendarFreeTransport += "<div class=\"p-1 bd-highlight border w-100\">Время/модель</div>";
 			for (int i = 9; i <= 24; ++i)
 			{
 				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">" + (i != 24 ? i.ToString() : "00") + ":00</div>";
@@ -151,9 +151,9 @@ namespace SCS.Controllers
 
 			foreach (var model in db.TransportModels)
 			{
-				CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3 border\">";
+				CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3 border w-100\">";
 
-				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">" + model.Name + "</div>";
+				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border w-100\">" + model.Name + "</div>";
 				bool freeBackTime = false;
 				for (int i = 9; i <= 24; ++i)
 				{
@@ -163,7 +163,7 @@ namespace SCS.Controllers
 
 					if (transportFree.Count > 0)
 					{
-						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border bg-info text-white\">" + (freeBackTime == false ? transportFree.Count.ToString() : "&nbsp;") + "</div>";
+						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border bg-info text-white text-center w-100\">" + (freeBackTime == false ? transportFree.Count.ToString() : "&nbsp;") + "</div>";
 						if (!freeBackTime)
 						{
 							freeBackTime = true;
@@ -172,7 +172,7 @@ namespace SCS.Controllers
 					else
 					{
 						freeBackTime = false;
-						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border \">&nbsp;</div>";
+						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border w-100 \">&nbsp;</div>";
 					}
 				}
 
