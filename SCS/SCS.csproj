@@ -585,6 +585,7 @@
     <Content Include="Views\TModels\Delete.cshtml" />
     <Content Include="Views\TModels\Edit.cshtml" />
     <Content Include="Views\Rates\AddDropListModels.cshtml" />
+    <Content Include="Views\Home\Filter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

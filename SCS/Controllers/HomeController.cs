@@ -184,6 +184,56 @@ namespace SCS.Controllers
 			return View();
 		}
 
+		public ActionResult Filter(DateTime dateCalendar)
+		{
+			var trm = db.Transport.Include(tm => tm.TransportModels).ToList();
+
+			string CalendarFreeTransport = "<div class=\"d-flex bd-highlight\">	";
+			CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3 w-100\">";
+			CalendarFreeTransport += "<div class=\"p-1 bd-highlight border w-100\">Время/модель</div>";
+			for (int i = 9; i <= 24; ++i)
+			{
+				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border\">" + (i != 24 ? i.ToString() : "00") + ":00</div>";
+			}
+			CalendarFreeTransport += "</div>";
+
+
+			var orders = db.OrderTransport.Include(o => o.Order).Include(tr => tr.Transport).ToList();
+
+			foreach (var model in db.TransportModels)
+			{
+				CalendarFreeTransport += "<div class=\"d-flex flex-column bd-highlight mb-3 border w-100\">";
+
+				CalendarFreeTransport += "<div class=\"p-1 bd-highlight border w-100\">" + model.Name + "</div>";
+				bool freeBackTime = false;
+				for (int i = 9; i <= 24; ++i)
+				{
+					var timeSearch = dateCalendar.AddHours(i);
+
+					var transportFree = orders.Where(o => !(o.Order.DateStart >= timeSearch || o.Order.DateEnd <= timeSearch)).Where(t => t.Transport.TransportModels.Id == model.Id).ToList();
+
+					if (transportFree.Count > 0)
+					{
+						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border bg-info text-white text-center w-100\">" + (freeBackTime == false ? transportFree.Count.ToString() : "&nbsp;") + "</div>";
+						if (!freeBackTime)
+						{
+							freeBackTime = true;
+						}
+					}
+					else
+					{
+						freeBackTime = false;
+						CalendarFreeTransport += "<div class=\"p-1 bd-highlight border w-100 \">&nbsp;</div>";
+					}
+				}
+
+				CalendarFreeTransport += "</div>";
+			}
+			CalendarFreeTransport += "</div>";
+			ViewData["CalendarFreeTransport"] = CalendarFreeTransport;
+
+			return PartialView();
+		}
 		public ActionResult About()
 		{
 			ViewBag.Message = "Your application description page.";

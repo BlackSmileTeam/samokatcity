@@ -129,8 +129,8 @@ namespace SCS.Controllers
 			{
 				return HttpNotFound();
 			}
-			order.OrderTransports = order.OrderTransports.DistinctBy(m=>m.Transport.TransportModels).ToList();
-			order.OrderAccessories = order.OrderAccessories.DistinctBy(a=>a.Accessories.Name).ToList();
+			order.OrderTransports = order.OrderTransports.DistinctBy(m => m.Transport.TransportModels).ToList();
+			order.OrderAccessories = order.OrderAccessories.DistinctBy(a => a.Accessories.Name).ToList();
 
 			return PartialView(order);
 		}
@@ -145,7 +145,6 @@ namespace SCS.Controllers
 			ViewBag.TransportId = new SelectList(db.Transport, "Id", "Name");
 			ViewBag.OrderId = new SelectList(db.Orders, "Id", "StatusOrder");
 			ViewBag.RatesId = new SelectList(db.Rates, "Id", "Name");
-			ViewBag.TypeDocumentId = new SelectList(db.Helpers.Where(h => h.Code == 1), "Id", "Name");
 
 			countTransport = 0;
 			countAccessories = 0;
@@ -252,7 +251,10 @@ namespace SCS.Controllers
 							int dayOfWeek = (int)DateStart.DayOfWeek;
 							if (countTransport[i] > 0)
 							{
-								var promotions = db.Promotions.Include(pr => pr.PromotionsTransportModels.Select(tm => tm.TransportModels)).Where(day => day.DayOfWeek.Contains(dayOfWeek.ToString())).ToList();
+								var timeStart = new TimeSpan(DateStart.Hour, 0, 0);
+								var promotions = db.Promotions.Include(pr => pr.PromotionsTransportModels.Select(tm => tm.TransportModels))
+															  .Where(day => day.DayOfWeek.Contains(dayOfWeek.ToString()) && day.TimeStart <= timeStart && day.TimeEnd <= timeStart)
+															  .ToList();
 
 								foreach (var promotion in promotions)
 								{
@@ -392,40 +394,38 @@ namespace SCS.Controllers
 		public ActionResult Edit(int? id)
 		{
 			decimal TotalSum = 0;
-			bool weekend = false;
 
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-			Order order = db.Orders.Include(p => p.Payment).FirstOrDefault(p => p.Id == id);
+			var order = db.Orders.Include(p => p.Payment).FirstOrDefault(p => p.Id == id);
+
 			if (order == null)
 			{
 				return HttpNotFound();
 			}
-
-			//var Payment = db.Payment.Where(p => p.Id == order.PaymentId).ToList()[0];
-			//var orderTransport = db.OrderTransport.Where(o => o.OrderId == id).Include(t => t.Rates).Include(tr => tr.Transport);
-			//var orderAccessories = db.OrderAccessories.Where(o => o.OrderId == id).Include(ac => ac.Accessories);
-
-			//foreach (var ot in orderTransport)
-			//{
-			//	//TotalSum += ot.Rates.Price;
-			//	if (weekend)
-			//	{
-			//		TotalSum += ot.Transport.Markup;
-			//	}
-			//}
-			//foreach (var oa in orderAccessories)
-			//{
-			//	//TotalSum += oa.Rates.Price;
-			//}
-
 			TotalSum += order.CountLock * 100;
 
-			ViewBag.TypeDocumentId = new SelectList(db.Helpers.Where(h => h.Code == 1), "Id", "Name");
-			//ViewBag.UserId = new SelectList(db.Users, "Id", "Username", order.UserId);
+
+			//Сделать подсчет суммы
+
+
+			List<SelectListItem> TypeDocument = new List<SelectListItem>();
+
+			var status = db.Helpers.Where(statusType => statusType.Code == 1).ToList();
+			foreach (var stTr in status)
+			{
+				TypeDocument.Add(new SelectListItem
+				{
+					Value = stTr.Value.ToString(),
+					Text = stTr.Text
+				});
+			}
+			ViewData["TypeDocumentId"] = TypeDocument;
+
 			ViewBag.TotalSum = TotalSum.ToString();
+
 			return View(order);
 		}
 

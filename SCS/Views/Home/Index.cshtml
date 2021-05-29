@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-sm-3">
             <div id="profitYesterday" class="card d-flex flex-row"
-                 title="Наличные - @ViewData["YesterdayCashPaymentProfit"] руб. &#13;Картой - @ViewData["YesterdayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["YesterdayBonusPaymentProfit"] руб." >
+                 title="Наличные - @ViewData["YesterdayCashPaymentProfit"] руб. &#13;Картой - @ViewData["YesterdayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["YesterdayBonusPaymentProfit"] руб.">
                 <div class="card-body ">
                     <h6 class="card-title">Прибыль за вчера</h6>
                     <p class="card-text text-start">@ViewData["YesterdayProfit"] руб.</p>
@@ -21,7 +21,7 @@
         </div>
         <div class="col-sm-3">
             <div id="profitToday" class="card d-flex flex-row"
-                 title="Наличные - @ViewData["TodayCashPaymentProfit"] руб. &#13;Картой - @ViewData["TodayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["TodayBonusPaymentProfit"] руб." >
+                 title="Наличные - @ViewData["TodayCashPaymentProfit"] руб. &#13;Картой - @ViewData["TodayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["TodayBonusPaymentProfit"] руб.">
                 <div class="card-body ">
                     <h6 class="card-title">Прибыль за сегодня</h6>
                     <p class="card-text text-start">@ViewData["TodayProfit"] руб.</p>
@@ -63,64 +63,24 @@
     </div>
     <div class="d-flex flex-column">
 
-        <div class="d-flex justify-content-start align-content-start mt-5 mb-2">
-            <input type="date" class="input-group date p-2" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-        </div>
-        <div>
+        @using (Ajax.BeginForm("Filter", null, null, new AjaxOptions { UpdateTargetId = "calendar" }, new { id = "calendarForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="d-flex justify-content-start align-content-start mt-5 mb-2">
+                <input id="dateCalendar" name="dateCalendar" type="date" class="input-group date p-2" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="changeDateCalendar()" />
+            </div>
 
-
+        }
+        <div id="calendar">
             @Html.Raw(ViewData["CalendarFreeTransport"])
-
-            @*<table class="table table-hover ">
-                <thead>
-                    <tr>
-                        <th class="border">
-                            Время/Модель
-                        </th>
-                        @foreach (var tm in ViewData["TransportModels"] as List<SCS.Models.TransportModels>)
-                        {
-                            <th scope="col" class="border">@tm.Name</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        var countModels = (ViewData["TransportModels"] as List<SCS.Models.TransportModels>).Count;
-                        for (int i = 9; i <= 24; ++i)
-                        {
-                            <tr>
-                                @if (i == 24)
-                                {
-
-                                    <td style="padding:0" class="border" scope="row">00 : 00 </td>
-                                }
-                                else
-                                {
-
-                                    <td style="padding:0" class="border" scope="row">@i : 00 </td>
-                                }
-                                @for (int j = 0; j < countModels; ++j)
-                                {
-                                    if ((i + j) % 8 == 0)
-                                    {
-                                        <td class="border border-start bg-info text-white"></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="border border-start"></td>
-                                    }
-                                }
-                            </tr>
-                        }
-                    }
-
-
-
-                </tbody>
-            </table>*@
-
         </div>
     </div>
 </div>
 
 
+<script>
+    function changeDateCalendar() {
+        //alert();
+        $("#calendarForm").submit();
+    }
+</script>
