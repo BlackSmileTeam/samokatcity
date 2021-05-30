@@ -30,7 +30,7 @@
     <div class="form-group">
         <div class="col-md-10 accessories">
             <label>Количество (Доступно: <label id="availableTransport-@ViewBag.countTransport" style="margin-bottom:0;">0</label> шт.)</label>
-            <input type="number" min="0" name="countTransport" id="countTransport-@ViewBag.countTransport" class="form-control" value="0" onchange="checkValueTransport(this);" />
+            <input type="number" min="0" name="countTransport" id="countTransport-@ViewBag.countTransport" class="form-control countTransport" value="0" onchange="checkValueTransport(this);" />
         </div>
     </div>
     <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('transport-@ViewBag.countTransport')">
@@ -47,6 +47,7 @@
         if (countTransport.value > countTransport.max) {
             countTransport.value = countTransport.max;
         };
+        calculatePrice();
     };
 </script>
 

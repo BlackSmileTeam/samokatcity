@@ -131,13 +131,38 @@ namespace SCS.Controllers.API
 			return markup;
 		}
 		[HttpGet]
-		public decimal TarifPrice(string id)
+		public decimal TarifPriceAccessories(string model,string countAccessories)
 		{
 			decimal price = 0;
-			if (id != null && id.Length != 0)
+
+			int countAc = Convert.ToInt32(countAccessories);
+			if (countAc > 0)
 			{
-				int idRates = Convert.ToInt32(id);
-				//price = db.Rates.Where(tr => tr.Id == idRates).ToList()[0].Price;
+				if (!string.IsNullOrEmpty(model))
+				{
+					int idModel = Convert.ToInt32(model);
+					price = db.Accessories.Find(idModel).Price;
+					price *= countAc;
+				}
+			}
+			return price;
+		}
+		[HttpGet]
+		public decimal TarifPrice(string model, string rate, string countTransport)
+		{
+			decimal price = 0;
+
+			int countTr = Convert.ToInt32(countTransport);
+			if (countTr > 0)
+			{
+				if (!string.IsNullOrEmpty(model) && !string.IsNullOrEmpty(rate))
+				{
+					int idModel = Convert.ToInt32(model);
+					int idRates = Convert.ToInt32(rate);
+					var transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.Id == idModel);
+					price = db.RatesTransports.Include(r => r.Rates).Include(t => t.TransportModels).FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id).Price;
+					price *= countTr;
+				}
 			}
 			return price;
 		}
@@ -171,16 +196,19 @@ namespace SCS.Controllers.API
 		[HttpGet]
 		public int CountFreeAccessories(DateTime dateTime, string nameAccessories)
 		{
-			var nameAccessoriesFind = db.Accessories.Find(Convert.ToInt32(nameAccessories)).Name;
-			List<Accessories> access = db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").Where(ac => ac.Name == nameAccessoriesFind).ToList();
-
+			List<Accessories> access = new List<Accessories>();
+			if (!string.IsNullOrEmpty(nameAccessories))
+			{
+				var nameAccessoriesFind = db.Accessories.Find(Convert.ToInt32(nameAccessories)).Name;
+				access = db.Accessories.SqlQuery("CALL accessories_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").Where(ac => ac.Name == nameAccessoriesFind).ToList();
+			}
 			return access.Count();
 		}
 		[HttpGet]
 		public int CountFreeTransport(DateTime dateTime, string idTransportModels)
 		{
 			List<Transport> transports = new List<Transport>();
-			if (idTransportModels != null)
+			if (!string.IsNullOrEmpty(idTransportModels))
 			{
 				int idTrModel = Convert.ToInt32(idTransportModels);
 				var nameTransportModelsFind = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTrModel).TransportModels.Id;
@@ -209,6 +237,6 @@ namespace SCS.Controllers.API
 			return promotions;
 		}
 
-		
+
 	}
 }

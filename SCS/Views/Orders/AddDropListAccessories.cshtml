@@ -15,7 +15,7 @@
     <div class="form-group">
         <div class="col-md-10 accessories">
             <label>Количество (Доступно: <label id="availableAccessories-@ViewBag.countAccessories" style="margin-bottom:0;">0</label> шт.)</label>
-            <input type="number" min="0" name="countAccessories" id="countAccessories-@ViewBag.countAccessories" class="form-control" value="0" onchange="checkValueAccessories(this);" />
+            <input type="number" min="0" name="countAccessories" id="countAccessories-@ViewBag.countAccessories" class="form-control countAccessories" value="0" onchange="checkValueAccessories(this);" />
         </div>
     </div>
 
@@ -42,6 +42,7 @@
                 $("#availableAccessories-" + idInputCounter).html(data);
             }
         });
+        calculatePrice();
     };
     function checkValueAccessories(countAccessories) {
         if (countAccessories.value < countAccessories.min) {
@@ -50,5 +51,6 @@
         if (countAccessories.value > countAccessories.max) {
             countAccessories.value = countAccessories.max;
         };
+        calculatePrice();   
     };
 </script>

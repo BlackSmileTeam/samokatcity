@@ -351,6 +351,7 @@ function changeTransport(id) {
             $("#availableTransport-" + id.split("-")[1]).html(data);
         }
     });
+    calculatePrice();
 };
 function changeDate() {
     checkPromotions();
@@ -359,7 +360,6 @@ function changeDate() {
     document.getElementById("totalSum").innerHTML = "0";
     document.getElementById("LeftToPay").innerHTML = "0";
     document.getElementById("CountLock").value = 0;
-    //document.getElementById("duration").value = 0;
     document.getElementById("Discount").value = 0;
 
     document.getElementById("CashPayment").value = 0;
@@ -388,12 +388,18 @@ function calculatePrice() {
     var summ = document.getElementById("totalSum");
     var lpay = document.getElementById("LeftToPay");
 
-    var arr = document.getElementsByClassName("Rate");
+    var arr = document.getElementsByClassName("Transport");
+    var arrCountTransport = document.getElementsByClassName("countTransport");
+
+
+    var arrAccess = document.getElementsByClassName("Accessories");
+    var arrCountAccessories = document.getElementsByClassName("countAccessories");
+
     var lock = document.getElementById("CountLock");
 
     var discount = document.getElementById("Discount");
 
-    var arrMarkup = document.getElementsByClassName("Transport");
+    var rate = document.getElementById("Rates");
 
     if (lock.value == null || lock.value == "") {
         lock.value = 0;
@@ -402,9 +408,7 @@ function calculatePrice() {
         discount.value = 0;
     }
 
-
     let numberTransport = 0;
-    let numberMarkup = 0;
     summ.innerHTML = "0";
     lpay.innerHTML = Number("0");
 
@@ -413,15 +417,29 @@ function calculatePrice() {
             type: "GET",
             dataType: "json",
             url: "/api/web/TarifPrice",
-            data: "id=" + arr[numberTransport].value,
+            data: "model=" + arr[numberTransport].value + "&rate=" + rate.value + "&countTransport=" +arrCountTransport[numberTransport].value,
             success: function (msg) {
-                summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
-                lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg);
+                summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg) ;
+                lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg) ;
             }
         });
         ++numberTransport;
     }
 
+    let numberAccessories = 0;
+    while (numberAccessories < arrAccess.length) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/web/TarifPriceAccessories",
+            data: "model=" + arrAccess[numberAccessories].value + "&countAccessories=" + arrCountAccessories[numberAccessories].value,
+            success: function (msg) {
+                summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
+                lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg);
+            }
+        });
+        ++numberAccessories;
+    }
 
     lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(lock.value * 100);
     summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(lock.value * 100);
