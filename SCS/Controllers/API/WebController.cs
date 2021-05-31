@@ -236,7 +236,5 @@ namespace SCS.Controllers.API
 
 			return promotions;
 		}
-
-
 	}
 }

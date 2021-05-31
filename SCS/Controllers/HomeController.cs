@@ -5,6 +5,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using System.Drawing;
+using System.IO;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
+using System.Diagnostics;
+
 
 namespace SCS.Controllers
 {
@@ -252,6 +258,20 @@ namespace SCS.Controllers
 			ViewBag.Message = "Your contact page.";
 
 			return View();
+		}
+
+		public void CreateOrderDocument()
+		{
+			var user = db.Users.Include(c => c.ContactUser).FirstOrDefault(u => u.Id == 1);
+			string fileName = Server.MapPath(@"~\Data\Raport\Template\vehicle_lease_agreement.docx");
+
+			var doc = DocX.Load(fileName);
+			doc.ReplaceText("{USER_SHORT_NAME}", user.ContactUser.ShortName);
+			var fileNameCreateRaport = Server.MapPath(@"~\Data\Raport\Generate\vehicle_lease_agreement" + DateTime.Now.Ticks.ToString() + ".docx");
+
+			doc.SaveAs(fileNameCreateRaport);
+
+			Process.Start("WINWORD.EXE", fileNameCreateRaport);
 		}
 		protected override void Dispose(bool disposing)
 		{
