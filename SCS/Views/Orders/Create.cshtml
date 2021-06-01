@@ -15,10 +15,16 @@
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>ФИО клиента</label>
-                        <select name="UserId" class="form-control" id="UserId" lang="ru" required>
-                            @Html.ValidationMessageFor(model => model.User, "", new { @class = "text-danger" })
-                        </select>
+                        <div class="d-flex align-content-start align-items-lg-start" >
+                            <select name="UserId" class="form-control" id="UserId" lang="ru" required>
+                                @Html.ValidationMessageFor(model => model.User, "", new { @class = "text-danger" })
+                            </select>
+                            <a href="@Url.Action("Create","Users")" target="_blank" class="btn mt-0 mx-3 btn-default btn-circle" title="Добавить пользователя">
+                                +
+                            </a>
+                        </div>
                     </div>
+                    
 
                 </div>
                 <div class="form-group">
