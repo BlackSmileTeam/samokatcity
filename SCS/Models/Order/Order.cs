@@ -34,8 +34,8 @@ namespace SCS.Models
 		public User User { get; set; }
 		[Display( Name = "Примечание к заказу")]
 		public string Note { get; set; }
-		public ICollection<OrderTransport> OrderTransports { get; set; }
-		public ICollection<OrderAccessories> OrderAccessories { get; set; }
+		public List<OrderTransport> OrderTransports { get; set; }
+		public List<OrderAccessories> OrderAccessories { get; set; }
 		public Order()
 		{
 			OrderTransports = new List<OrderTransport>();

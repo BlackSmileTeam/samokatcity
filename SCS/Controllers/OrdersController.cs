@@ -6,6 +6,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Xceed.Words.NET;
+using System.Diagnostics;
 
 namespace SCS.Controllers
 {
@@ -519,6 +521,118 @@ namespace SCS.Controllers
 			return RedirectToAction("Index");
 		}
 
+		public void CreateOrderDocument(string id)
+		{
+			if (!string.IsNullOrEmpty(id))
+			{
+				var idOrder = Convert.ToInt32(id);
+				var order = db.Orders.Include(p => p.Payment).Include(u => u.User).Include(ot => ot.OrderTransports.Select(t => t.Transport)).Include(oa => oa.OrderAccessories.Select(a => a.Accessories)).FirstOrDefault(o => o.Id == idOrder);
+
+				if (order != null)
+				{
+					string fileName = Server.MapPath(@"~\Data\Raport\Template\vehicle_lease_agreement.docx");
+
+					var doc = DocX.Load(fileName);
+
+
+					var user = db.Users.Include(c => c.ContactUser).FirstOrDefault(u => u.Id == order.User.Id);
+					order.User = user;
+					doc.ReplaceText("{USER_SHORT_NAME}", order.User.ContactUser.ShortName);
+					doc.ReplaceText("{USER_LONG_NAME}", order.User.ContactUser.Surname + " " + order.User.ContactUser.Name + " " + order.User.ContactUser.Patronymic);
+					doc.ReplaceText("{USER_PHONE}", order.User.ContactUser.Phone);
+					doc.ReplaceText("{USER_DOCUMENT}", order.User.ContactUser.Passport);
+					doc.ReplaceText("{USER_ADRESS}", order.User.ContactUser.City + ", " + order.User.ContactUser.Street + ", д." + order.User.ContactUser.Home + ", кв." + order.User.ContactUser.Apartment);
+
+					string transportList = "";
+					string transportListCount = "";
+					string accessoriesListCount = "";
+					string accessoriesListEmpty = "";
+
+					var transp = db.Transport.Include(tm => tm.TransportModels);
+
+					var transportModels = new Dictionary<string, int>();
+					foreach (var oftr in order.OrderTransports)
+					{
+						oftr.Transport = transp.FirstOrDefault(tr => tr.Id == oftr.Transport.Id);
+						if (transportModels.ContainsKey(oftr.Transport.TransportModels.Name))
+						{
+							transportModels[oftr.Transport.TransportModels.Name]++;
+						}
+						else
+						{
+							transportModels.Add(oftr.Transport.TransportModels.Name, 1);
+						}
+					}
+
+					foreach (var ft in transportModels)
+					{
+						transportListCount += ft.Key + " - " + ft.Value + "шт., ";
+						transportList += ft.Key + ", ";
+					}
+
+					transportListCount = transportListCount.Remove(transportListCount.Length - 2, 2);
+					transportList = string.Join(", ", transportModels.Keys);
+
+
+
+					var accesoriesName = new Dictionary<string, int>();
+					foreach (var acc in order.OrderAccessories)
+					{
+						if (accesoriesName.ContainsKey(acc.Accessories.Name))
+						{
+							accesoriesName[acc.Accessories.Name]++;
+						}
+						else
+						{
+							accesoriesName.Add(acc.Accessories.Name, 1);
+						}
+					}
+
+					string FreeAccessoriesTitle = "";
+					foreach (var fa in accesoriesName)
+					{
+						accessoriesListCount += fa.Key + " - " + fa.Value + "шт., ";
+						accessoriesListEmpty += fa.Key + "__ шт., ";
+					}
+					accessoriesListCount = accessoriesListCount.Remove(accessoriesListCount.Length - 2, 2);
+					accessoriesListEmpty = accessoriesListEmpty.Remove(accessoriesListEmpty.Length - 2, 2);
+
+					doc.ReplaceText("{TRANSPORT_LIST}", transportList);
+					doc.ReplaceText("{TRANSPORT_LIST_COUNT}", transportListCount);
+
+
+					doc.ReplaceText("{ACCESSORIES_LIST_COUNT}", accessoriesListCount);
+					doc.ReplaceText("{ACCESSORIES_LIST_EMPTY}", accessoriesListEmpty);
+
+					var ordTr = db.OrderTransport.Include(or => or.Rates);
+
+
+					if (order.OrderTransports != null && order.OrderTransports[0] != null)
+					{
+						var idOrdTr = order.OrderTransports[0].Id;
+						order.OrderTransports[0] = ordTr.FirstOrDefault(or => or.Id == idOrdTr);
+						doc.ReplaceText("{RATE}", order.OrderTransports[0].Rates.Name);
+					}
+					else
+					{
+						doc.ReplaceText("{RATE}", "");
+					}
+
+					doc.ReplaceText("{DATE_START}", order.DateStart.ToString("HH:mm dd.mm.yyyy"));
+					doc.ReplaceText("{DATE_END}", order.DateEnd.ToString("HH:mm dd.mm.yyyy"));
+					doc.ReplaceText("{CASH_DEPOSIT}", order.Payment.CashDeposit.ToString());
+					doc.ReplaceText("{CARD_DEPOSIT}", order.Payment.CardDeposit.ToString());
+					doc.ReplaceText("{CASH_PAYMENT}", order.Payment.CashPayment.ToString());
+					doc.ReplaceText("{CARD_PAYMENT}", order.Payment.CardPayment.ToString());
+
+					var fileNameCreateRaport = Server.MapPath(@"~\Data\Raport\Generate\vehicle_lease_agreement" + DateTime.Now.Ticks.ToString() + ".docx");
+
+					doc.SaveAs(fileNameCreateRaport);
+
+					Process.Start("WINWORD.EXE", fileNameCreateRaport);
+				}
+			}
+		}
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
