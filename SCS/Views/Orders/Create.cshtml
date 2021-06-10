@@ -1,7 +1,7 @@
 ﻿@model SCS.Models.Order
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Добавить";
 }
 <div class="container" id="generalDiv">
     <div class="divTable">
@@ -340,8 +340,8 @@ function changeTransport(id) {
         data: "id=" + document.getElementById(id).value + "&dateStart=" + document.getElementById("dateStart").value,
 
         success: function (msg) {
-            document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
-            document.getElementById("LeftToPay").innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg);
+            document.getElementById("totalSum").innerHTML = Number(document.getElementById("totalSum").textContent) - Number(msg);
+            document.getElementById("LeftToPay").innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(msg);
         }
     });
     $.ajax({
@@ -423,7 +423,13 @@ function calculatePrice() {
             type: "GET",
             dataType: "json",
             url: "/api/web/TarifPrice",
-            data: "model=" + arr[numberTransport].value + "&rate=" + rate.value + "&countTransport=" +arrCountTransport[numberTransport].value,
+            data:
+            {
+                model: arr[numberTransport].value,
+                rate: rate.value,
+                countTransport: arrCountTransport[numberTransport].value,
+                dateStart: document.getElementById("dateStart").value
+            },
             success: function (msg) {
                 summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg) ;
                 lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(msg) ;
