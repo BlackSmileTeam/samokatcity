@@ -72,18 +72,46 @@ namespace SCS.Controllers
         public OrdersController()
         {
             StatusOrder = new List<SelectListItem>();
+            StatusOrder.Add(new SelectListItem { Text = "Все" });
+            StatusOrder.Add(new SelectListItem { Text = "Завершен" });
+            StatusOrder.Add(new SelectListItem { Text = "В поездке" });
+            StatusOrder.Add(new SelectListItem { Text = "Забронирован" });
 
-            var ListStatus = db.Helpers.Where(h => h.Code == 2).ToList();
-            foreach (var tmpStatus in ListStatus)
-            {
-                StatusOrder.Add(new SelectListItem { Text = tmpStatus.Text });
-            }
+            //var ListStatus = db.Helpers.Where(h => h.Code == 2).ToList();
+            //foreach (var tmpStatus in ListStatus)
+            //{
+            //    StatusOrder.Add(new SelectListItem { Text = tmpStatus.Text });
+            //}
         }
 
         // GET: Orders
         public ActionResult Index()
         {
-            var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Include(p => p.Payment);//.Take(10);
+            DateTime dateTimeStartDay = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 00:00"));
+            DateTime dateTimeEndDay = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 23:59"));
+            var orders = db.Orders.Include(u => u.User)
+                                  .Include(cu => cu.User.ContactUser)
+                                  .Include(p => p.Payment)
+                                  .Include(ot => ot.OrderTransports.Select(r => r.Rates))
+                                  .Where(o => o.DateStart >= dateTimeStartDay && o.DateEnd <= dateTimeEndDay);//.Take(10);
+            foreach (var order in orders)
+            {
+                if (order.DateStart <= DateTime.Now && order.DateEnd >= DateTime.Now)
+                {
+                    order.StatusOrder = $"В поездке ({order.StatusOrder})";
+                }
+                else
+                {
+                    if (order.DateStart <= DateTime.Now)
+                    {
+                        order.StatusOrder = $"Завершен ({order.StatusOrder})";
+                    }
+                    else
+                    {
+                        order.StatusOrder = $"Забронирован ({order.StatusOrder})";
+                    }
+                }
+            }
             ViewBag.StatusOrder = StatusOrder;
             SelectList users = new SelectList(db.Users.Include(u => u.ContactUser), "Id", "Id");
             ViewBag.User = users;
@@ -105,9 +133,43 @@ namespace SCS.Controllers
 
             if (statusOrder != "Все")
             {
-                orders = orders.Where(o => o.StatusOrder.Contains(statusOrder)).ToList();
+                switch (statusOrder)
+                {
+                    case "Завершен":
+                        {
+                            orders = orders.Where(o => o.DateEnd <= DateTime.Now).ToList();
+                            break;
+                        }
+                    case "В поездке":
+                        {
+                            orders = orders.Where(o => o.DateStart <= DateTime.Now && o.DateEnd >= DateTime.Now).ToList();
+                            break;
+                        }
+                    case "Забронирован":
+                        {
+                            orders = orders.Where(o => o.DateEnd >= DateTime.Now).ToList();
+                            break;
+                        }
+                }
             }
-
+            foreach (var order in orders)
+            {
+                if (order.DateStart <= DateTime.Now && order.DateEnd >= DateTime.Now)
+                {
+                    order.StatusOrder = $"В поездке ({order.StatusOrder})";
+                }
+                else
+                {
+                    if (order.DateStart <= DateTime.Now)
+                    {
+                        order.StatusOrder = $"Завершен ({order.StatusOrder})";
+                    }
+                    else
+                    {
+                        order.StatusOrder = $"Забронирован ({order.StatusOrder})";
+                    }
+                }
+            }
             ViewBag.StatusOrder = StatusOrder;
 
             return PartialView(orders);
@@ -274,7 +336,7 @@ namespace SCS.Controllers
                     Console.WriteLine(ex.Message);
                 }
                 totalSum += CountLock * 100;
-               
+
                 int statusTransportOrAccesories = DateStart >= DateTime.Now.AddHours(1) ? Convert.ToInt32(StatusTransportOrAccessories.Free) : Convert.ToInt32(StatusTransportOrAccessories.Busy);
 
                 order.DateStart = DateStart;
@@ -403,8 +465,7 @@ namespace SCS.Controllers
             {
                 return HttpNotFound();
             }
-            TotalSum += order.CountLock * 100;
-
+            TotalSum = order.Payment.TotalSum;
 
             //Сделать подсчет суммы
 
