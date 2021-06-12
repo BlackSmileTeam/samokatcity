@@ -8,6 +8,7 @@ using System.Net;
 using System.Web.Mvc;
 using Xceed.Words.NET;
 using System.Diagnostics;
+using System.IO;
 
 namespace SCS.Controllers
 {
@@ -578,7 +579,7 @@ namespace SCS.Controllers
             return RedirectToAction("Index");
         }
 
-        public void CreateOrderDocument(string id)
+        public ActionResult CreateOrderDocument(string id)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -627,10 +628,11 @@ namespace SCS.Controllers
                         transportList += ft.Key + ", ";
                     }
 
-                    transportListCount = transportListCount.Remove(transportListCount.Length - 2, 2);
+                    if (transportListCount.Length > 2)
+                    {
+                        transportListCount = transportListCount.Remove(transportListCount.Length - 2, 2);
+                    }
                     transportList = string.Join(", ", transportModels.Keys);
-
-
 
                     var accesoriesName = new Dictionary<string, int>();
                     foreach (var acc in order.OrderAccessories)
@@ -645,14 +647,19 @@ namespace SCS.Controllers
                         }
                     }
 
-                    string FreeAccessoriesTitle = "";
                     foreach (var fa in accesoriesName)
                     {
                         accessoriesListCount += fa.Key + " - " + fa.Value + "шт., ";
                         accessoriesListEmpty += fa.Key + "__ шт., ";
                     }
-                    accessoriesListCount = accessoriesListCount.Remove(accessoriesListCount.Length - 2, 2);
-                    accessoriesListEmpty = accessoriesListEmpty.Remove(accessoriesListEmpty.Length - 2, 2);
+                    if (accessoriesListCount.Length > 2)
+                    {
+                        accessoriesListCount = accessoriesListCount.Remove(accessoriesListCount.Length - 2, 2);
+                    }
+                    if(accessoriesListEmpty.Length >2)
+                    { 
+                        accessoriesListEmpty = accessoriesListEmpty.Remove(accessoriesListEmpty.Length - 2, 2);
+                    }
 
                     doc.ReplaceText("{TRANSPORT_LIST}", transportList);
                     doc.ReplaceText("{TRANSPORT_LIST_COUNT}", transportListCount);
@@ -686,10 +693,17 @@ namespace SCS.Controllers
 
                     doc.SaveAs(fileNameCreateRaport);
 
-                    Process.Start("WINWORD.EXE", fileNameCreateRaport);
+                    string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    return File(fileNameCreateRaport, contentType, Path.GetFileName(fileNameCreateRaport));
+
+                    //Process.Start("WINWORD.EXE", fileNameCreateRaport);
                 }
             }
+
+            return null;
         }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
