@@ -513,7 +513,7 @@ namespace SCS.Controllers
 
                 order.StatusOrder = order.StatusOrder.Remove(order.StatusOrder.IndexOf('(') + 1);
 
-                order.StatusOrder += remainder == 0 ? "Оплачен)" : "Ожидает оплаты)";
+                order.StatusOrder += remainder == 0 ? "Оплачен" : "Ожидает оплаты";
 
                 order.Discount = Convert.ToInt32(Discount);
                 pay.CashPayment = Convert.ToDecimal(CashPayment);

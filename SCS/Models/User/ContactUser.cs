@@ -10,7 +10,7 @@ namespace SCS.Models
 	{
 		public int Id { get; set; }
 		public string ShortName { get; set; }
-		public string Surname { get; set; }
+		public string Surname { get; set; } = "";
 		public string Name { get; set; }
 		public string Patronymic { get; set; }
 		public string Passport { get; set; }

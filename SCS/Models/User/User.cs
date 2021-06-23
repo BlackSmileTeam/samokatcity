@@ -10,8 +10,8 @@ namespace SCS.Models
 	public class User
 	{
 		public int Id { get; set; }
-		public string Username { get; set; }
-		public string Password { get; set; }
+		public string Username { get; set; } = "";
+		public string Password { get; set; } = "";
 		public decimal Discount { get; set; } = 0;
 		public decimal Bonus { get; set; } = 0;
 		public int ExtraCharge { get; set; } = 0;

@@ -63,8 +63,8 @@ namespace SCS.Controllers
                     Username = Username,
                     Password = Password
                 };
-                var userInitialsName = (Name != null && Name.Length > 0) ? Name[0] : ' ';
-                var userInitialsPatronymic = (Patronymic != null && Patronymic.Length > 0) ? Patronymic[0] : ' ';
+                var userInitialsName = (Name != null && Name.Length > 0) ? Name[0] + "." : " ";
+                var userInitialsPatronymic = (Patronymic != null && Patronymic.Length > 0) ? Patronymic[0] + "." : "";
                 СontactUser contactUser = new СontactUser()
                 {
                     Passport = Passport,
@@ -76,7 +76,7 @@ namespace SCS.Controllers
                     Patronymic = Patronymic,
                     Phone = Phone,
                     Street = Street,
-                    ShortName = $"{Surname} {userInitialsName}. {userInitialsPatronymic}."
+                    ShortName = $"{Surname} {userInitialsName}  {userInitialsPatronymic}"
                 };
                 db.ContactUser.Add(contactUser);
                 await db.SaveChangesAsync();
