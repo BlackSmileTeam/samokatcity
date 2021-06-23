@@ -88,13 +88,12 @@ namespace SCS.Controllers
         // GET: Orders
         public ActionResult Index()
         {
-            DateTime dateTimeStartDay = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 00:00"));
-            DateTime dateTimeEndDay = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 23:59"));
-            var orders = db.Orders.Include(u => u.User)
-                                  .Include(cu => cu.User.ContactUser)
-                                  .Include(p => p.Payment)
-                                  .Include(ot => ot.OrderTransports.Select(r => r.Rates))
-                                  .Where(o => o.DateStart >= dateTimeStartDay && o.DateEnd <= dateTimeEndDay);//.Take(10);
+            DateTime dateTimeStartDay = DateTime.Parse(DateTime.Now.ToString("dd.MM.yyyy 00:00"));
+            DateTime dateTimeEndDay = DateTime.Parse(DateTime.Now.ToString("dd.MM.yyyy 23:59"));
+        
+            var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Include(p => p.Payment).Where(o => o.DateStart >= dateTimeStartDay && o.DateStart <= dateTimeEndDay).ToList();
+
+
             foreach (var order in orders)
             {
                 if (order.DateStart <= DateTime.Now && order.DateEnd >= DateTime.Now)

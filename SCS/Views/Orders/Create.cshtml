@@ -462,8 +462,6 @@ function calculatePrice() {
     lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) -
         Number(document.getElementById("CashPayment").value) -
         Number(document.getElementById("CardPayment").value) -
-        Number(document.getElementById("CashDeposit").value) -
-        Number(document.getElementById("CardDeposit").value) -
         Number(document.getElementById("bonusPayment").value);
 }
 function calculateLeftToPay() {
@@ -479,8 +477,6 @@ function calculateLeftToPay() {
     lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) -
         Number(document.getElementById("CashPayment").value) -
         Number(document.getElementById("CardPayment").value) -
-        Number(document.getElementById("CashDeposit").value) -
-        Number(document.getElementById("CardDeposit").value) -
         Number(document.getElementById("Discount").value) -
         Number(bonusPayment);
 };
