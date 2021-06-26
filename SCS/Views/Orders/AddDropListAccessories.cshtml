@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-<div class="moreInformationOrder" id="accessories-@ViewBag.countTransport">
+<div class="moreInformationOrder" id="accessories-@ViewBag.countAccessories">
     <div class="form-group">
         <div class="col-md-10 accessories">
             <label>Наименование</label>
@@ -23,7 +23,7 @@
         <div class="col-md-10">
         </div>
     </div>
-    <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('accessories-@ViewBag.countAccessories')">
+    <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('accessories-@ViewBag.countAccessories', false)">
         <span aria-hidden="true" class="h5">&times;</span>
     </button>
 </div>

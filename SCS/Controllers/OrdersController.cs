@@ -248,7 +248,7 @@ namespace SCS.Controllers
             }
 
             ViewBag.TransportId = new SelectList(transports.DistinctBy(tr => tr.TransportModels.Name), "Id", "TransportModels.Name");
-            ViewBag.createRate = createRate;
+            ViewBag.createRate = createRate;    
             if (!createRate)
             {
                 createRate = true;
@@ -271,6 +271,10 @@ namespace SCS.Controllers
         public void DeleteBlockTransport()
         {
             Session["countTransport"] = countTransport - 1;
+            if(countTransport == 0)
+            {
+                createRate = false;
+            }
         }
         public ActionResult AddDropListAccessories(DateTime dateTime)
         {
@@ -409,7 +413,6 @@ namespace SCS.Controllers
                             //ac.Status = statusTransportOrAccesories;
                             db.Entry(ac).State = EntityState.Modified;
                             totalSum += ac.Price;
-
                         }
 
                         foreach (var ac in accessories)
