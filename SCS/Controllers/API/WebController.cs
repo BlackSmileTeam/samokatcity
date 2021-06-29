@@ -160,7 +160,7 @@ namespace SCS.Controllers.API
             return price;
         }
         [HttpGet]
-        public decimal TarifPrice(string model, string rate, string countTransport, DateTime dateStart)
+        public decimal TarifPrice(string model, string rate, string countTransport, DateTime dateStart, int promotionId)
         {
             decimal price = 0;
 
@@ -182,17 +182,9 @@ namespace SCS.Controllers.API
                         idTransportModel = transModel.TransportModels.Id;
 
                         int dayOfWeek = (int)dateStart.DayOfWeek;
-
-                        var promTr = db.PromotionsTransportModels.Include(tm => tm.TransportModels)
-                                                                 .Include(p => p.Promotions)
-                                                                 .Where(tm => tm.TransportModels.Id == idTransportModel &&
-                                                                        tm.Promotions.TimeStart.Hours <= dateStart.Hour &&
-                                                                        tm.Promotions.TimeEnd.Hours >= dateStart.Hour &&
-                                                                        tm.Promotions.DayOfWeek.Contains(dayOfWeek.ToString()))
-                                                                 .ToList();
-                        foreach (var prTr in promTr)
+                        if (promotionId != -1)
                         {
-                            price -= prTr.Promotions.Discount;
+                            price -= db.Promotions.Find(promotionId).Discount;
                         }
                     }
                 }
@@ -265,6 +257,10 @@ namespace SCS.Controllers.API
         public List<Promotions> GetPromotions(DateTime dateTime)
         {
             int dayOfWeek = (int)dateTime.DayOfWeek;
+            if (dayOfWeek == 0)
+            {
+                dayOfWeek = 7;
+            }
             List<Promotions> promotions = db.Promotions.Include(pr => pr.PromotionsTransportModels.Select(tm => tm.TransportModels)).Where(day => day.DayOfWeek.Contains(dayOfWeek.ToString())).ToList();
 
             return promotions;

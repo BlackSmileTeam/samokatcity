@@ -90,7 +90,7 @@ namespace SCS.Controllers
         {
             DateTime dateTimeStartDay = DateTime.Parse(DateTime.Now.ToString("dd.MM.yyyy 00:00"));
             DateTime dateTimeEndDay = DateTime.Parse(DateTime.Now.ToString("dd.MM.yyyy 23:59"));
-        
+
             var orders = db.Orders.Include(u => u.User).Include(cu => cu.User.ContactUser).Include(p => p.Payment).Where(o => o.DateStart >= dateTimeStartDay && o.DateStart <= dateTimeEndDay).ToList();
 
 
@@ -248,7 +248,7 @@ namespace SCS.Controllers
             }
 
             ViewBag.TransportId = new SelectList(transports.DistinctBy(tr => tr.TransportModels.Name), "Id", "TransportModels.Name");
-            ViewBag.createRate = createRate;    
+            ViewBag.createRate = createRate;
             if (!createRate)
             {
                 createRate = true;
@@ -271,7 +271,7 @@ namespace SCS.Controllers
         public void DeleteBlockTransport()
         {
             Session["countTransport"] = countTransport - 1;
-            if(countTransport == 0)
+            if (countTransport == 0)
             {
                 createRate = false;
             }
@@ -294,9 +294,9 @@ namespace SCS.Controllers
         [ValidateAntiForgeryToken]
 
         public ActionResult Create(DateTime DateStart, int CountLock, int UserId,
-                                       List<int> AccessoriesId, List<int> TransportId, int RatesIdTransport,
+                                       List<int> AccessoriesId, List<int> TransportId, int? RatesIdTransport,
                                        int addBonuses, int discount, int typeDocumentId, List<int> countTransport, List<int> countAccessories,
-                                       decimal cashPayment, decimal cardPayment, decimal cardDeposit, decimal cashDeposit, decimal bonusPayment, string Note)
+                                       decimal cashPayment, decimal cardPayment, decimal cardDeposit, decimal cashDeposit, decimal bonusPayment, string Note, int promotionsList)
         {
 
             Order order = new Order();
@@ -315,24 +315,11 @@ namespace SCS.Controllers
                             var modelsId = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trId).TransportModels.Id;
 
                             totalSum += db.RatesTransports.Include(tm => tm.TransportModels).Include(r => r.Rates).FirstOrDefault(tm => tm.TransportModels.Id == modelsId && tm.Rates.Id == RatesIdTransport).Price * countTransport[i];
-
-                            int dayOfWeek = (int)DateStart.DayOfWeek;
-                            if (countTransport[i] > 0)
-                            {
-                                var promTr = db.PromotionsTransportModels.Include(tm => tm.TransportModels)
-                                                                         .Include(p => p.Promotions)
-                                                                         .Where(tm => tm.TransportModels.Id == modelsId &&
-                                                                                tm.Promotions.TimeStart.Hours <= DateStart.Hour &&
-                                                                                tm.Promotions.TimeEnd.Hours >= DateStart.Hour &&
-                                                                                tm.Promotions.DayOfWeek.Contains(dayOfWeek.ToString()))
-                                                                         .ToList();
-                                foreach (var prTr in promTr)
-                                {
-                                    totalSum -= prTr.Promotions.Discount;
-                                }
-
-                            }
                         }
+                    }
+                    if (promotionsList != -1)
+                    {
+                        totalSum -= db.Promotions.Find(promotionsList).Discount;
                     }
                 }
                 catch (Exception ex)
@@ -658,8 +645,8 @@ namespace SCS.Controllers
                     {
                         accessoriesListCount = accessoriesListCount.Remove(accessoriesListCount.Length - 2, 2);
                     }
-                    if(accessoriesListEmpty.Length >2)
-                    { 
+                    if (accessoriesListEmpty.Length > 2)
+                    {
                         accessoriesListEmpty = accessoriesListEmpty.Remove(accessoriesListEmpty.Length - 2, 2);
                     }
 
