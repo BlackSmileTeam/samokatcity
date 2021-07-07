@@ -15,10 +15,6 @@ namespace SCS.Controllers.API
     {
         private SCSContext db = new SCSContext();
         // GET: api/Web
-        //public IEnumerable<string> Get()
-        //{
-        //	return new string[] { "valsue1", "value2" };
-        //}
         public string Get()
         {
             return "Welcome To Web API";
@@ -160,7 +156,17 @@ namespace SCS.Controllers.API
             return price;
         }
         [HttpGet]
-        public decimal TarifPrice(string model, string rate, string countTransport, DateTime dateStart, int promotionId)
+        public decimal promotionsOrder(int promotionId)
+        {
+            decimal discount = 0;
+            if (promotionId > 0)
+            {
+                discount = db.Promotions.Find(promotionId).Discount;
+            }
+            return discount;
+        }
+        [HttpGet]
+        public decimal TarifPrice(string model, string rate, string countTransport, DateTime dateStart)
         {
             decimal price = 0;
 
@@ -172,21 +178,12 @@ namespace SCS.Controllers.API
                     int idModel = Convert.ToInt32(model);
                     int idRates = Convert.ToInt32(rate);
                     var transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.Id == idModel);
-                    price = db.RatesTransports.Include(r => r.Rates).Include(t => t.TransportModels).FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id).Price;
-                    price *= countTr;
-
-                    int idTransportModel = 0;
-                    var transModel = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.Id == idModel);
-                    if (transModel != null)
+                    var rt = db.RatesTransports.Include(r => r.Rates).Include(t => t.TransportModels).FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id);
+                    if (rt != null)
                     {
-                        idTransportModel = transModel.TransportModels.Id;
-
-                        int dayOfWeek = (int)dateStart.DayOfWeek;
-                        if (promotionId != -1)
-                        {
-                            price -= db.Promotions.Find(promotionId).Discount;
-                        }
+                        price = rt.Price;
                     }
+                    price *= countTr;
                 }
             }
             return price;
@@ -252,7 +249,6 @@ namespace SCS.Controllers.API
             }
             return transports == null ? 0 : transports.Count();
         }
-
         [HttpGet]
         public List<Promotions> GetPromotions(DateTime dateTime)
         {

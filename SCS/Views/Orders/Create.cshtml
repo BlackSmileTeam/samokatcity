@@ -251,6 +251,7 @@
                 var ddlPromotions = document.createElement("select");
                 ddlPromotions.id = "promotionsList";
                 ddlPromotions.name = "promotionsList";
+                ddlPromotions.onchange = calculatePrice;
                 ddlPromotions.classList.add("form-control");
                 var option = document.createElement("option");
                 option.value = -1;
@@ -274,7 +275,6 @@
             }
         });
     }
-
     //Добавление транспорта
     $("#addTransport").click(function () {
         $.ajax({
@@ -447,7 +447,6 @@
                     rate: rate.value,
                     countTransport: arrCountTransport[numberTransport].value,
                     dateStart: document.getElementById("dateStart").value,
-                    promotionId: document.getElementById("promotionsList").options[document.getElementById("promotionsList").selectedIndex].value
                 },
                 success: function (msg) {
                     summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(msg);
@@ -456,6 +455,19 @@
             });
             ++numberTransport;
         }
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/web/promotionsOrder",
+            data:
+            {
+                promotionId: document.getElementById("promotionsList").options[document.getElementById("promotionsList").selectedIndex].value
+            },
+            success: function (msg) {
+                summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(msg);
+                lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(msg);
+            }
+        });
 
         let numberAccessories = 0;
         while (numberAccessories < arrAccess.length) {

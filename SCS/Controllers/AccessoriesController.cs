@@ -101,7 +101,7 @@ namespace SCS.Controllers
 				return HttpNotFound();
 			}
 			var status = StatusAccessories;
-			//Удоляем 0 элемент "Все"
+			//Удаляем 0 элемент "Все"
 			status.RemoveAt(0);
 			foreach (var stat in status)
 			{

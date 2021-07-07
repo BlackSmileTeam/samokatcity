@@ -11,13 +11,55 @@
 
         @using (Html.BeginForm())
         {
+            int countTransport = 0;
             @Html.AntiForgeryToken()
 
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.Id)
+            <div class="form-group">
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.DateStart)
+                    <input type="datetime-local" id="dateStart" name="dateStart" value="@ViewData["DateOrder"]" date-format="m/d/yyyy hh:mm"
+                           min="@ViewData["DateOrder"]" class="form-control" title="Дата начала действия заказа" required onchange="changeDate()">
+                    @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <h4>Транспорт</h4>
+            <hr />
 
+            <div id="transport">
+                <div class="moreInformationOrder">
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label>Тариф</label>
+                            @Html.DropDownList(
+                                                        "RatesIdTransport",
+                                                        (List<SelectListItem>)ViewData["RatesIdTransport"],
+                                                        htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = "Rates", @required = "required" })
 
+                        </div>
+                    </div>
+                    @foreach (var trList in (List<List<SelectListItem>>)ViewData["TransportList"])
+                    {
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <label>Наименование </label>
+                                @Html.DropDownList("TransportList-" + countTransport, (List<SelectListItem>)trList, new { @class = "form-control" })
+
+                            </div>
+                        </div>
+                        countTransport++;
+                    }
+                </div>
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="+" id="addTransport" class="btn btn-outline-dark mt-2" />
+            </div>
+            <br />
+
+            <h4>Оплата </h4>
+            <hr />
             <div class="moreInformationOrder mb-2">
                 <div class="col-md-10">
                     <label>Скидка, руб</label>
@@ -66,17 +108,13 @@
                     </div>
                 </div>
             </div>
-
             <div class="moreInformationOrder mb-2">
-             
+
                 <div class="col-md-10">
                     <label>Примечание</label>
                     <input type="text" class="form-control" name="Note" id="Note" value="@Model.Note" />
-                    @*@Html.ValidationMessageFor(model => model.Payment.CardPayment, "", new { @class = "text-danger" })*@
                 </div>
             </div>
-
-
             <div class="form-group mb-2" id="totalDiv">
                 <label>Осталось оплатить: </label>
                 <label id="LeftToPay">0</label>
@@ -107,8 +145,6 @@
         lpay.innerHTML = Number(@ViewBag.TotalSum) -
             Number(document.getElementById("CashPayment").value)-
             Number(document.getElementById("CardPayment").value) -
-            Number(document.getElementById("CashDeposit").value) -
-            Number(document.getElementById("CardDeposit").value) -
             Number(document.getElementById("Discount").value) -
             @Model.Payment.BonusPayment;
 
@@ -119,4 +155,41 @@
 <script src="~/Scripts/select2/i18n/ru.js"></script>
 <script src="~/Scripts/select2/select2.full.min.js"></script>
 <script src="~/Scripts/select2/select2.js"></script>
+<script>
+    //Добавление транспорта
+    $("#addTransport").click(function () {
+        $.ajax({
+            url: 'AddDropListTransport',
+            datatype: 'html',
+            data: {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                $("#transport").append(data);
+                var countTransport = document.getElementsByClassName("Transport");
 
+                if (countTransport.length >= document.getElementById("Transport-0").length - 1) {
+                    document.getElementById("addTransport").hidden = true;
+                }
+            }
+        })
+    });
+    //Добавление аксессуара
+    $("#addAccessories").click(function () {
+        $.ajax({
+            url: 'AddDropListAccessories',
+            datatype: 'html',
+            data: {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                $("#accessories").append(data);
+                var countAccessories = document.getElementsByClassName("Accessories");
+
+                if (countAccessories.length >= document.getElementById("Accessories-0").length - 1) {
+                    document.getElementById("addAccessories").hidden = true;
+                }
+            }
+        })
+    });
+</script>

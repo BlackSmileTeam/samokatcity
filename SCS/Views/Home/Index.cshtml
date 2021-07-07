@@ -4,11 +4,9 @@
 }
 
 <br />
-
-
-
 <div class="container">
     <div class="row">
+
         <div class="col-sm-3">
             <div id="profitYesterday" class="card d-flex flex-row"
                  title="Наличные - @ViewData["YesterdayCashPaymentProfit"] руб. &#13;Картой - @ViewData["YesterdayCardPaymentProfit"] руб. &#13;Бонусами - @ViewData["YesterdayBonusPaymentProfit"] руб.">
@@ -86,4 +84,38 @@
         //alert();
         $("#calendarForm").submit();
     }
+</script>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>    
+<script>
+    var data = [
+        {
+            id: 0,
+            text: 'enhancement'
+        },
+        {
+            id: 1,
+            text: 'bug'
+        },
+        {
+            id: 2,
+            text: 'duplicate'
+        },
+        {
+            id: 3,
+            text: 'invalid'
+        },
+        {
+            id: 4,
+            text: 'wontfix'
+        }
+    ];
+
+    //$("#testSelect").select2({
+    //    data: data
+    //})
 </script>

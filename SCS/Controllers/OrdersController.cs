@@ -228,7 +228,37 @@ namespace SCS.Controllers
             ViewData["TypeDocumentId"] = TypeDocument;
             return View();
         }
+        public ActionResult AddDropListTransportEdit(int selectModel, DateTime dateTime)
+        {
+            //Добавляем Id для добавленного транспорта
+            ViewBag.countTransport = countTransport;
+            //Увеличиваем id на единицу, что бы следующий блок был с новым id
+            ++countTransport;
+            Session["countTransport"] = countTransport;
+            var rates = db.Rates.ToList();
+            ViewBag.RatesIdTransport = new SelectList(rates, "Id", "Name");
 
+            var transp = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+
+            List<Transport> transports = new List<Transport>();
+            foreach (var trans in transp)
+            {
+                transports.Add(db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trans.Id));
+            }
+            transports.Add(db.Transport.Find(selectModel));
+
+            SelectList selectListItems = new SelectList(transports.DistinctBy(tr => tr.TransportModels.Name), "Id", "TransportModels.Name", transports[transports.Count - 1]);
+
+            ViewBag.TransportId = selectListItems;
+
+            ViewBag.createRate = createRate;
+            if (!createRate)
+            {
+                createRate = true;
+            }
+
+            return View(transports.DistinctBy(tr => tr.TransportModels.Name));
+        }
         public ActionResult AddDropListTransport(DateTime dateTime)
         {
             //Добавляем Id для добавленного транспорта
@@ -292,7 +322,6 @@ namespace SCS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public ActionResult Create(DateTime DateStart, int CountLock, int UserId,
                                        List<int> AccessoriesId, List<int> TransportId, int? RatesIdTransport,
                                        int addBonuses, int discount, int typeDocumentId, List<int> countTransport, List<int> countAccessories,
@@ -313,8 +342,11 @@ namespace SCS.Controllers
                         {
                             var trId = TransportId[i];
                             var modelsId = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trId).TransportModels.Id;
+                            var rtr1 = db.RatesTransports.Include(tm => tm.TransportModels).Include(r => r.Rates);
+                            var rtr = rtr1.FirstOrDefault(tm => tm.TransportModels.Id == modelsId && tm.Rates.Id == RatesIdTransport);
 
-                            totalSum += db.RatesTransports.Include(tm => tm.TransportModels).Include(r => r.Rates).FirstOrDefault(tm => tm.TransportModels.Id == modelsId && tm.Rates.Id == RatesIdTransport).Price * countTransport[i];
+                            totalSum += rtr.Price * countTransport[i];
+
                         }
                     }
                     if (promotionsList != -1)
@@ -352,8 +384,14 @@ namespace SCS.Controllers
 
                         var idTransport = TransportId[i];
                         var transModel = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTransport).TransportModels.Id;
+                        var transpModels = db.Transport.Include(tm => tm.TransportModels).ToList();
                         //ищем ТС которые подходят в выбранную дату (свободны) и определенное количество
-                        var transp = db.Transport.SqlQuery("CALL transport_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").Take(countTransport[i]).ToList();
+                        var transp = db.Transport.SqlQuery("CALL transport_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+                        foreach (var transpSQL in transp)
+                        {
+                            transpSQL.TransportModels = transpModels.FirstOrDefault(tr => tr.Id == transpSQL.Id).TransportModels;
+                        }
+                        transp = transp.Where(tm => tm.TransportModels.Id == transModel).Take(countTransport[i]).ToList();
 
                         List<Transport> transports = new List<Transport>();
                         foreach (var trans in transp)
@@ -363,9 +401,12 @@ namespace SCS.Controllers
                         }
                         foreach (var tr in transports)
                         {
-                            //меняем статус, если это необходимо
-                            //tr.Status = statusTransportOrAccesories;
-                            db.Entry(tr).State = EntityState.Modified;
+                            if (tr != null)
+                            {
+                                //меняем статус, если это необходимо
+                                //tr.Status = statusTransportOrAccesories;
+                                db.Entry(tr).State = EntityState.Modified;
+                            }
                         }
 
                         foreach (var tr in transports)
@@ -384,9 +425,23 @@ namespace SCS.Controllers
                 {
                     for (int i = 0; i < AccessoriesId.Count; ++i)
                     {
+                        var idTransport = TransportId[i];
+                        var transModel = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTransport).TransportModels.Id;
+                        var transpModels = db.Transport.Include(tm => tm.TransportModels).ToList();
+                        //ищем ТС которые подходят в выбранную дату (свободны) и определенное количество
+                        var transp = db.Transport.SqlQuery("CALL transport_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+                        foreach (var transpSQL in transp)
+                        {
+                            transpSQL.TransportModels = transpModels.FirstOrDefault(tr => tr.Id == transpSQL.Id).TransportModels;
+                        }
+                        transp = transp.Where(tm => tm.TransportModels.Id == transModel).Take(countTransport[i]).ToList();
+
+
                         var idAccesories = AccessoriesId[i];
                         var accName = db.Accessories.FirstOrDefault(ac => ac.Id == idAccesories).Name;
-                        var access = db.Accessories.SqlQuery("CALL accessories_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").Take(countAccessories[i]).ToList();
+                        var access = db.Accessories.SqlQuery("CALL accessories_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").ToList();
+
+                        access = access.Where(ac => ac.Name == accName).Take(countAccessories[i]).ToList();
 
                         List<Accessories> accessories = new List<Accessories>();
                         foreach (var acc in access)
@@ -396,10 +451,13 @@ namespace SCS.Controllers
                         }
                         foreach (var ac in accessories)
                         {
-                            //меняем статус, если это необходимо
-                            //ac.Status = statusTransportOrAccesories;
-                            db.Entry(ac).State = EntityState.Modified;
-                            totalSum += ac.Price;
+                            if (ac != null)
+                            {
+                                //меняем статус, если это необходимо
+                                //ac.Status = statusTransportOrAccesories;
+                                db.Entry(ac).State = EntityState.Modified;
+                                totalSum += ac.Price;
+                            }
                         }
 
                         foreach (var ac in accessories)
@@ -457,23 +515,66 @@ namespace SCS.Controllers
             }
             TotalSum = order.Payment.TotalSum;
 
-            //Сделать подсчет суммы
-
-
             List<SelectListItem> TypeDocument = new List<SelectListItem>();
 
-            var status = db.Helpers.Where(statusType => statusType.Code == 1).ToList();
-            foreach (var stTr in status)
+            var statusesDocument = db.Helpers.Where(statusType => statusType.Code == 1).ToList();
+            foreach (var statuDocument in statusesDocument)
             {
                 TypeDocument.Add(new SelectListItem
                 {
-                    Value = stTr.Value.ToString(),
-                    Text = stTr.Text
+                    Value = statuDocument.Value.ToString(),
+                    Text = statuDocument.Text,
+                    Selected = statuDocument.Value == order.Payment.TypeDocument
                 });
             }
-            ViewData["TypeDocumentId"] = TypeDocument;
+
+            List<List<SelectListItem>> selectListItemsTransport = new List<List<SelectListItem>>();
+            var transportModel = db.TransportModels.ToList();
+            var transportAll = db.Transport.Include(tm => tm.TransportModels).ToList();
+            var transportsOrder = db.OrderTransport.Include(o => o.Order).Include(tr => tr.Transport).Where(to => to.Order.Id == id).ToList();
+            foreach (var transport in transportsOrder)
+            {
+                transport.Transport = transportAll.First(tr => tr.Id == transport.Transport.Id);
+            }
+            foreach (var trOrder in transportsOrder)
+            {
+                List<SelectListItem> dropDownItems = new List<SelectListItem>();
+                foreach (var transport in transportModel)
+                {
+                    bool selectModel = false;
+                    if (trOrder.Transport.TransportModels.Id == transport.Id)
+                    {
+                        selectModel = true;
+                    }
+                    dropDownItems.Add(new SelectListItem() { Text = transport.Name, Value = transport.Id.ToString(), Selected = selectModel });
+                }
+                selectListItemsTransport.Add(dropDownItems);
+            }
+          
+            if (transportsOrder.Count > 0)
+            {
+                List<SelectListItem> Rates = new List<SelectListItem>();
+                var rates = db.Rates.ToList();
+                foreach (var rate in rates)
+                {
+                    bool selectedRate = false;
+                    if (transportsOrder.Count > 0)
+                    {
+                        if (rate.Id == transportsOrder[0].Rates.Id)
+                        {
+                            selectedRate = true;
+                        }
+                    }
+                    Rates.Add(new SelectListItem() { Text = rate.Name, Value = rate.Id.ToString(), Selected = selectedRate });
+                }
+                createRate = false;
+                ViewData["RatesIdTransport"] = Rates;
+            }
 
             ViewBag.TotalSum = TotalSum.ToString();
+            ViewData["DateOrder"] = order.DateStart.ToString("s").Remove(16);
+            ViewData["TypeDocumentId"] = TypeDocument;
+            ViewData["TransportList"] = selectListItemsTransport;
 
             return View(order);
         }
@@ -567,7 +668,6 @@ namespace SCS.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
         public ActionResult CreateOrderDocument(string id)
         {
             if (!string.IsNullOrEmpty(id))
@@ -691,8 +791,6 @@ namespace SCS.Controllers
 
             return null;
         }
-
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

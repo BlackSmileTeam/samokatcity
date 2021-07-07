@@ -35,25 +35,58 @@ $("#UserId").select2({
             }
     }
 });
+var tSelect = document.getElementsByClassName("selectTransport");
+var countSelect = 0;
+for (var countSelect = 0; countSelect < tSelect.length; countSelect++) {
+    debugger;
+    tSelect[countSelect].select2({
+        placeholder: "Выберете название модели",
+        allowClear: true,
+        data: data,
+        ajax: {
+            url: "/api/web/GetModel",
+            contentType: "application/json; charset=utf-8",
+            data: function (params) {
+                var query =
+                {
+                    term: params.term,
+                };
+                return query;
+            },
+            processResults:
+                function (result) {
+                    return {
+                        results: $.map(result, function (item) {
+                            return {
+                                id: item.Id,
+                                text: item.Name
+                            };
+                        })
+                    };
+                }
+        }
+    });
+}
+
 
 
 $('#UserId').on('select2:select', function (e) {
-    
+
     let id = $("#UserId").val();
     $.ajax({
         type: "GET",
         dataType: "json",
         url: "/api/web/SearchUserBonus",
-        data: "id="+id,
+        data: "id=" + id,
         success: function (msg) {
             //Устанавливаем максимально допустимое количество бонусов для выбранного пользователя, т.к. нельзя вводить больше бонусов чем имеется у пользователя
             document.getElementById("bonusPayment").max = msg;
             //Выводим количество доступных бонусов в наименование поля, для удобствав и понимания максимально допустимого количества
-            document.getElementById("labelBonusPayment").textContent = "Оплата бонусами (Доступно: " + msg+")"; 
+            document.getElementById("labelBonusPayment").textContent = "Оплата бонусами (Доступно: " + msg + ")";
         }
     });
 });
-    
+
 $("#TransportSelect2").select2({
     placeholder: "Выберете название модели",
     allowClear: true,
