@@ -228,37 +228,6 @@ namespace SCS.Controllers
             ViewData["TypeDocumentId"] = TypeDocument;
             return View();
         }
-        public ActionResult AddDropListTransportEdit(int selectModel, DateTime dateTime)
-        {
-            //Добавляем Id для добавленного транспорта
-            ViewBag.countTransport = countTransport;
-            //Увеличиваем id на единицу, что бы следующий блок был с новым id
-            ++countTransport;
-            Session["countTransport"] = countTransport;
-            var rates = db.Rates.ToList();
-            ViewBag.RatesIdTransport = new SelectList(rates, "Id", "Name");
-
-            var transp = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
-
-            List<Transport> transports = new List<Transport>();
-            foreach (var trans in transp)
-            {
-                transports.Add(db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == trans.Id));
-            }
-            transports.Add(db.Transport.Find(selectModel));
-
-            SelectList selectListItems = new SelectList(transports.DistinctBy(tr => tr.TransportModels.Name), "Id", "TransportModels.Name", transports[transports.Count - 1]);
-
-            ViewBag.TransportId = selectListItems;
-
-            ViewBag.createRate = createRate;
-            if (!createRate)
-            {
-                createRate = true;
-            }
-
-            return View(transports.DistinctBy(tr => tr.TransportModels.Name));
-        }
         public ActionResult AddDropListTransport(DateTime dateTime)
         {
             //Добавляем Id для добавленного транспорта
@@ -283,7 +252,6 @@ namespace SCS.Controllers
             {
                 createRate = true;
             }
-
             return View(transports.DistinctBy(tr => tr.TransportModels.Name));
         }
 
@@ -501,6 +469,7 @@ namespace SCS.Controllers
         // GET: Orders/Edit/5
         public ActionResult Edit(int? id)
         {
+            createRate = false;
             decimal TotalSum = 0;
 
             if (id == null)
@@ -550,7 +519,8 @@ namespace SCS.Controllers
                 }
                 selectListItemsTransport.Add(dropDownItems);
             }
-          
+            transportsOrder = transportsOrder.DistinctBy(tr => tr.Transport).ToList();
+
             if (transportsOrder.Count > 0)
             {
                 List<SelectListItem> Rates = new List<SelectListItem>();
@@ -567,8 +537,14 @@ namespace SCS.Controllers
                     }
                     Rates.Add(new SelectListItem() { Text = rate.Name, Value = rate.Id.ToString(), Selected = selectedRate });
                 }
-                createRate = false;
+
                 ViewData["RatesIdTransport"] = Rates;
+            }
+
+            ViewBag.createRate = createRate;
+            if (order.OrderTransports.Count > 0)
+            {
+                createRate = true;
             }
 
             ViewBag.TotalSum = TotalSum.ToString();

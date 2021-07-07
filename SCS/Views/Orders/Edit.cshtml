@@ -29,30 +29,53 @@
             <hr />
 
             <div id="transport">
-                <div class="moreInformationOrder">
-                    <div class="form-group">
-                        <div class="col-md-10">
-                            <label>Тариф</label>
-                            @Html.DropDownList(
-                                                        "RatesIdTransport",
-                                                        (List<SelectListItem>)ViewData["RatesIdTransport"],
-                                                        htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = "Rates", @required = "required" })
 
+                @{
+                    var createRate = ViewBag.createRate;
+                }
+                @foreach (var trList in (List<List<SelectListItem>>)ViewData["TransportList"])
+                {
+
+                    <div class="moreInformationOrder">
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                @if (!createRate)
+                                {
+                                    <label>Тариф</label>
+                                    @Html.DropDownList(
+                                                       "RatesIdTransport",
+                                                       (List<SelectListItem>)ViewData["RatesIdTransport"],
+                                                       htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = "Rates", @required = "required" })
+
+                                    createRate = true;
+                                }
+                            </div>
                         </div>
-                    </div>
-                    @foreach (var trList in (List<List<SelectListItem>>)ViewData["TransportList"])
-                    {
+
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label>Наименование </label>
-                                @Html.DropDownList("TransportList-" + countTransport, (List<SelectListItem>)trList, new { @class = "form-control" })
-
+                                @Html.DropDownList("TransportList-" + countTransport, (List<SelectListItem>)trList, new { @class = "Transport form-control", id = string.Format("Transport-{0}", countTransport) })
                             </div>
                         </div>
-                        countTransport++;
-                    }
-                </div>
+                        <div class="form-group">
+                            <div class="col-md-10 accessories">
+                                <label>Количество (Доступно: <label id="availableTransport-@countTransport" style="margin-bottom:0;">0</label> шт.)</label>
+                                <input type="number" min="0" name="countTransport" id="countTransport-@countTransport" class="form-control countTransport" value="0" onchange="checkValueTransport(this);" />
+                            </div>
+                        </div>
+
+                        <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('transport-@countTransport',true)">
+                            <span aria-hidden="true" class="h5">&times;</span>
+                        </button>
+
+
+                    </div>
+
+                    countTransport++;
+                }
             </div>
+
             <div class="col-md-offset-2 col-md-10">
                 <input type="button" value="+" id="addTransport" class="btn btn-outline-dark mt-2" />
             </div>
@@ -150,16 +173,18 @@
 
     }
 </script>
-@Scripts.Render("~/bundles/jqueryval")
-
-<script src="~/Scripts/select2/i18n/ru.js"></script>
-<script src="~/Scripts/select2/select2.full.min.js"></script>
-<script src="~/Scripts/select2/select2.js"></script>
 <script>
+    $(document).ready(function () {
+        var countTransport = document.getElementsByClassName("Transport");
+
+        if (countTransport.length >= document.getElementById("Transport-0").length - 1) {
+            document.getElementById("addTransport").hidden = true;
+        }
+    });
     //Добавление транспорта
     $("#addTransport").click(function () {
         $.ajax({
-            url: 'AddDropListTransport',
+            url: '../AddDropListTransport',
             datatype: 'html',
             data: {
                 dateTime: document.getElementById("dateStart").value
@@ -193,3 +218,8 @@
         })
     });
 </script>
+@Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/select2/i18n/ru.js"></script>
+<script src="~/Scripts/select2/select2.full.min.js"></script>
+<script src="~/Scripts/select2/select2.js"></script>
