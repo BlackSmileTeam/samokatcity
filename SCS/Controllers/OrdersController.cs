@@ -469,8 +469,12 @@ namespace SCS.Controllers
         // GET: Orders/Edit/5
         public ActionResult Edit(int? id)
         {
+            countTransport = 0;
             createRate = false;
             decimal TotalSum = 0;
+            List<int> countTransportOrder = new List<int>();
+            List<SelectListItem> TypeDocument = new List<SelectListItem>();
+            List<List<SelectListItem>> selectListItemsTransport = new List<List<SelectListItem>>();
 
             if (id == null)
             {
@@ -484,8 +488,6 @@ namespace SCS.Controllers
             }
             TotalSum = order.Payment.TotalSum;
 
-            List<SelectListItem> TypeDocument = new List<SelectListItem>();
-
             var statusesDocument = db.Helpers.Where(statusType => statusType.Code == 1).ToList();
             foreach (var statuDocument in statusesDocument)
             {
@@ -497,14 +499,18 @@ namespace SCS.Controllers
                 });
             }
 
-            List<List<SelectListItem>> selectListItemsTransport = new List<List<SelectListItem>>();
             var transportModel = db.TransportModels.ToList();
             var transportAll = db.Transport.Include(tm => tm.TransportModels).ToList();
             var transportsOrder = db.OrderTransport.Include(o => o.Order).Include(tr => tr.Transport).Where(to => to.Order.Id == id).ToList();
-            foreach (var transport in transportsOrder)
+
+            foreach (var trOrder in transportsOrder)
             {
-                transport.Transport = transportAll.First(tr => tr.Id == transport.Transport.Id);
+                trOrder.Transport = transportAll.First(tr => tr.Id == trOrder.Transport.Id);
             }
+
+            var tmpTransportOrder = transportsOrder;
+            transportsOrder = transportsOrder.DistinctBy(tr => tr.Transport.TransportModels.Id).ToList();
+
             foreach (var trOrder in transportsOrder)
             {
                 List<SelectListItem> dropDownItems = new List<SelectListItem>();
@@ -519,8 +525,12 @@ namespace SCS.Controllers
                 }
                 selectListItemsTransport.Add(dropDownItems);
             }
-            transportsOrder = transportsOrder.DistinctBy(tr => tr.Transport).ToList();
 
+            foreach (var trOrder in transportsOrder)
+            {
+                countTransport++;
+                countTransportOrder.Add(tmpTransportOrder.Where(tr => tr.Transport.TransportModels.Id == trOrder.Transport.TransportModels.Id).Count());
+            }
             if (transportsOrder.Count > 0)
             {
                 List<SelectListItem> Rates = new List<SelectListItem>();
@@ -528,13 +538,11 @@ namespace SCS.Controllers
                 foreach (var rate in rates)
                 {
                     bool selectedRate = false;
-                    if (transportsOrder.Count > 0)
+                    if (rate.Id == transportsOrder[0].Rates.Id)
                     {
-                        if (rate.Id == transportsOrder[0].Rates.Id)
-                        {
-                            selectedRate = true;
-                        }
+                        selectedRate = true;
                     }
+
                     Rates.Add(new SelectListItem() { Text = rate.Name, Value = rate.Id.ToString(), Selected = selectedRate });
                 }
 
@@ -551,6 +559,7 @@ namespace SCS.Controllers
             ViewData["DateOrder"] = order.DateStart.ToString("s").Remove(16);
             ViewData["TypeDocumentId"] = TypeDocument;
             ViewData["TransportList"] = selectListItemsTransport;
+            ViewData["CountTransportOrder"] = countTransportOrder;
 
             return View(order);
         }

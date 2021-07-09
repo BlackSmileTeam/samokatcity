@@ -511,6 +511,15 @@
             Number(document.getElementById("Discount").value) -
             Number(bonusPayment);
     };
+    function checkValueTransport(countTransport) {
+        if (countTransport.value < countTransport.min) {
+            countTransport.value = 0;
+        }
+        if (countTransport.value > countTransport.max) {
+            countTransport.value = countTransport.max;
+        };
+        calculatePrice();
+    };
 </script>
 @Scripts.Render("~/bundles/jqueryval")
 
