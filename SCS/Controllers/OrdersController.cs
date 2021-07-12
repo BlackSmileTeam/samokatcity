@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Xceed.Words.NET;
 using System.Diagnostics;
 using System.IO;
+using SCS.Controllers.API;
 
 namespace SCS.Controllers
 {
@@ -473,8 +474,11 @@ namespace SCS.Controllers
             createRate = false;
             decimal TotalSum = 0;
             List<int> countTransportOrder = new List<int>();
+            List<int> countAccessoriesOrder = new List<int>();
             List<SelectListItem> TypeDocument = new List<SelectListItem>();
+            List<SelectListItem> Promotions = new List<SelectListItem>();
             List<List<SelectListItem>> selectListItemsTransport = new List<List<SelectListItem>>();
+            List<List<SelectListItem>> selectListItemsAccessories = new List<List<SelectListItem>>();
 
             if (id == null)
             {
@@ -486,7 +490,24 @@ namespace SCS.Controllers
             {
                 return HttpNotFound();
             }
+            var api = new WebController();
+
             TotalSum = order.Payment.TotalSum;
+
+            var promotionsDay = api.GetPromotions(order.DateStart);
+            Promotions.Add(new SelectListItem()
+            {
+                Text = "Отсутствует",
+                Value = "-1"
+            });
+            foreach (var promotion in promotionsDay)
+            {
+                Promotions.Add(new SelectListItem()
+                {
+                    Text = promotion.Name,
+                    Value = promotion.Id.ToString()
+                });
+            }
 
             var statusesDocument = db.Helpers.Where(statusType => statusType.Code == 1).ToList();
             foreach (var statuDocument in statusesDocument)
@@ -549,6 +570,33 @@ namespace SCS.Controllers
                 ViewData["RatesIdTransport"] = Rates;
             }
 
+            var accessoriesOrder = db.OrderAccessories.Include(acc => acc.Accessories).Include(o => o.Order).Where(oa => oa.Order.Id == id).ToList();
+            var tmpAccessories = accessoriesOrder;
+            accessoriesOrder = accessoriesOrder.DistinctBy(a => a.Accessories.Name).ToList();
+            var accessoriesModel = db.Accessories.DistinctBy(a => a.Name).ToList();
+
+            foreach (var aOrder in accessoriesOrder)
+            {
+                List<SelectListItem> dropDownItems = new List<SelectListItem>();
+
+                foreach (var aName in accessoriesModel)
+                {
+                    bool selectModel = false;
+                    if (aOrder.Accessories.Name == aName.Name)
+                    {
+                        selectModel = true;
+                    }
+
+                    dropDownItems.Add(new SelectListItem() { Text = aName.Name, Value = aName.Id.ToString(), Selected = selectModel });
+                }
+                selectListItemsAccessories.Add(dropDownItems);
+            }
+
+            foreach (var aOrder in accessoriesOrder)
+            {
+                countAccessoriesOrder.Add(tmpAccessories.Where(oa => oa.Accessories.Name == aOrder.Accessories.Name).Count());
+            }
+
             ViewBag.createRate = createRate;
             if (order.OrderTransports.Count > 0)
             {
@@ -559,7 +607,9 @@ namespace SCS.Controllers
             ViewData["DateOrder"] = order.DateStart.ToString("s").Remove(16);
             ViewData["TypeDocumentId"] = TypeDocument;
             ViewData["TransportList"] = selectListItemsTransport;
+            ViewData["AccessoriesList"] = selectListItemsAccessories;
             ViewData["CountTransportOrder"] = countTransportOrder;
+            ViewData["CountAccessoriesOrder"] = countAccessoriesOrder;
 
             return View(order);
         }

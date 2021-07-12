@@ -12,6 +12,7 @@
         @using (Html.BeginForm())
         {
             int countTransport = 0;
+            int countAccessories = 0;
             @Html.AntiForgeryToken()
 
             <hr />
@@ -29,6 +30,7 @@
             <div id="promotions">
                 <table class="table table-hover table-sm" id="tablePromotions">
                     <tbody id="PromotionsTable">
+                        @Html.DropDownList("promotionsList",, htmlAttributes: new { @class = "form-control", @onchange = "calculatePrice()", @id = "promotionsList" });
                     </tbody>
                 </table>
             </div>
@@ -86,9 +88,51 @@
                     countTransport++;
                 }
             </div>
-
             <div class="col-md-offset-2 col-md-10">
                 <input type="button" value="+" id="addTransport" class="btn btn-outline-dark mt-2" />
+            </div>
+            <br />
+
+            <h4>Аксессуары</h4>
+            <hr />
+            <div id="accessories">
+
+                @{
+                    var countThisAccessories = ViewData["CountAccessoriesOrder"] as List<int>;
+                }
+
+                @foreach (var acList in (List<List<SelectListItem>>)ViewData["AccessoriesList"])
+                {
+                    <div class="moreInformationOrder" id="accessories-@countAccessories">
+
+
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <label>Наименование </label>
+                                @Html.DropDownList("Accessories-" + countAccessories, (List<SelectListItem>)acList, new { @class = "Accessories form-control", id = string.Format("Accessories-{0}", countAccessories), @onchange = "CountFreeAccessories(this," + ViewBag.countAccessories + ");" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10 accessories">
+                                <label>Количество (Доступно: <label id="availableAccessories-@countAccessories" style="margin-bottom:0;">0</label> шт.)</label>
+                                <input type="number" min="0" name="countAccessories" id="countAccessories-@countAccessories" class="form-control countAccessories" value="@countThisAccessories[countAccessories]" onchange="checkValueAccessories(this);" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-10">
+                            </div>
+                        </div>
+                        <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('accessories-@countAccessories',true)">
+                            <span aria-hidden="true" class="h5">&times;</span>
+                        </button>
+                    </div>
+
+                    countAccessories++;
+                }
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="+" id="addAccessories" class="btn btn-outline-dark mt-2" />
             </div>
             <br />
 
@@ -140,7 +184,7 @@
                         <label>Документ</label>
 
                         @Html.DropDownList("TypeDocumentId", null, htmlAttributes: new { @class = "form-control" })
-                        @*@Html.ValidationMessageFor(model => model.Payment.TypeDocument, "", new { @class = "text-danger" })*@
+                        @Html.ValidationMessageFor(model => model.Payment.TypeDocument, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-10">
                         <label>Оплата бонусами, руб</label>
@@ -178,9 +222,27 @@
     </div>
 </div>
 <script type="text/javascript">
+</script>
+<script>
+    var checkRateTransp = true;
+    var checkRateAccessor = true;
     $(document).ready(function () {
-        calculateLeftToPay();
+
+        var countTransport = document.getElementsByClassName("Transport");
+        for (var i = 0; i < countTransport.length; ++i) {
+            changeTransport(countTransport[i].id);
+        }
+        if (countTransport.length >= document.getElementById("Transport-0").length) {
+            document.getElementById("addTransport").hidden = true;
+        }
+        //Проверка наличия транспорта, аксессуаров и тарифов в указанное время
+        //checkRate();
+        //checkTransport();
+        //checkAccessories();
+
+        //calculateLeftToPay();
     });
+
     function calculateLeftToPay() {
         var lpay = document.getElementById("LeftToPay");
         lpay.innerHTML = Number(@ViewBag.TotalSum) -
@@ -188,27 +250,7 @@
             Number(document.getElementById("CardPayment").value) -
             Number(document.getElementById("Discount").value) -
             @Model.Payment.BonusPayment;
-
     }
-</script>
-<script>
-    var checkRateTransp = true;
-    var checkRateAccessor = true;
-    $(document).ready(function () {
-        var countTransport = document.getElementsByClassName("Transport");
-        for (var i = 0; i < countTransport.length; ++i) {
-            debugger;
-            changeTransport(countTransport[i].id);
-        }
-        if (countTransport.length >= document.getElementById("Transport-0").length) {
-            document.getElementById("addTransport").hidden = true;
-        }
-        //Проверка наличия транспорта, аксессуаров и тарифов в указанное время
-        checkRate();
-        checkTransport();
-        //checkAccessories();
-        checkPromotions();
-    });
     function checkRate() {
         //Проверка наличия тарифов в текущее время
         $.ajax({
@@ -321,23 +363,23 @@
         })
     });
     //Добавление аксессуара
-    //$("#addAccessories").click(function () {
-    //    $.ajax({
-    //        url: 'AddDropListAccessories',
-    //        datatype: 'html',
-    //        data: {
-    //            dateTime: document.getElementById("dateStart").value
-    //        },
-    //        success: function (data) {
-    //            $("#accessories").append(data);
-    //            var countAccessories = document.getElementsByClassName("Accessories");
+    $("#addAccessories").click(function () {
+        $.ajax({
+            url: '../AddDropListAccessories',
+            datatype: 'html',
+            data: {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                $("#accessories").append(data);
+                var countAccessories = document.getElementsByClassName("Accessories");
 
-    //            if (countAccessories.length >= document.getElementById("Accessories-0").length - 1) {
-    //                document.getElementById("addAccessories").hidden = true;
-    //            }
-    //        }
-    //    })
-    //});
+                if (countAccessories.length >= document.getElementById("Accessories-0").length - 1) {
+                    document.getElementById("addAccessories").hidden = true;
+                }
+            }
+        })
+    });
     function deleteBlock(nameBlock, transport) {
         document.getElementById(nameBlock).remove();
 
@@ -426,6 +468,7 @@
         }
     };
     function calculatePrice() {
+        debugger;
         var summ = document.getElementById("totalSum");
         var lpay = document.getElementById("LeftToPay");
 
@@ -452,7 +495,6 @@
         let numberTransport = 0;
         summ.innerHTML = "0";
         lpay.innerHTML = Number("0");
-
         while (numberTransport < arr.length) {
             $.ajax({
                 type: "GET",
@@ -472,6 +514,7 @@
             });
             ++numberTransport;
         }
+
         $.ajax({
             type: "GET",
             dataType: "json",
@@ -534,6 +577,32 @@
         }
         if (countTransport.value > countTransport.max) {
             countTransport.value = countTransport.max;
+        };
+        calculatePrice();
+    };
+
+    function CountFreeAccessories(nameAccessories, idInputCounter) {
+        $.ajax({
+            url: "/api/web/CountFreeAccessories",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value,
+                nameAccessories: nameAccessories.value
+            },
+            success: function (data) {
+                $("#countAccessories-" + idInputCounter).attr("max", data);
+                $("#availableAccessories-" + idInputCounter).html(data);
+            }
+        });
+        calculatePrice();
+    };
+    function checkValueAccessories(countAccessories) {
+        if (countAccessories.value < countAccessories.min) {
+            countAccessories.value = 0;
+        }
+        if (countAccessories.value > countAccessories.max) {
+            countAccessories.value = countAccessories.max;
         };
         calculatePrice();
     };

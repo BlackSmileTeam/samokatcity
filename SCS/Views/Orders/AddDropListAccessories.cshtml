@@ -27,30 +27,3 @@
         <span aria-hidden="true" class="h5">&times;</span>
     </button>
 </div>
-<script>
-    function CountFreeAccessories(nameAccessories, idInputCounter) {
-        $.ajax({
-            url: "/api/web/CountFreeAccessories",
-            dataType: "json",
-            data:
-            {
-                dateTime: document.getElementById("dateStart").value,
-                nameAccessories: nameAccessories.value
-            },
-            success: function (data) {
-                $("#countAccessories-" + idInputCounter).attr("max", data);
-                $("#availableAccessories-" + idInputCounter).html(data);
-            }
-        });
-        calculatePrice();
-    };
-    function checkValueAccessories(countAccessories) {
-        if (countAccessories.value < countAccessories.min) {
-            countAccessories.value = 0;
-        }
-        if (countAccessories.value > countAccessories.max) {
-            countAccessories.value = countAccessories.max;
-        };
-        calculatePrice();   
-    };
-</script>

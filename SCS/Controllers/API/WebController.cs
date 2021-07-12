@@ -177,11 +177,17 @@ namespace SCS.Controllers.API
                 {
                     int idModel = Convert.ToInt32(model);
                     int idRates = Convert.ToInt32(rate);
-                    var transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.Id == idModel);
-                    var rt = db.RatesTransports.Include(r => r.Rates).Include(t => t.TransportModels).FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id);
-                    if (rt != null)
+                    if (idModel != 0 && idRates != 0)
                     {
-                        price = rt.Price;
+                        var transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.TransportModels.Id == idModel);
+                        var rt = db.RatesTransports
+                                                    .Include(r => r.Rates)
+                                                    .Include(t => t.TransportModels)
+                                                    .FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id);
+                        if (rt != null)
+                        {
+                            price = rt.Price;
+                        }
                     }
                     price *= countTr;
                 }
@@ -233,7 +239,7 @@ namespace SCS.Controllers.API
             if (!string.IsNullOrEmpty(idTransportModels))
             {
                 int idTrModel = Convert.ToInt32(idTransportModels);
-                var nameTransportModelsFind = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTrModel).TransportModels.Id;
+                var nameTransportModelsFind = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.TransportModels.Id == idTrModel).TransportModels.Id;
 
                 var transp = db.Transport.SqlQuery("CALL transport_vw('" + dateTime.ToString("yyyy-MM-dd HH:mm") + "')").ToList();
                 List<int> idTransp = new List<int>();
