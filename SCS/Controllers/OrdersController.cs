@@ -606,6 +606,7 @@ namespace SCS.Controllers
             ViewBag.TotalSum = TotalSum.ToString();
             ViewData["DateOrder"] = order.DateStart.ToString("s").Remove(16);
             ViewData["TypeDocumentId"] = TypeDocument;
+            ViewData["Promotions"] = Promotions;
             ViewData["TransportList"] = selectListItemsTransport;
             ViewData["AccessoriesList"] = selectListItemsAccessories;
             ViewData["CountTransportOrder"] = countTransportOrder;

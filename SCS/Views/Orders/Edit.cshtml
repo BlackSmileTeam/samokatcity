@@ -30,7 +30,9 @@
             <div id="promotions">
                 <table class="table table-hover table-sm" id="tablePromotions">
                     <tbody id="PromotionsTable">
-                        @Html.DropDownList("promotionsList",, htmlAttributes: new { @class = "form-control", @onchange = "calculatePrice()", @id = "promotionsList" });
+                        @Html.DropDownList("promotionsList",
+                           (List<SelectListItem>)ViewData["Promotions"],
+                           htmlAttributes: new { @class = "form-control", @onchange = "calculatePrice()", @id = "promotionsList" })
                     </tbody>
                 </table>
             </div>
@@ -123,7 +125,7 @@
                             <div class="col-md-10">
                             </div>
                         </div>
-                        <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('accessories-@countAccessories',true)">
+                        <button type="button" class="close bg-white border-0" aria-label="Close" onclick="deleteBlock('accessories-@countAccessories',false)">
                             <span aria-hidden="true" class="h5">&times;</span>
                         </button>
                     </div>
@@ -235,12 +237,20 @@
         if (countTransport.length >= document.getElementById("Transport-0").length) {
             document.getElementById("addTransport").hidden = true;
         }
-        //Проверка наличия транспорта, аксессуаров и тарифов в указанное время
-        //checkRate();
-        //checkTransport();
-        //checkAccessories();
 
-        //calculateLeftToPay();
+        var countAccessories = document.getElementsByClassName("Accessories");
+        for (var i = 0; i < countAccessories.length; ++i) {
+            changeAccessories(countAccessories[i]);
+        }
+        if (countAccessories.length >= document.getElementById("Accessories-0").length) {
+            document.getElementById("addAccessories").hidden = true;
+        }
+        //Проверка наличия транспорта, аксессуаров и тарифов в указанное время
+        checkRate();
+        checkTransport();
+        checkAccessories();
+
+        calculateLeftToPay();
     });
 
     function calculateLeftToPay() {
@@ -284,28 +294,24 @@
             }
         });
     };
-    //function checkAccessories() {
-    //    $.ajax({
-    //        url: "/api/web/CheckAccessories",
-    //        dataType: "json",
-    //        data:
-    //        {
-    //            dateTime: document.getElementById("dateStart").value
-    //        },
-    //        success: function (data) {
-    //            if (checkRateAccessor == true) {
-    //                if (data == false) {
-    //                    document.getElementById("addAccessories").hidden = true;
-    //                    document.getElementById("accessories").innerHTML = '<p class="text - center">В указанное время отсутствуют доступные аксессуары</p>';
-    //                }
-    //                else {
-    //                    document.getElementById("addAccessories").hidden = false;
-    //                    document.getElementById("accessories").innerHTML = '';
-    //                }
-    //            }
-    //        }
-    //    });
-    //};
+    function checkAccessories() {
+        $.ajax({
+            url: "/api/web/CheckAccessories",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value
+            },
+            success: function (data) {
+                if (checkRateAccessor == true) {
+                    if (data == false) {
+                        document.getElementById("addAccessories").hidden = true;
+                        document.getElementById("accessories").innerHTML = '<p class="text - center">В указанное время отсутствуют доступные аксессуары</p>';
+                    }
+                }
+            }
+        });
+    };
     function checkPromotions() {
         $.ajax({
             type: "GET",
@@ -334,7 +340,7 @@
                     ddlPromotions.appendChild(option);
                 }
                 if (msg.length > 0) {
-                    $("#tablePromotions > tbody > td").remove();
+                    $("#promotionsList").remove();
                     $("#tablePromotions > tbody").append(ddlPromotions);
                 }
                 else {
@@ -383,6 +389,7 @@
     function deleteBlock(nameBlock, transport) {
         document.getElementById(nameBlock).remove();
 
+        debugger;
         if (transport) {
             $.ajax({
                 url: "../DeleteBlockTransport",
@@ -399,8 +406,7 @@
         }
         else {
             var countAccessories = document.getElementsByClassName("Accessories");
-
-            if (countAccessories.length >= document.getElementById("Accessories-0").length - 1) {
+            if (countAccessories.length >= document.getElementById("Accessories-0").length) {
                 document.getElementById("addAccessories").hidden = true;
             }
             else {
@@ -438,8 +444,6 @@
     };
     function changeDate() {
         checkPromotions();
-        document.getElementById("transport").innerHTML = '';
-        document.getElementById("accessories").innerHTML = '';
         document.getElementById("totalSum").innerHTML = "0";
         document.getElementById("LeftToPay").innerHTML = "0";
         document.getElementById("CountLock").value = 0;
@@ -450,7 +454,7 @@
         document.getElementById("CashDeposit").value = 0;
         document.getElementById("CardDeposit").value = 0;
         document.getElementById("bonusPayment").value = 0;
-        document.getElementById("AddBonuses").value = 0;
+        //document.getElementById("AddBonuses").value = 0;
 
         checkRate();
         checkTransport();
@@ -468,7 +472,6 @@
         }
     };
     function calculatePrice() {
-        debugger;
         var summ = document.getElementById("totalSum");
         var lpay = document.getElementById("LeftToPay");
 
@@ -581,7 +584,7 @@
         calculatePrice();
     };
 
-    function CountFreeAccessories(nameAccessories, idInputCounter) {
+    function changeAccessories(nameAccessories) {        
         $.ajax({
             url: "/api/web/CountFreeAccessories",
             dataType: "json",
@@ -591,8 +594,8 @@
                 nameAccessories: nameAccessories.value
             },
             success: function (data) {
-                $("#countAccessories-" + idInputCounter).attr("max", data);
-                $("#availableAccessories-" + idInputCounter).html(data);
+                $("#countAccessories-" + nameAccessories.id.split("-")[1]).attr("max", data);
+                $("#availableAccessories-" + nameAccessories.id.split("-")[1]).html(data);
             }
         });
         calculatePrice();

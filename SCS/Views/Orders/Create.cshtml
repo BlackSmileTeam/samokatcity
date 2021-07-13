@@ -521,7 +521,7 @@
         calculatePrice();
     };
 
-    function CountFreeAccessories(nameAccessories, idInputCounter) {
+    function changeAccessories(nameAccessories) {
         $.ajax({
             url: "/api/web/CountFreeAccessories",
             dataType: "json",
@@ -531,8 +531,8 @@
                 nameAccessories: nameAccessories.value
             },
             success: function (data) {
-                $("#countAccessories-" + idInputCounter).attr("max", data);
-                $("#availableAccessories-" + idInputCounter).html(data);
+                $("#countAccessories-" + nameAccessories.id.split("-")[1]).attr("max", data);
+                $("#availableAccessories-" + nameAccessories.id.split("-")[1]).html(data);
             }
         });
         calculatePrice();
