@@ -175,18 +175,23 @@ namespace SCS.Controllers.API
             {
                 if (!string.IsNullOrEmpty(model) && !string.IsNullOrEmpty(rate))
                 {
-                    int idModel = Convert.ToInt32(model);
-                    int idRates = Convert.ToInt32(rate);
-                    if (idModel != 0 && idRates != 0)
+                    int idModelTr = Convert.ToInt32(model);
+                    var idModelTmp = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tm => tm.Id == idModelTr);
+                    if (idModelTmp != null && idModelTmp.TransportModels != null)
                     {
-                        var transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.TransportModels.Id == idModel);
-                        var rt = db.RatesTransports
-                                                    .Include(r => r.Rates)
-                                                    .Include(t => t.TransportModels)
-                                                    .FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id);
-                        if (rt != null)
+                        int idModel = idModelTmp.TransportModels.Id;
+                        int idRates = Convert.ToInt32(rate);
+                        if (idModel != 0 && idRates != 0)
                         {
-                            price = rt.Price;
+                            var transport = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(t => t.TransportModels.Id == idModel);
+                            var rt = db.RatesTransports
+                                                        .Include(r => r.Rates)
+                                                        .Include(t => t.TransportModels)
+                                                        .FirstOrDefault(p => p.Rates.Id == idRates && p.TransportModels.Id == transport.TransportModels.Id);
+                            if (rt != null)
+                            {
+                                price = rt.Price;
+                            }
                         }
                     }
                     price *= countTr;
@@ -255,6 +260,7 @@ namespace SCS.Controllers.API
             }
             return transports == null ? 0 : transports.Count();
         }
+
         [HttpGet]
         public List<Promotions> GetPromotions(DateTime dateTime)
         {
