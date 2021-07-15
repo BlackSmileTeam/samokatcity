@@ -233,6 +233,7 @@
         var countTransport = document.getElementsByClassName("Transport");
         for (var i = 0; i < countTransport.length; ++i) {
             changeTransport(countTransport[i].id);
+            countTransport[i].name = "TransportId";
         }
         if (countTransport.length >= document.getElementById("Transport-0").length) {
             document.getElementById("addTransport").hidden = true;
@@ -241,6 +242,7 @@
         var countAccessories = document.getElementsByClassName("Accessories");
         for (var i = 0; i < countAccessories.length; ++i) {
             changeAccessories(countAccessories[i]);
+            countAccessories[i].name = "AccessoriesId";
         }
         if (countAccessories.length >= document.getElementById("Accessories-0").length) {
             document.getElementById("addAccessories").hidden = true;
@@ -249,8 +251,7 @@
         checkRate();
         checkTransport();
         checkAccessories();
-
-        calculateLeftToPay();
+        calculateLeftToPay();   
     });
 
     function calculateLeftToPay() {
@@ -442,6 +443,22 @@
         });
         calculatePrice();
     };
+    function changeAccessories(nameAccessories) {
+        $.ajax({
+            url: "/api/web/CountFreeAccessories",
+            dataType: "json",
+            data:
+            {
+                dateTime: document.getElementById("dateStart").value,
+                nameAccessories: nameAccessories.value
+            },
+            success: function (data) {
+                $("#countAccessories-" + nameAccessories.id.split("-")[1]).attr("max", data);
+                $("#availableAccessories-" + nameAccessories.id.split("-")[1]).html(data);
+            }
+        });
+        calculatePrice();
+    };
     function changeDate() {
         checkPromotions();
         document.getElementById("totalSum").innerHTML = "0";
@@ -581,23 +598,6 @@
         if (countTransport.value > countTransport.max) {
             countTransport.value = countTransport.max;
         };
-        calculatePrice();
-    };
-
-    function changeAccessories(nameAccessories) {        
-        $.ajax({
-            url: "/api/web/CountFreeAccessories",
-            dataType: "json",
-            data:
-            {
-                dateTime: document.getElementById("dateStart").value,
-                nameAccessories: nameAccessories.value
-            },
-            success: function (data) {
-                $("#countAccessories-" + nameAccessories.id.split("-")[1]).attr("max", data);
-                $("#availableAccessories-" + nameAccessories.id.split("-")[1]).html(data);
-            }
-        });
         calculatePrice();
     };
     function checkValueAccessories(countAccessories) {

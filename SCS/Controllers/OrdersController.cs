@@ -298,7 +298,6 @@ namespace SCS.Controllers
                 //Итоговая сумма заказа
                 decimal totalSum = 0;
 
-
                 if (promotionsList != -1)
                 {
                     totalSum -= db.Promotions.Find(promotionsList).Discount;
@@ -438,6 +437,7 @@ namespace SCS.Controllers
         public ActionResult Edit(int? id)
         {
             countTransport = 0;
+            countAccessories = 0;
             createRate = false;
             decimal TotalSum = 0;
             List<int> countTransportOrder = new List<int>();
@@ -559,6 +559,7 @@ namespace SCS.Controllers
 
             foreach (var aOrder in accessoriesOrder)
             {
+                countAccessories++;
                 countAccessoriesOrder.Add(tmpAccessories.Where(oa => oa.Accessories.Name == aOrder.Accessories.Name).Count());
             }
 
@@ -595,7 +596,11 @@ namespace SCS.Controllers
                     var DateStart = Convert.ToDateTime(collection["dateStart"]);
                     var rate = db.Rates.Find(RatesIdTransport);
                     int Id = Convert.ToInt32(collection["Id"]);
-
+                    if (collection["promotionsList"] != null && Convert.ToInt32(collection["promotionsList"]) != -1)
+                    {
+                        var promotionsList = Convert.ToInt32(collection["promotionsList"]);
+                        totalSum -= db.Promotions.Find(promotionsList).Discount;
+                    }
                     totalSum += Convert.ToInt32(collection["CountLock"]) * 100;
 
                     Order order = new Order();
@@ -618,6 +623,8 @@ namespace SCS.Controllers
                     pay.CardPayment = Convert.ToDecimal(CardPayment);
                     pay.CardDeposit = Convert.ToDecimal(CardDeposit);
 
+                    order.Note = collection["Note"];
+
                     if (!string.IsNullOrEmpty(collection["TypeDocumentId"]))
                     {
                         pay.TypeDocument = Convert.ToInt32(collection["TypeDocumentId"]);
@@ -637,17 +644,16 @@ namespace SCS.Controllers
                     if (collection["countTransport"] != null)
                     {
                         var countTransportTmp = collection["countTransport"].Split(',');
+                        var transpModelList = collection["TransportId"].Split(',');
                         var countTransport = new List<int>();
                         foreach (var ctr in countTransportTmp)
                         {
                             countTransport.Add(Convert.ToInt32(ctr));
                         }
-                        for (int i = 0; i < countTransport[i]; ++i)
+                        for (int i = 0; i < countTransport.Count; ++i)
                         {
-
-                            //Ищем данные о выбранном тарифе для добавление к заказу и поиску свободных в определенное время                           
-                            var idTransport = Convert.ToInt32(collection["Transport-" + i]);
-                            var transModel = db.Transport.Include(tm => tm.TransportModels).FirstOrDefault(tr => tr.Id == idTransport).TransportModels.Id;
+                            //Ищем данные о выбранном тарифе для добавление к заказу и поиску свободных в определенное время          
+                            var transModel = Convert.ToInt32(transpModelList[i]);
                             var transpModels = db.Transport.Include(tm => tm.TransportModels).ToList();
 
                             var rtr1 = db.RatesTransports.Include(tm => tm.TransportModels).Include(r => r.Rates);
@@ -697,9 +703,12 @@ namespace SCS.Controllers
                         {
                             countAccessories.Add(Convert.ToInt32(ctr));
                         }
-                        for (int i = 0; i < countAccessories[i]; ++i)
+
+                        var AccessoriesList = collection["AccessoriesID"].Split(',');
+
+                        for (int i = 0; i < countAccessories.Count; ++i)
                         {
-                            var idAccesories = Convert.ToInt32(collection["Accessories-" + i]);
+                            var idAccesories = Convert.ToInt32(AccessoriesList[i]);
                             var accName = db.Accessories.FirstOrDefault(ac => ac.Id == idAccesories).Name;
                             var access = db.Accessories.SqlQuery("CALL accessories_date_vw('" + DateStart.ToString("yyyy-MM-dd HH:mm") + "','" + DateStart.AddHours(rate.Duration).ToString("yyyy-MM-dd HH:mm") + "')").ToList();
 
