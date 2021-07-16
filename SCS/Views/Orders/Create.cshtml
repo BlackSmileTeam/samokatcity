@@ -432,10 +432,10 @@
             discount.value = 0;
         }
 
-        let numberTransport = 0;
+        var numberTransport = 0;
         summ.innerHTML = "0";
         lpay.innerHTML = Number("0");
-
+        debugger;
         while (numberTransport < arr.length) {
             $.ajax({
                 type: "GET",
@@ -455,19 +455,21 @@
             });
             ++numberTransport;
         }
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/api/web/promotionsOrder",
-            data:
-            {
-                promotionId: document.getElementById("promotionsList").options[document.getElementById("promotionsList").selectedIndex].value
-            },
-            success: function (msg) {
-                summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(msg);
-                lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(msg);
-            }
-        });
+        if (document.getElementById("promotionsList") != null) {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/api/web/promotionsOrder",
+                data:
+                {
+                    promotionId: document.getElementById("promotionsList").options[document.getElementById("promotionsList").selectedIndex].value
+                },
+                success: function (msg) {
+                    summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(msg);
+                    lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(msg);
+                }
+            });
+        }
 
         let numberAccessories = 0;
         while (numberAccessories < arrAccess.length) {
@@ -512,6 +514,7 @@
             Number(bonusPayment);
     };
     function checkValueTransport(countTransport) {
+
         if (countTransport.value < countTransport.min) {
             countTransport.value = 0;
         }

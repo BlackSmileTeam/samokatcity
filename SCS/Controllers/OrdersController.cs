@@ -289,7 +289,7 @@ namespace SCS.Controllers
         public ActionResult Create(DateTime DateStart, int CountLock, int UserId,
                                        List<int> AccessoriesId, List<int> TransportId, int? RatesIdTransport,
                                        int addBonuses, int discount, int typeDocumentId, List<int> countTransport, List<int> countAccessories,
-                                       decimal cashPayment, decimal cardPayment, decimal cardDeposit, decimal cashDeposit, decimal bonusPayment, string Note, int promotionsList)
+                                       decimal cashPayment, decimal cardPayment, decimal cardDeposit, decimal cashDeposit, decimal bonusPayment, string Note, int? promotionsList)
         {
 
             Order order = new Order();
@@ -298,7 +298,7 @@ namespace SCS.Controllers
                 //Итоговая сумма заказа
                 decimal totalSum = 0;
 
-                if (promotionsList != -1)
+                if (promotionsList != null && promotionsList != -1)
                 {
                     totalSum -= db.Promotions.Find(promotionsList).Discount;
                 }
@@ -592,7 +592,7 @@ namespace SCS.Controllers
                 if (!string.IsNullOrEmpty(collection["Id"]))
                 {
                     decimal totalSum = 0;
-                    var RatesIdTransport = Convert.ToInt32(collection["RatesIdTransport"]);
+                    var RatesIdTransport = Convert.ToInt32(collection["RatesId"]);
                     var DateStart = Convert.ToDateTime(collection["dateStart"]);
                     var rate = db.Rates.Find(RatesIdTransport);
                     int Id = Convert.ToInt32(collection["Id"]);

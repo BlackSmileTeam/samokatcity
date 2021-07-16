@@ -56,7 +56,7 @@
                                 {
                                     <label>Тариф</label>
                                     @Html.DropDownList(
-                                                       "RatesIdTransport",
+                                                       "RatesId",
                                                        (List<SelectListItem>)ViewData["RatesIdTransport"],
                                                        htmlAttributes: new { @class = "Rate form-control", @onchange = "calculatePrice()", @id = "Rates", @required = "required" })
 
@@ -144,7 +144,7 @@
                 <div class="form-group">
                     <div class="col-md-10">
                         <label>Количество замков</label>
-                        <input type="number" class="form-control" name="CountLock" id="CountLock" value="0" min="0" max="999999" onchange="calculatePrice()" />
+                        <input type="number" class="form-control" name="CountLock" id="CountLock" value="@Model.CountLock" min="0" max="999999" onchange="calculatePrice()" />
                         @Html.ValidationMessageFor(model => model.CountLock, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-10">
@@ -512,7 +512,7 @@
             discount.value = 0;
         }
 
-        let numberTransport = 0;
+        var numberTransport = 0;
         summ.innerHTML = "0";
         lpay.innerHTML = Number("0");
         while (numberTransport < arr.length) {
@@ -535,19 +535,21 @@
             ++numberTransport;
         }
 
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/api/web/promotionsOrder",
-            data:
-            {
-                promotionId: document.getElementById("promotionsList").options[document.getElementById("promotionsList").selectedIndex].value
-            },
-            success: function (msg) {
-                summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(msg);
-                lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(msg);
-            }
-        });
+        if (document.getElementById("promotionsList") != null) {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/api/web/promotionsOrder",
+                data:
+                {
+                    promotionId: document.getElementById("promotionsList").options[document.getElementById("promotionsList").selectedIndex].value
+                },
+                success: function (msg) {
+                    summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(msg);
+                    lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(msg);
+                }
+            });
+        }
 
         let numberAccessories = 0;
         while (numberAccessories < arrAccess.length) {
