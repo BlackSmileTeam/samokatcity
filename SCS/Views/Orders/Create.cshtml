@@ -32,7 +32,7 @@
                         @Html.LabelFor(model => model.DateStart)
 
                         <input type="datetime-local" id="dateStart" name="dateStart" value="@DateTime.Now.ToString("s").Remove(16)" date-format="m/d/yyyy hh:mm"
-                               min="@DateTime.Now.ToString("s").Remove(16)" class="form-control" title="Дата начала действия заказа" required onchange="changeDate()">
+                                class="form-control" title="Дата начала действия заказа" required onchange="changeDate()">
                         @Html.ValidationMessageFor(model => model.DateStart, "", new { @class = "text-danger" })
                     </div>
                 </div>
