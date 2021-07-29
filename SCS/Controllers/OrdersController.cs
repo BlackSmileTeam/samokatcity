@@ -814,7 +814,6 @@ namespace SCS.Controllers
 
                     var doc = DocX.Load(fileName);
 
-
                     var user = db.Users.Include(c => c.ContactUser).FirstOrDefault(u => u.Id == order.User.Id);
                     order.User = user;
                     doc.ReplaceText("{USER_SHORT_NAME}", order.User.ContactUser.ShortName);
@@ -885,13 +884,10 @@ namespace SCS.Controllers
 
                     doc.ReplaceText("{TRANSPORT_LIST}", transportList);
                     doc.ReplaceText("{TRANSPORT_LIST_COUNT}", transportListCount);
-
-
                     doc.ReplaceText("{ACCESSORIES_LIST_COUNT}", accessoriesListCount);
                     doc.ReplaceText("{ACCESSORIES_LIST_EMPTY}", accessoriesListEmpty);
 
                     var ordTr = db.OrderTransport.Include(or => or.Rates);
-
 
                     if (order.OrderTransports != null && order.OrderTransports[0] != null)
                     {
@@ -904,12 +900,20 @@ namespace SCS.Controllers
                         doc.ReplaceText("{RATE}", "");
                     }
 
+                    var tdoc = db.Helpers.FirstOrDefault(h => h.Code == 1 && h.Value == order.Payment.TypeDocument);
+                    string typeDocument = "Ничего";
+                    if (tdoc != null)
+                    {
+                        typeDocument = tdoc.Text;
+                    }
+
                     doc.ReplaceText("{DATE_START}", order.DateStart.ToString("HH:mm dd.mm.yyyy"));
                     doc.ReplaceText("{DATE_END}", order.DateEnd.ToString("HH:mm dd.mm.yyyy"));
                     doc.ReplaceText("{CASH_DEPOSIT}", order.Payment.CashDeposit.ToString());
                     doc.ReplaceText("{CARD_DEPOSIT}", order.Payment.CardDeposit.ToString());
                     doc.ReplaceText("{CASH_PAYMENT}", order.Payment.CashPayment.ToString());
                     doc.ReplaceText("{CARD_PAYMENT}", order.Payment.CardPayment.ToString());
+                    doc.ReplaceText("{USER_DOCUMENT_TYPE}", typeDocument);
 
                     var fileNameCreateRaport = Server.MapPath(@"~\Data\Raport\Generate\vehicle_lease_agreement" + DateTime.Now.Ticks.ToString() + ".docx");
 
