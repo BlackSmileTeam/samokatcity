@@ -95,7 +95,7 @@ namespace SCS.Controllers
             var ordersYesterday = db.Orders.Include(p => p.Payment).Include(t => t.OrderTransports.Select(r => r.Rates)).Where(o => o.DateStart >= dateYesterday).ToList();
             foreach (var order in ordersYesterday)
             {
-                if (order.OrderTransports != null)
+                if (order.OrderTransports != null && order.OrderTransports.Count > 0)
                 {
                     //Добавляем на всякий случай еще час
                     var dateEndDuration = DateTime.Today.AddHours(order.OrderTransports.First().Rates.Duration + 1);
@@ -114,12 +114,10 @@ namespace SCS.Controllers
             ViewData["YesterdayCardPaymentProfit"] = YesterdayCardPaymentProfit;
             ViewData["YesterdayBonusPaymentProfit"] = YesterdayBonusPaymentProfit;
 
-
-
             var ordersToday = db.Orders.Include(p => p.Payment).Include(t => t.OrderTransports.Select(r => r.Rates)).Where(o => o.DateStart >= DateTime.Today).ToList();
             foreach (var order in ordersToday)
             {
-                if (order.OrderTransports != null)
+                if (order.OrderTransports != null && order.OrderTransports.Count >0)
                 {
                     //Добавляем день и на всякий случай еще час
                     var dateEndDuration = DateTime.Today.AddDays(1).AddHours(order.OrderTransports.First().Rates.Duration + 1);
