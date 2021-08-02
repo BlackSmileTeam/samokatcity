@@ -16,31 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `orderaccessories`
+-- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `orderaccessories`;
+DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `orderaccessories` (
+CREATE TABLE `users` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Accessories_Id` int DEFAULT NULL,
-  `Order_Id` int DEFAULT NULL,
+  `Username` longtext,
+  `Password` longtext,
+  `Discount` decimal(18,2) NOT NULL,
+  `Bonus` decimal(18,2) NOT NULL,
+  `ExtraCharge` int NOT NULL,
+  `ContactUser_Id` int DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_OrderAccessories_Accessories_Accessories_Id` (`Accessories_Id`),
-  KEY `FK_OrderAccessories_Orders_Order_Id` (`Order_Id`),
-  CONSTRAINT `FK_OrderAccessories_Accessories_Accessories_Id` FOREIGN KEY (`Accessories_Id`) REFERENCES `accessories` (`Id`),
-  CONSTRAINT `FK_OrderAccessories_Orders_Order_Id` FOREIGN KEY (`Order_Id`) REFERENCES `orders` (`Id`)
+  KEY `FK_Users_СontactUser_ContactUser_Id` (`ContactUser_Id`),
+  CONSTRAINT `FK_Users_СontactUser_ContactUser_Id` FOREIGN KEY (`ContactUser_Id`) REFERENCES `сontactuser` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `orderaccessories`
+-- Dumping data for table `users`
 --
 
-LOCK TABLES `orderaccessories` WRITE;
-/*!40000 ALTER TABLE `orderaccessories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `orderaccessories` ENABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (2,'+79516622579','Gfhjkm',0.00,0.00,0,2),(3,'Smant','2020',0.00,0.00,0,3),(5,'йцукенг','1234567',0.00,0.00,0,5),(6,'','',0.00,100.00,0,6),(7,'','',0.00,0.00,0,7),(8,'','',0.00,0.00,0,8),(9,'','',0.00,0.00,0,9),(10,'','',0.00,0.00,0,10),(11,'','',0.00,0.00,0,11),(12,'','',0.00,0.00,0,12),(13,'','',0.00,0.00,0,13),(14,'','',0.00,0.00,0,14),(15,'1','1234',0.00,0.00,0,15),(16,'','',0.00,0.00,0,16);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:33
+-- Dump completed on 2021-08-01 11:42:35

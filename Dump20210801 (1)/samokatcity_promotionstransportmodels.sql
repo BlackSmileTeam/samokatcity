@@ -16,32 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `promotions`
+-- Table structure for table `promotionstransportmodels`
 --
 
-DROP TABLE IF EXISTS `promotions`;
+DROP TABLE IF EXISTS `promotionstransportmodels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `promotions` (
+CREATE TABLE `promotionstransportmodels` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Name` longtext,
-  `Description` longtext,
-  `DayOfWeek` longtext,
-  `TimeStart` time NOT NULL,
-  `TimeEnd` time NOT NULL,
-  `Discount` decimal(18,2) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Promotions_Id` int DEFAULT NULL,
+  `TransportModels_Id` int DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_PromotionsTransportModels_Promotions_Promotions_Id` (`Promotions_Id`),
+  KEY `FK_45adc646665e435d9268dcaba019e601` (`TransportModels_Id`),
+  CONSTRAINT `FK_45adc646665e435d9268dcaba019e601` FOREIGN KEY (`TransportModels_Id`) REFERENCES `transportmodels` (`Id`),
+  CONSTRAINT `FK_PromotionsTransportModels_Promotions_Promotions_Id` FOREIGN KEY (`Promotions_Id`) REFERENCES `promotions` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `promotions`
+-- Dumping data for table `promotionstransportmodels`
 --
 
-LOCK TABLES `promotions` WRITE;
-/*!40000 ALTER TABLE `promotions` DISABLE KEYS */;
-INSERT INTO `promotions` VALUES (6,'Максимальный вторник','','2','00:00:00','23:59:00',100.00),(7,'Понедельник - день тяжелый!','Скидка 100 рублей на любую модель самокатов к любому тарифу. Не суммируется с другими акциями.','1','10:00:00','21:00:00',100.00);
-/*!40000 ALTER TABLE `promotions` ENABLE KEYS */;
+LOCK TABLES `promotionstransportmodels` WRITE;
+/*!40000 ALTER TABLE `promotionstransportmodels` DISABLE KEYS */;
+INSERT INTO `promotionstransportmodels` VALUES (12,7,10),(13,7,11),(14,7,12),(15,6,12);
+/*!40000 ALTER TABLE `promotionstransportmodels` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:34
+-- Dump completed on 2021-08-01 11:42:35

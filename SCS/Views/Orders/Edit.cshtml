@@ -566,8 +566,8 @@
             ++numberAccessories;
         }
 
-        lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) + Number(lock.value * 100);
-        summ.innerHTML = Number(document.getElementById("totalSum").textContent) + Number(lock.value * 100);
+        lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent); /* + Number(lock.value * 100);*/
+        summ.innerHTML = Number(document.getElementById("totalSum").textContent);/* + Number(lock.value * 100);*/
 
         lpay.innerHTML = Number(document.getElementById("LeftToPay").textContent) - Number(discount.value);
         //summ.innerHTML = Number(document.getElementById("totalSum").textContent) - Number(discount.value);

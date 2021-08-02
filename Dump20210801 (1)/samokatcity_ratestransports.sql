@@ -16,32 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `promotionstransportmodels`
+-- Table structure for table `ratestransports`
 --
 
-DROP TABLE IF EXISTS `promotionstransportmodels`;
+DROP TABLE IF EXISTS `ratestransports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `promotionstransportmodels` (
+CREATE TABLE `ratestransports` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Promotions_Id` int DEFAULT NULL,
+  `Rates_Id` int DEFAULT NULL,
   `TransportModels_Id` int DEFAULT NULL,
+  `Price` decimal(18,2) NOT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_PromotionsTransportModels_Promotions_Promotions_Id` (`Promotions_Id`),
-  KEY `FK_45adc646665e435d9268dcaba019e601` (`TransportModels_Id`),
-  CONSTRAINT `FK_45adc646665e435d9268dcaba019e601` FOREIGN KEY (`TransportModels_Id`) REFERENCES `transportmodels` (`Id`),
-  CONSTRAINT `FK_PromotionsTransportModels_Promotions_Promotions_Id` FOREIGN KEY (`Promotions_Id`) REFERENCES `promotions` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `FK_RatesTransports_Rates_Rates_Id` (`Rates_Id`),
+  KEY `FK_RatesTransports_TransportModels_TransportModels_Id` (`TransportModels_Id`),
+  CONSTRAINT `FK_RatesTransports_Rates_Rates_Id` FOREIGN KEY (`Rates_Id`) REFERENCES `rates` (`Id`),
+  CONSTRAINT `FK_RatesTransports_TransportModels_TransportModels_Id` FOREIGN KEY (`TransportModels_Id`) REFERENCES `transportmodels` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `promotionstransportmodels`
+-- Dumping data for table `ratestransports`
 --
 
-LOCK TABLES `promotionstransportmodels` WRITE;
-/*!40000 ALTER TABLE `promotionstransportmodels` DISABLE KEYS */;
-INSERT INTO `promotionstransportmodels` VALUES (12,7,10),(13,7,11),(14,7,12),(15,6,12);
-/*!40000 ALTER TABLE `promotionstransportmodels` ENABLE KEYS */;
+LOCK TABLES `ratestransports` WRITE;
+/*!40000 ALTER TABLE `ratestransports` DISABLE KEYS */;
+INSERT INTO `ratestransports` VALUES (7,5,10,600.00),(8,5,11,800.00),(9,5,12,900.00),(10,6,10,800.00),(11,6,11,1000.00),(12,6,12,1100.00),(13,7,10,900.00),(14,7,11,1200.00),(15,7,12,1300.00),(16,8,10,1500.00),(17,8,11,2000.00),(18,8,12,2300.00),(19,9,10,1200.00),(20,9,11,1700.00),(21,9,12,1900.00),(22,10,10,400.00),(23,10,11,550.00),(24,10,12,650.00),(25,11,10,2100.00),(26,11,11,2700.00),(27,11,12,3300.00);
+/*!40000 ALTER TABLE `ratestransports` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:33
+-- Dump completed on 2021-08-01 11:42:35

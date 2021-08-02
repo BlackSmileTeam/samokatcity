@@ -16,33 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `transports`
+-- Table structure for table `accessories`
 --
 
-DROP TABLE IF EXISTS `transports`;
+DROP TABLE IF EXISTS `accessories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transports` (
+CREATE TABLE `accessories` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `IsBlocked` tinyint(1) NOT NULL,
+  `Name` longtext,
   `Status` int NOT NULL,
-  `SerialNumber` longtext,
-  `IndexNumber` longtext,
-  `TransportModels_Id` int DEFAULT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `FK_Transports_TransportModels_TransportModels_Id` (`TransportModels_Id`),
-  CONSTRAINT `FK_Transports_TransportModels_TransportModels_Id` FOREIGN KEY (`TransportModels_Id`) REFERENCES `transportmodels` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Price` decimal(18,2) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `transports`
+-- Dumping data for table `accessories`
 --
 
-LOCK TABLES `transports` WRITE;
-/*!40000 ALTER TABLE `transports` DISABLE KEYS */;
-INSERT INTO `transports` VALUES (8,0,1,'21886/00327474','24',11),(9,0,1,'1111111111111111111111111111111111','1',12),(10,0,1,'2222','1',10),(11,0,1,'13','13',11),(12,0,1,'29','29',11),(13,0,1,'1','1',12);
-/*!40000 ALTER TABLE `transports` ENABLE KEYS */;
+LOCK TABLES `accessories` WRITE;
+/*!40000 ALTER TABLE `accessories` DISABLE KEYS */;
+INSERT INTO `accessories` VALUES (4,'Держатель для телефона',1,100.00),(5,'Сумка',1,100.00),(6,'Детский руль',1,100.00),(7,'Детская подножка',1,100.00),(8,'Детский комплект',1,200.00),(9,'Детский шлем',1,100.00),(10,'Взрослый шлем',1,200.00);
+/*!40000 ALTER TABLE `accessories` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:34
+-- Dump completed on 2021-08-01 11:42:35

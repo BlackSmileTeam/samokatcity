@@ -56,6 +56,10 @@
                             <p>  @ot.Transport.TransportModels.Name</p>
                         }
                     </div>
+                    @foreach (var otCount in ViewData["countTransportOrder"] as List<int>)
+                    {
+                        <p style="width:1em">  @otCount</p>
+                    }
                 </div>
             }
             @if (Model.OrderAccessories.Count > 0)
@@ -71,6 +75,10 @@
                             <p>  @oa.Accessories.Name</p>
                         }
                     </div>
+                    @foreach (var oaCount in ViewData["countAccessoriesOrder"] as List<int>)
+                    {
+                        <p style="width:1em">  @oaCount</p>
+                    }
                 </div>
             }
 

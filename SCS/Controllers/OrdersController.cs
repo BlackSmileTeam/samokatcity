@@ -178,6 +178,8 @@ namespace SCS.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            List<int> countTransportOrder = new List<int>();
+            List<int> countAccessoriesOrder = new List<int>();
             Order order = db.Orders.Include(p => p.Payment)
                 .Include(u => u.User)
                 .Include(u => u.User.ContactUser)
@@ -188,8 +190,22 @@ namespace SCS.Controllers
             {
                 return HttpNotFound();
             }
+            List<OrderTransport> orderTrTmp = order.OrderTransports;
+            List<OrderAccessories> orderAccTmp = order.OrderAccessories;
             order.OrderTransports = order.OrderTransports.DistinctBy(m => m.Transport.TransportModels).ToList();
             order.OrderAccessories = order.OrderAccessories.DistinctBy(a => a.Accessories.Name).ToList();
+
+            foreach (var trOrder in order.OrderTransports)
+            {
+                countTransportOrder.Add(orderTrTmp.Where(tr => tr.Transport.TransportModels.Id == trOrder.Transport.TransportModels.Id).Count());
+            }
+            foreach (var accOrder in order.OrderAccessories)
+            {
+                countAccessoriesOrder.Add(orderAccTmp.Where(tr => tr.Accessories.Name == accOrder.Accessories.Name).Count());
+            }
+
+            ViewData["countTransportOrder"] = countTransportOrder;
+            ViewData["countAccessoriesOrder"] = countAccessoriesOrder;
 
             return PartialView(order);
         }
@@ -303,7 +319,7 @@ namespace SCS.Controllers
                     totalSum -= db.Promotions.Find(promotionsList).Discount;
                 }
 
-                totalSum += CountLock * 100;
+                //totalSum += CountLock * 100;
 
                 int statusTransportOrAccesories = DateStart >= DateTime.Now.AddHours(1) ? Convert.ToInt32(StatusTransportOrAccessories.Free) : Convert.ToInt32(StatusTransportOrAccessories.Busy);
 
@@ -601,7 +617,7 @@ namespace SCS.Controllers
                         var promotionsList = Convert.ToInt32(collection["promotionsList"]);
                         totalSum -= db.Promotions.Find(promotionsList).Discount;
                     }
-                    totalSum += Convert.ToInt32(collection["CountLock"]) * 100;
+                   // totalSum += Convert.ToInt32(collection["CountLock"]) * 100;
 
                     Order order = new Order();
                     Payment pay = new Payment();
@@ -907,8 +923,8 @@ namespace SCS.Controllers
                         typeDocument = tdoc.Text;
                     }
 
-                    doc.ReplaceText("{DATE_START}", order.DateStart.ToString("HH:mm dd.mm.yyyy"));
-                    doc.ReplaceText("{DATE_END}", order.DateEnd.ToString("HH:mm dd.mm.yyyy"));
+                    doc.ReplaceText("{DATE_START}", order.DateStart.ToString("HH:mm dd.MM.yyyy"));
+                    doc.ReplaceText("{DATE_END}", order.DateEnd.ToString("HH:mm dd.MM.yyyy"));
                     doc.ReplaceText("{CASH_DEPOSIT}", order.Payment.CashDeposit.ToString());
                     doc.ReplaceText("{CARD_DEPOSIT}", order.Payment.CardDeposit.ToString());
                     doc.ReplaceText("{CASH_PAYMENT}", order.Payment.CashPayment.ToString());

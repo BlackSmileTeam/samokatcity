@@ -16,29 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `accessories`
+-- Table structure for table `ordertransports`
 --
 
-DROP TABLE IF EXISTS `accessories`;
+DROP TABLE IF EXISTS `ordertransports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `accessories` (
+CREATE TABLE `ordertransports` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Name` longtext,
-  `Status` int NOT NULL,
-  `Price` decimal(18,2) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Order_Id` int DEFAULT NULL,
+  `Transport_Id` int DEFAULT NULL,
+  `Rates_Id` int DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_OrderTransports_Orders_Order_Id` (`Order_Id`),
+  KEY `FK_OrderTransports_Transports_Transport_Id` (`Transport_Id`),
+  KEY `FK_OrderTransports_Rates_Rates_Id` (`Rates_Id`),
+  CONSTRAINT `FK_OrderTransports_Orders_Order_Id` FOREIGN KEY (`Order_Id`) REFERENCES `orders` (`Id`),
+  CONSTRAINT `FK_OrderTransports_Rates_Rates_Id` FOREIGN KEY (`Rates_Id`) REFERENCES `rates` (`Id`),
+  CONSTRAINT `FK_OrderTransports_Transports_Transport_Id` FOREIGN KEY (`Transport_Id`) REFERENCES `transports` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `accessories`
+-- Dumping data for table `ordertransports`
 --
 
-LOCK TABLES `accessories` WRITE;
-/*!40000 ALTER TABLE `accessories` DISABLE KEYS */;
-INSERT INTO `accessories` VALUES (4,'Держатель для телефона',1,100.00),(5,'Сумка',1,100.00),(6,'Детский руль',1,100.00),(7,'Детская подножка',1,100.00),(8,'Детский комплект',1,200.00),(9,'Детский шлем',1,100.00),(10,'Взрослый шлем',1,200.00);
-/*!40000 ALTER TABLE `accessories` ENABLE KEYS */;
+LOCK TABLES `ordertransports` WRITE;
+/*!40000 ALTER TABLE `ordertransports` DISABLE KEYS */;
+INSERT INTO `ordertransports` VALUES (40,33,8,10),(49,34,8,7),(51,41,8,10),(52,41,11,10),(55,35,8,8),(56,35,11,8),(57,43,8,9),(58,43,11,9),(59,43,12,9),(60,43,15,9),(61,43,17,9),(62,43,18,9),(63,43,19,9);
+/*!40000 ALTER TABLE `ordertransports` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:34
+-- Dump completed on 2021-08-01 11:42:35

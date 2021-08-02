@@ -16,29 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `transportmodels`
+-- Table structure for table `rates`
 --
 
-DROP TABLE IF EXISTS `transportmodels`;
+DROP TABLE IF EXISTS `rates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transportmodels` (
+CREATE TABLE `rates` (
   `Id` int NOT NULL AUTO_INCREMENT,
   `Name` longtext,
-  `ChargingTime` decimal(18,2) NOT NULL,
-  `Markup` decimal(18,2) NOT NULL,
+  `Description` longtext,
+  `Duration` int NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `transportmodels`
+-- Dumping data for table `rates`
 --
 
-LOCK TABLES `transportmodels` WRITE;
-/*!40000 ALTER TABLE `transportmodels` DISABLE KEYS */;
-INSERT INTO `transportmodels` VALUES (10,'m365',4.00,0.00),(11,'Pro',7.00,0.00),(12,'Max',5.00,0.00);
-/*!40000 ALTER TABLE `transportmodels` ENABLE KEYS */;
+LOCK TABLES `rates` WRITE;
+/*!40000 ALTER TABLE `rates` DISABLE KEYS */;
+INSERT INTO `rates` VALUES (5,'4 часа','',4),(6,'День','',5),(7,'Сутки','',24),(8,'Двое суток','',48),(9,'1.5 суток','',36),(10,'Два часа','',2),(11,'трое суток','',72);
+/*!40000 ALTER TABLE `rates` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:33
+-- Dump completed on 2021-08-01 11:42:34

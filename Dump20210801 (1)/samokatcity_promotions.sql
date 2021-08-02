@@ -16,33 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ratestransports`
+-- Table structure for table `promotions`
 --
 
-DROP TABLE IF EXISTS `ratestransports`;
+DROP TABLE IF EXISTS `promotions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ratestransports` (
+CREATE TABLE `promotions` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Rates_Id` int DEFAULT NULL,
-  `TransportModels_Id` int DEFAULT NULL,
-  `Price` decimal(18,2) NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `FK_RatesTransports_Rates_Rates_Id` (`Rates_Id`),
-  KEY `FK_RatesTransports_TransportModels_TransportModels_Id` (`TransportModels_Id`),
-  CONSTRAINT `FK_RatesTransports_Rates_Rates_Id` FOREIGN KEY (`Rates_Id`) REFERENCES `rates` (`Id`),
-  CONSTRAINT `FK_RatesTransports_TransportModels_TransportModels_Id` FOREIGN KEY (`TransportModels_Id`) REFERENCES `transportmodels` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Name` longtext,
+  `Description` longtext,
+  `DayOfWeek` longtext,
+  `TimeStart` time NOT NULL,
+  `TimeEnd` time NOT NULL,
+  `Discount` decimal(18,2) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ratestransports`
+-- Dumping data for table `promotions`
 --
 
-LOCK TABLES `ratestransports` WRITE;
-/*!40000 ALTER TABLE `ratestransports` DISABLE KEYS */;
-INSERT INTO `ratestransports` VALUES (6,4,11,550.00),(7,5,10,600.00),(8,5,11,800.00),(9,5,12,900.00),(10,6,10,800.00),(11,6,11,1000.00),(12,6,12,1100.00),(13,7,10,900.00),(14,7,11,1200.00),(15,7,12,1300.00),(16,8,10,1500.00),(17,8,11,2000.00),(18,8,12,2300.00);
-/*!40000 ALTER TABLE `ratestransports` ENABLE KEYS */;
+LOCK TABLES `promotions` WRITE;
+/*!40000 ALTER TABLE `promotions` DISABLE KEYS */;
+INSERT INTO `promotions` VALUES (6,'Максимальный вторник','','2','00:00:00','23:59:00',100.00),(7,'Понедельник - день тяжелый!','Скидка 100 рублей на любую модель самокатов к любому тарифу. Не суммируется с другими акциями.','1','10:00:00','21:00:00',100.00);
+/*!40000 ALTER TABLE `promotions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:33
+-- Dump completed on 2021-08-01 11:42:35

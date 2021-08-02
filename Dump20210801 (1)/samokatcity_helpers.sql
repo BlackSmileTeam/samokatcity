@@ -16,33 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `payments`
+-- Table structure for table `helpers`
 --
 
-DROP TABLE IF EXISTS `payments`;
+DROP TABLE IF EXISTS `helpers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `payments` (
+CREATE TABLE `helpers` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `BonusPayment` decimal(18,2) NOT NULL,
-  `CardPayment` decimal(18,2) NOT NULL,
-  `CashPayment` decimal(18,2) NOT NULL,
-  `CardDeposit` decimal(18,2) NOT NULL,
-  `CashDeposit` decimal(18,2) NOT NULL,
-  `TotalSum` decimal(18,2) NOT NULL,
-  `TypeDocument` int NOT NULL,
+  `NameHelper` longtext,
+  `Code` int NOT NULL,
+  `Value` int NOT NULL,
+  `Text` longtext,
+  `Queue` int NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `payments`
+-- Dumping data for table `helpers`
 --
 
-LOCK TABLES `payments` WRITE;
-/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (8,0.00,0.00,550.00,0.00,5000.00,550.00,1),(9,0.00,0.00,800.00,0.00,5000.00,800.00,-1),(10,0.00,50.00,500.00,50.00,50.00,650.00,1),(11,0.00,900.00,500.00,2000.00,5000.00,1400.00,2),(12,0.00,0.00,550.00,0.00,5000.00,550.00,-1),(13,0.00,0.00,450.00,0.00,0.00,450.00,1),(14,0.00,100.00,1000.00,0.00,500.00,2100.00,1),(15,0.00,100.00,1000.00,500.00,500.00,2100.00,1),(16,0.00,0.00,0.00,0.00,0.00,2100.00,1),(17,0.00,100.00,100.00,100.00,100.00,850.00,1),(18,0.00,500.00,0.00,0.00,5000.00,600.00,-1),(19,0.00,550.00,0.00,0.00,5000.00,550.00,2),(20,0.00,0.00,1200.00,0.00,5000.00,1200.00,-1),(21,0.00,0.00,2400.00,0.00,10000.00,4000.00,-1),(22,0.00,1300.00,0.00,0.00,10000.00,0.00,1);
-/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+LOCK TABLES `helpers` WRITE;
+/*!40000 ALTER TABLE `helpers` DISABLE KEYS */;
+INSERT INTO `helpers` VALUES (1,'Types documents',1,1,'Паспорт',1),(2,'Types documents',1,2,'Военный билет',2),(3,'Types documents',1,-1,'Отсутствует',3),(4,'Transport status type',2,1,'В наличии',1),(5,'Transport status type',2,2,'В поездке',2),(6,'Transport status type',2,3,'В ремонте',3),(7,'Transport status type',2,4,'На зарядке',4),(8,'Accessories status type',3,1,'В наличии',1),(9,'Accessories status type',3,2,'В поездке',2),(10,'Accessories status type',3,3,'В ремонте',3);
+/*!40000 ALTER TABLE `helpers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:34
+-- Dump completed on 2021-08-01 11:42:35

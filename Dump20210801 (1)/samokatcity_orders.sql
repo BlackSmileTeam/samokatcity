@@ -38,7 +38,7 @@ CREATE TABLE `orders` (
   KEY `FK_Orders_Users_User_Id` (`User_Id`),
   CONSTRAINT `FK_Orders_Payments_Payment_Id` FOREIGN KEY (`Payment_Id`) REFERENCES `payments` (`Id`),
   CONSTRAINT `FK_Orders_Users_User_Id` FOREIGN KEY (`User_Id`) REFERENCES `users` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (33,'2021-07-29 10:45:00','2021-07-29 12:45:00',0,0,0,'Ожидает оплаты','',19,8),(34,'2021-07-29 17:15:00','2021-07-29 21:15:00',0,0,0,'Ожидает оплаты','Доплата 400 р.',20,10),(35,'2021-07-30 12:00:00','2021-07-30 14:00:00',0,0,0,'Ожидает оплаты','',21,9),(37,'2021-07-29 20:15:00','2021-07-29 22:15:00',0,0,0,NULL,'',NULL,11),(38,'2021-07-29 21:04:00','2021-07-29 23:04:00',0,0,0,NULL,'',NULL,10);
+INSERT INTO `orders` VALUES (33,'2021-07-29 10:45:00','2021-07-29 12:45:00',0,0,0,'Ожидает оплаты','',19,8),(34,'2021-07-29 17:15:00','2021-07-29 21:15:00',0,0,0,'Ожидает оплаты','Доплата 400 р.',20,10),(35,'2021-07-30 12:00:00','2021-07-30 14:00:00',0,0,0,'Ожидает оплаты','',21,9),(41,'2021-07-29 22:52:00','2021-07-30 00:52:00',0,0,0,'Ожидает оплаты','',24,11),(43,'2021-07-31 12:00:00','2021-08-02 00:00:00',7,700,0,'Ожидает оплаты','Доставка до Газпром арены 1900',26,9);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-29 21:46:34
+-- Dump completed on 2021-08-01 11:42:35
